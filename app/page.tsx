@@ -1,6 +1,16 @@
+import Link from 'next/link';
+
 export default function Home() {
   return (
-    <div className="min-h-screen bg-black text-white flex items-center justify-center md:p-8">
+    <div className="min-h-screen bg-black text-white flex items-center justify-center md:p-8 relative">
+      {/* Login Button */}
+      <Link 
+        href="/signin"
+        className="absolute top-8 right-8 px-6 py-2 border border-white bg-black text-white font-serif text-sm hover:bg-white hover:text-black transition-colors duration-200 z-10"
+      >
+        Login
+      </Link>
+
       <div className="max-w-2xl w-full bg-black md:bg-black/50 md:backdrop-blur-sm md:rounded-lg p-8 md:p-16 md:shadow-2xl min-h-screen md:min-h-0">
         {/* Hero Section */}
         <section className="mb-12 md:mb-16 text-left">
