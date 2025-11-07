@@ -40,4 +40,43 @@ The application follows Next.js App Router conventions:
 - Contact email: contact@ipg.inc
 - Custom favicon (IPG.ico)
 - Responsive layout with backdrop blur effects on desktop
-- Authentication flow placeholder pages
+- Authentication flow placeholder pages #Deprecated
+
+## Authentication System
+
+- **Supabase Integration**: Full auth with email/password and Google OAuth
+- **OTP Verification**: 6-digit email codes for signup and optional signin
+- **Real-time Validation**: Email existence checking during signup
+- **Password Validation**: Visual feedback for 8+ character requirement
+- **Protected Routes**: Dashboard redirect after successful authentication
+
+## 2025-11-06 – Compact Session
+
+### #CurrentFocus
+Implemented complete Supabase authentication system with OTP verification and real-time email validation.
+
+### #SessionChanges  
+- Set up Supabase client configuration with environment variables
+- Created OTP verification page with 6-digit input and auto-focus
+- Implemented two-step signin flow (email → password/code choice)
+- Added real-time email existence checking during signup with red border feedback
+- Updated signin page to support both password and OTP authentication methods
+- Fixed verification page styling to match dark theme design
+- Created dashboard page with simple welcome message
+- Updated all auth flows to redirect to /dashboard after successful login
+- Fixed TypeScript errors for boolean props and ref assignments
+- Added Suspense boundary for useSearchParams hook to resolve build errors
+- Removed "use another method" links from signup flow per requirements
+
+### #NextSteps
+- Set up Supabase environment variables in Vercel deployment settings
+- Test complete authentication flow in production environment
+- Add user session management and logout functionality
+
+### #BugsAndTheories
+- ERR_NAME_NOT_RESOLVED on signup ⇒ Typo in Supabase URL (fixed: extra 'x' in domain)
+- TypeScript build errors ⇒ String type in boolean prop context (fixed with !! operator)
+- Vercel build failing ⇒ Missing environment variables and Suspense boundary issues (fixed)
+
+### #Background
+Project transitioned from static landing page to full authentication system using Supabase. Focus on email-first signup with OTP verification to prevent duplicate accounts and provide secure authentication flow.
