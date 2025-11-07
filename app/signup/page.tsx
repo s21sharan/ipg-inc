@@ -329,7 +329,7 @@ export default function SignUp() {
 
             <button
               type="submit"
-              disabled={isLoading || !isPasswordValid || !agreedToTerms || emailError || isCheckingEmail}
+              disabled={isLoading || !isPasswordValid || !agreedToTerms || !!emailError || isCheckingEmail}
               className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white font-medium py-3 px-4 rounded-xl transition-colors duration-200 flex items-center justify-center gap-2 mt-6"
             >
               {isLoading ? 'Creating account...' : 'Continue'}
