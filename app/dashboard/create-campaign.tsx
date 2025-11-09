@@ -13,6 +13,14 @@ interface Topic {
   name: string;
   type: TopicType;
   content: string;
+  // Conversation-specific fields
+  persona?: string;
+  goals?: string;
+  maxDuration?: string;
+  // Question-specific fields
+  question?: string;
+  probeQuestions?: string;
+  probeDepth?: string;
 }
 
 export default function CreateCampaignForm({ onClose }: CreateCampaignFormProps) {
@@ -27,7 +35,6 @@ export default function CreateCampaignForm({ onClose }: CreateCampaignFormProps)
 
   const [topics, setTopics] = useState<Topic[]>([
     { id: '1', name: 'Kickoff', type: 'statement', content: 'Thanks so much for meeting with us today! We\'re looking forward to hearing your thoughts and experiences—please feel free to be open and honest. Your feedback is valuable and will help us make things better.' },
-    { id: '2', name: 'Add Topic Name', type: 'conversation', content: '' },
     { id: '3', name: 'Signoff', type: 'statement', content: '' }
   ]);
 
@@ -46,16 +53,27 @@ export default function CreateCampaignForm({ onClose }: CreateCampaignFormProps)
   const [isGenerating, setIsGenerating] = useState(false);
   const [hasGenerated, setHasGenerated] = useState(false);
 
-  const handleInputChange = async (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+  // Validation state for inline errors
+  const [validationErrors, setValidationErrors] = useState<Record<string, boolean>>({
+    name: false,
+    title: false,
+    caption: false,
+    timeEstimate: false
+  });
+  const [triggerWiggle, setTriggerWiggle] = useState(false);
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({
       ...prev,
       [name]: value
     }));
-
-    // Generate kickoff and signoff when caption is filled and hasn't been generated yet
-    if (name === 'caption' && value.trim() && !hasGenerated) {
-      await generateContent(value);
+    // Clear validation error for this field when user types
+    if (validationErrors[name]) {
+      setValidationErrors(prev => ({
+        ...prev,
+        [name]: false
+      }));
     }
   };
 
@@ -104,9 +122,21 @@ export default function CreateCampaignForm({ onClose }: CreateCampaignFormProps)
   const addTopic = (type: TopicType) => {
     const newTopic: Topic = {
       id: Date.now().toString(),
-      name: type === 'statement' ? 'New Statement' : type === 'conversation' ? 'New Conversation' : 'New Question',
+      name: type === 'statement' ? 'New Statement' : type === 'conversation' ? 'Topic Name' : 'Topic Name',
       type: type,
-      content: ''
+      content: '',
+      // Initialize conversation-specific fields
+      ...(type === 'conversation' && {
+        persona: 'The Curious Explorer',
+        goals: 'Example Goal 1\nExample Goal 2',
+        maxDuration: ''
+      }),
+      // Initialize question-specific fields
+      ...(type === 'question' && {
+        question: '',
+        probeQuestions: '',
+        probeDepth: 'No probe questions'
+      })
     };
     setTopics(prev => [...prev.slice(0, -1), newTopic, prev[prev.length - 1]]);
     setSelectedTopicId(newTopic.id);
@@ -165,13 +195,46 @@ export default function CreateCampaignForm({ onClose }: CreateCampaignFormProps)
     }
   };
 
-  const handleNext = () => {
+  const handleNext = async () => {
     if (activeSection === 'details') {
       // Validate all required fields are filled
-      if (!formData.name.trim() || !formData.title.trim() || !formData.caption.trim() || !formData.timeEstimate.trim()) {
-        alert('Please fill out all required fields before continuing.');
+      const errors: Record<string, boolean> = {
+        name: !formData.name.trim(),
+        title: !formData.title.trim(),
+        caption: !formData.caption.trim(),
+        timeEstimate: !formData.timeEstimate.trim()
+      };
+
+      // Check if any field has errors
+      const hasErrors = Object.values(errors).some(error => error);
+
+      if (hasErrors) {
+        // Set validation errors to show red borders
+        setValidationErrors(errors);
+
+        // Trigger wiggle animation
+        setTriggerWiggle(true);
+
+        // Reset wiggle trigger after animation completes
+        setTimeout(() => setTriggerWiggle(false), 500);
+
         return;
       }
+
+      // Clear all validation errors if validation passes
+      setValidationErrors({
+        name: false,
+        title: false,
+        caption: false,
+        timeEstimate: false
+      });
+
+      // Generate kickoff and signoff in the background (no await)
+      if (!hasGenerated && formData.caption.trim()) {
+        generateContent(formData.caption);
+      }
+
+      // Navigate immediately to guide section
       setActiveSection('guide');
     } else if (activeSection === 'guide') {
       setActiveSection('completion');
@@ -195,24 +258,24 @@ export default function CreateCampaignForm({ onClose }: CreateCampaignFormProps)
   return (
     <div className="flex-1 flex flex-col bg-white overflow-hidden">
       {/* Header */}
-      <div className="border-b border-gray-200 px-8 py-6">
+      <div className="border-b border-gray-200 px-6 py-3">
           <div className="flex justify-between items-center">
-            <h2 className="text-2xl font-light text-gray-800">Create Campaign</h2>
+            <h2 className="text-xl font-light text-gray-800">Create Campaign</h2>
             <button
               onClick={onClose}
-              className="text-gray-400 hover:text-gray-600 transition-colors flex items-center gap-2"
+              className="text-gray-400 hover:text-gray-600 transition-colors flex items-center gap-1 text-sm"
             >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" />
               </svg>
               Back
             </button>
           </div>
-          
+
         </div>
-        
+
         {/* Progress Bar */}
-        <div className="px-8 py-4">
+        <div className="px-6 py-2">
           <div className="grid grid-cols-3 gap-4">
             {/* Campaign details */}
             <button
@@ -270,9 +333,10 @@ export default function CreateCampaignForm({ onClose }: CreateCampaignFormProps)
         </div>
 
       {/* Content */}
-      <div className="flex-1 overflow-y-auto p-8">
+      <div className="flex-1 flex flex-col overflow-hidden">
           {/* Campaign Details Section */}
           {activeSection === 'details' && (
+            <div className="p-8 overflow-y-auto">
             <div className="space-y-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -284,7 +348,11 @@ export default function CreateCampaignForm({ onClose }: CreateCampaignFormProps)
                   value={formData.name}
                   onChange={handleInputChange}
                   placeholder="Your name"
-                  className="w-full px-3 py-1.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 bg-white"
+                  className={`w-full px-3 py-1.5 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 bg-white ${
+                    validationErrors.name
+                      ? 'border-red-500 border-2'
+                      : 'border-gray-300'
+                  } ${triggerWiggle && validationErrors.name ? 'wiggle' : ''}`}
                 />
               </div>
 
@@ -298,22 +366,28 @@ export default function CreateCampaignForm({ onClose }: CreateCampaignFormProps)
                   value={formData.title}
                   onChange={handleInputChange}
                   placeholder="Interview title"
-                  className="w-full px-3 py-1.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 bg-white"
+                  className={`w-full px-3 py-1.5 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 bg-white ${
+                    validationErrors.title
+                      ? 'border-red-500 border-2'
+                      : 'border-gray-300'
+                  } ${triggerWiggle && validationErrors.title ? 'wiggle' : ''}`}
                 />
               </div>
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   Caption <span className="text-gray-400 font-normal">- Rendered on the respondent Campaign screen prior to the user starting Campaign</span>
-                  {isGenerating && <span className="ml-2 text-blue-600 text-xs">Generating kickoff and signoff...</span>}
                 </label>
                 <textarea
                   name="caption"
                   value={formData.caption}
                   onChange={handleInputChange}
                   rows={3}
-                  disabled={isGenerating}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none text-gray-900 bg-white disabled:bg-gray-100 disabled:cursor-not-allowed"
+                  className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none text-gray-900 bg-white ${
+                    validationErrors.caption
+                      ? 'border-red-500 border-2'
+                      : 'border-gray-300'
+                  } ${triggerWiggle && validationErrors.caption ? 'wiggle' : ''}`}
                 />
               </div>
 
@@ -341,7 +415,11 @@ export default function CreateCampaignForm({ onClose }: CreateCampaignFormProps)
                   name="timeEstimate"
                   value={formData.timeEstimate}
                   onChange={handleInputChange}
-                  className="w-32 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 bg-white"
+                  className={`w-32 px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 bg-white ${
+                    validationErrors.timeEstimate
+                      ? 'border-red-500 border-2'
+                      : 'border-gray-300'
+                  } ${triggerWiggle && validationErrors.timeEstimate ? 'wiggle' : ''}`}
                 />
               </div>
 
@@ -355,14 +433,15 @@ export default function CreateCampaignForm({ onClose }: CreateCampaignFormProps)
                 </svg>
               </button>
             </div>
+            </div>
           )}
 
           {/* Discussion Guide Section */}
           {activeSection === 'guide' && (
-            <div className="flex gap-0 h-full -m-8 relative">
+            <div className="flex gap-0 flex-1 relative">
               {/* Left Sidebar - Topics List */}
-              <div className="w-80 bg-white border-r border-gray-200 flex flex-col">
-                <div className="p-6 space-y-2 flex-1">
+              <div className="w-64 bg-gray-50 border-r border-gray-200 flex flex-col pb-12">
+                <div className="p-3 space-y-1 flex-1">
                   {topics.map((topic, index) => (
                     <div
                       key={topic.id}
@@ -371,18 +450,18 @@ export default function CreateCampaignForm({ onClose }: CreateCampaignFormProps)
                       onDragOver={(e) => handleDragOver(e, topic.id)}
                       onDragEnd={handleDragEnd}
                       onClick={() => setSelectedTopicId(topic.id)}
-                      className={`flex items-center gap-3 px-3 py-2.5 rounded-lg cursor-pointer transition-all ${
+                      className={`flex items-center gap-2 px-2 py-1.5 rounded cursor-pointer transition-all text-sm ${
                         selectedTopicId === topic.id
-                          ? 'bg-gray-50 shadow-sm border border-gray-200'
-                          : 'hover:bg-gray-50'
+                          ? 'bg-white shadow-sm border border-gray-200'
+                          : 'hover:bg-gray-100'
                       } ${draggedTopicId === topic.id ? 'opacity-50' : ''}`}
                     >
-                      <div className="flex items-center gap-2 flex-1 min-w-0">
-                        <span className="text-red-500 text-sm">{getTopicIcon(topic.type)}</span>
-                        <span className="text-sm font-medium text-gray-700">{index + 1}</span>
-                        <span className="text-sm text-gray-900 truncate">{topic.name}</span>
+                      <div className="flex items-center gap-1.5 flex-1 min-w-0">
+                        <span className="text-red-500 text-xs">{getTopicIcon(topic.type)}</span>
+                        <span className="font-medium text-gray-600 text-xs">{index + 1}</span>
+                        <span className="text-gray-800 truncate text-sm">{topic.name}</span>
                       </div>
-                      <svg className="w-4 h-4 text-gray-400 cursor-move flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <svg className="w-3 h-3 text-gray-400 cursor-move flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 8h16M4 16h16" />
                       </svg>
                     </div>
@@ -390,48 +469,30 @@ export default function CreateCampaignForm({ onClose }: CreateCampaignFormProps)
 
                   <button
                     onClick={() => setShowTopicTypeModal(true)}
-                    className="w-full flex items-center justify-center gap-2 px-3 py-2.5 text-sm text-gray-600 hover:text-blue-600 hover:bg-gray-50 rounded-lg transition-colors"
+                    className="w-full flex items-center justify-center gap-1.5 px-2 py-1.5 text-xs text-gray-600 hover:text-blue-600 hover:bg-gray-100 rounded transition-colors mt-2"
                   >
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
                     </svg>
                     Add Topic
                   </button>
                 </div>
 
-                {/* Bottom Navigation - Fixed at bottom of sidebar */}
-                <div className="p-6 pb-8 bg-white mt-auto">
-                  <div className="flex gap-3">
-                    <button
-                      onClick={handleBack}
-                      className="px-4 py-1.5 border border-gray-300 rounded-lg font-medium text-gray-700 hover:bg-gray-50 transition-colors"
-                    >
-                      Back
-                    </button>
-                    <button
-                      onClick={handleNext}
-                      className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-1.5 rounded-lg font-medium transition-colors flex items-center gap-2"
-                    >
-                      Next
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
-                      </svg>
-                    </button>
-                  </div>
-                </div>
               </div>
 
               {/* Right Content - Topic Editor */}
-              <div className="flex-1 flex flex-col">
+              <div className="flex-1 flex flex-col pb-12">
                 {(() => {
                   const selectedTopic = topics.find(t => t.id === selectedTopicId);
                   if (!selectedTopic) return null;
 
                   return (
-                    <div className="flex-1 flex flex-col p-6">
+                    <div className="flex-1 flex flex-col p-4">
                       {/* Topic Header */}
-                      <div className="mb-4 pb-3 border-b border-gray-200">
-                        <div className="flex items-center gap-3 mb-3">
+                      {(selectedTopic.type === 'conversation' || selectedTopic.type === 'question') ? (
+                        // Conversation/Question header - just shows "Topic Name" label
+                        <div className="mb-3">
+                          <label className="block text-xs font-medium text-gray-500 mb-1">Topic Name</label>
                           {editingTopicName ? (
                             <input
                               type="text"
@@ -442,68 +503,272 @@ export default function CreateCampaignForm({ onClose }: CreateCampaignFormProps)
                                 if (e.key === 'Enter') setEditingTopicName(false);
                               }}
                               autoFocus
-                              className="text-3xl font-light text-gray-900 border-b-2 border-blue-500 focus:outline-none bg-transparent flex-1"
+                              className="text-lg font-normal text-gray-900 border-b-2 border-blue-500 focus:outline-none bg-transparent w-full"
                             />
                           ) : (
-                            <>
-                              <h2 className="text-3xl font-light text-gray-900">{selectedTopic.name}</h2>
+                            <div className="flex items-center gap-2">
+                              <h2 className="text-lg font-normal text-gray-900">{selectedTopic.name}</h2>
                               <button
                                 onClick={() => setEditingTopicName(true)}
                                 className="text-gray-400 hover:text-blue-600 transition-colors"
                               >
-                                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
                                 </svg>
                               </button>
-                            </>
+                            </div>
                           )}
                         </div>
+                      ) : (
+                        // Statement header - shows name and type
+                        <div className="mb-4 pb-3 border-b border-gray-200">
+                          <div className="flex items-center gap-3 mb-3">
+                            {editingTopicName ? (
+                              <input
+                                type="text"
+                                value={selectedTopic.name}
+                                onChange={(e) => handleTopicChange(selectedTopic.id, 'name', e.target.value)}
+                                onBlur={() => setEditingTopicName(false)}
+                                onKeyDown={(e) => {
+                                  if (e.key === 'Enter') setEditingTopicName(false);
+                                }}
+                                autoFocus
+                                className="text-3xl font-light text-gray-900 border-b-2 border-blue-500 focus:outline-none bg-transparent flex-1"
+                              />
+                            ) : (
+                              <>
+                                <h2 className="text-3xl font-light text-gray-900">{selectedTopic.name}</h2>
+                                <button
+                                  onClick={() => setEditingTopicName(true)}
+                                  className="text-gray-400 hover:text-blue-600 transition-colors"
+                                >
+                                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                                  </svg>
+                                </button>
+                              </>
+                            )}
+                          </div>
 
-                        <div className="flex items-start gap-2">
-                          <span className="text-sm px-3 py-1.5 bg-gray-100 rounded-lg text-gray-700 font-medium">
-                            {selectedTopic.type.charAt(0).toUpperCase() + selectedTopic.type.slice(1)}
-                          </span>
-                          <span className="text-sm text-gray-500 pt-1.5">
-                            - {selectedTopic.type === 'statement'
-                              ? 'The AI moderator will state this statement verbatim to the user'
-                              : selectedTopic.type === 'conversation'
-                              ? 'Dynamic conversation based on the topic'
-                              : 'Direct question to the user'}
-                          </span>
+                          <div className="flex items-start gap-2">
+                            <span className="text-sm px-3 py-1.5 bg-gray-100 rounded-lg text-gray-700 font-medium">
+                              {selectedTopic.type.charAt(0).toUpperCase() + selectedTopic.type.slice(1)}
+                            </span>
+                            <span className="text-sm text-gray-500 pt-1.5">
+                              - The AI moderator will state this statement verbatim to the user
+                            </span>
+                          </div>
                         </div>
-                      </div>
+                      )}
 
                       {/* Topic Content */}
-                      <div className="flex-1 mb-4">
-                        <textarea
-                          value={selectedTopic.content}
-                          onChange={(e) => handleTopicChange(selectedTopic.id, 'content', e.target.value)}
-                          placeholder={selectedTopic.type === 'statement' ? 'Enter your statement here...' : 'Enter content here...'}
-                          className="w-full h-32 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none text-gray-900 bg-white"
-                        />
+                      <div className="flex-1 flex flex-col">
+                        {selectedTopic.type === 'conversation' ? (
+                          // Conversation-specific fields
+                          <div className="space-y-3">
+                            {/* Persona Field */}
+                            <div>
+                              <label className="block text-xs font-medium text-gray-600 mb-1">
+                                Persona <span className="text-gray-400 font-normal text-xs">- Guide how you would like the AI moderator to conduct the topic</span>
+                                <button className="ml-1 text-gray-400 hover:text-gray-600">
+                                  <svg className="w-3 h-3 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                  </svg>
+                                </button>
+                              </label>
+                              <input
+                                type="text"
+                                value={selectedTopic.persona || ''}
+                                onChange={(e) => handleTopicChange(selectedTopic.id, 'persona', e.target.value)}
+                                placeholder="The Curious Explorer"
+                                className="w-full px-2 py-1 text-sm border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-transparent text-gray-900 bg-white"
+                              />
+                            </div>
+
+                            {/* Goals Field */}
+                            <div>
+                              <label className="block text-xs font-medium text-gray-600 mb-1 flex items-center justify-between">
+                                <span>
+                                  Goals <span className="text-gray-400 font-normal text-xs">- The AI moderator will guide the conversation toward your objectives.</span>
+                                </span>
+                                <button className="text-gray-400 hover:text-gray-600">
+                                  <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2" />
+                                  </svg>
+                                </button>
+                              </label>
+                              <textarea
+                                value={selectedTopic.goals || ''}
+                                onChange={(e) => handleTopicChange(selectedTopic.id, 'goals', e.target.value)}
+                                placeholder="Example Goal 1&#10;Example Goal 2"
+                                rows={3}
+                                className="w-full px-2 py-1 text-sm border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-transparent resize-none text-gray-900 bg-white"
+                              />
+                            </div>
+
+                            {/* Max Duration Field */}
+                            <div>
+                              <label className="block text-xs font-medium text-gray-600 mb-1">
+                                Max Duration <span className="text-gray-400 font-normal text-xs">- Optional maximum time in minutes for the topic</span>
+                              </label>
+                              <input
+                                type="number"
+                                value={selectedTopic.maxDuration || ''}
+                                onChange={(e) => handleTopicChange(selectedTopic.id, 'maxDuration', e.target.value)}
+                                className="w-24 px-2 py-1 text-sm border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-transparent text-gray-900 bg-white"
+                              />
+                            </div>
+
+                            {/* Advanced Options Dropdown */}
+                            <details className="group">
+                              <summary className="flex items-center gap-2 cursor-pointer text-sm text-gray-600 hover:text-gray-900">
+                                <svg className="w-4 h-4 transition-transform group-open:rotate-90" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
+                                </svg>
+                                Advanced Options (optional)
+                              </summary>
+                              <div className="mt-4 pl-6 space-y-4">
+                                {/* Add advanced options here when needed */}
+                                <p className="text-sm text-gray-500">No advanced options available yet</p>
+                              </div>
+                            </details>
+                          </div>
+                        ) : selectedTopic.type === 'question' ? (
+                          // Question-specific fields
+                          <div className="space-y-3">
+                            {/* Question Field */}
+                            <div>
+                              <label className="block text-xs font-medium text-gray-600 mb-1 flex items-center justify-between">
+                                <span>
+                                  Question <span className="text-gray-400 font-normal text-xs">- The AI moderator will ask this question verbatim to the user</span>
+                                </span>
+                                <button className="text-gray-400 hover:text-gray-600">
+                                  <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2" />
+                                  </svg>
+                                </button>
+                              </label>
+                              <textarea
+                                value={selectedTopic.question || ''}
+                                onChange={(e) => handleTopicChange(selectedTopic.id, 'question', e.target.value)}
+                                rows={2}
+                                className="w-full px-2 py-1 text-sm border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-transparent resize-none text-gray-900 bg-white"
+                              />
+                            </div>
+
+                            {/* Probe Questions Field */}
+                            <div>
+                              <label className="block text-xs font-medium text-gray-600 mb-1 flex items-center justify-between">
+                                <span>
+                                  Probe Questions <span className="text-gray-400 font-normal text-xs">- Based on the response, the AI moderator can ask follow-up questions</span>
+                                </span>
+                                <button className="text-gray-400 hover:text-gray-600">
+                                  <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2" />
+                                  </svg>
+                                </button>
+                              </label>
+                              <textarea
+                                value={selectedTopic.probeQuestions || ''}
+                                onChange={(e) => handleTopicChange(selectedTopic.id, 'probeQuestions', e.target.value)}
+                                rows={3}
+                                className="w-full px-2 py-1 text-sm border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-transparent resize-none text-gray-900 bg-white"
+                              />
+                            </div>
+
+                            {/* Probe Depth Field */}
+                            <div>
+                              <label className="block text-xs font-medium text-gray-600 mb-1">
+                                Probe Depth <span className="text-gray-400 font-normal text-xs">- The # of probing questions asked after the initial question</span>
+                              </label>
+                              <select
+                                value={selectedTopic.probeDepth || 'No probe questions'}
+                                onChange={(e) => handleTopicChange(selectedTopic.id, 'probeDepth', e.target.value)}
+                                className="w-full px-2 py-1 text-sm border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-transparent text-gray-900 bg-white appearance-none bg-[url('data:image/svg+xml;charset=UTF-8,%3csvg%20xmlns%3d%22http%3a%2f%2fwww.w3.org%2f2000%2fsvg%22%20width%3d%2212%22%20height%3d%2212%22%20viewBox%3d%220%200%2012%2012%22%3e%3cpath%20fill%3d%22%23333%22%20d%3d%22M10.293%203.293%206%207.586%201.707%203.293A1%201%200%200%200%20.293%204.707l5%205a1%201%200%200%200%201.414%200l5-5a1%201%200%201%200-1.414-1.414z%22%2f%3e%3c%2fsvg%3e')] bg-[length:12px] bg-[right_1rem_center] bg-no-repeat pr-10"
+                              >
+                                <option value="No probe questions">No probe questions</option>
+                                <option value="1">1 probe question</option>
+                                <option value="2">2 probe questions</option>
+                                <option value="3">3 probe questions</option>
+                                <option value="4">4 probe questions</option>
+                                <option value="5">5 probe questions</option>
+                              </select>
+                            </div>
+
+                            {/* Advanced Options Dropdown */}
+                            <details className="group">
+                              <summary className="flex items-center gap-2 cursor-pointer text-sm text-gray-600 hover:text-gray-900">
+                                <svg className="w-4 h-4 transition-transform group-open:rotate-90" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
+                                </svg>
+                                Advanced Options (optional)
+                              </summary>
+                              <div className="mt-4 pl-6 space-y-4">
+                                {/* Add advanced options here when needed */}
+                                <p className="text-sm text-gray-500">No advanced options available yet</p>
+                              </div>
+                            </details>
+                          </div>
+                        ) : (
+                          // Statement content
+                          <textarea
+                            value={selectedTopic.content}
+                            onChange={(e) => handleTopicChange(selectedTopic.id, 'content', e.target.value)}
+                            placeholder="Enter your statement here..."
+                            className="w-full flex-1 min-h-32 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none text-gray-900 bg-white"
+                          />
+                        )}
                       </div>
 
-                      {/* Action Buttons */}
+                      {/* Delete Topic Section */}
                       {selectedTopic.name !== 'Kickoff' && selectedTopic.name !== 'Signoff' && (
-                        <div className="flex justify-end pt-4 border-t border-gray-200">
-                          <button
-                            onClick={() => removeTopic(selectedTopic.id)}
-                            className="px-4 py-1.5 border border-red-300 text-red-600 rounded-lg text-sm font-medium hover:bg-red-50 transition-colors"
-                          >
-                            Delete Topic
-                          </button>
+                        <div className="pt-2 mt-2 border-t border-gray-200">
+                          <label className="flex items-center gap-2 text-sm text-gray-600 cursor-pointer hover:text-red-600">
+                            <input
+                              type="checkbox"
+                              className="rounded border-gray-300 text-red-600 focus:ring-red-500"
+                              onChange={(e) => {
+                                if (e.target.checked) {
+                                  setTimeout(() => removeTopic(selectedTopic.id), 300);
+                                }
+                              }}
+                            />
+                            <span>Delete Topic</span>
+                          </label>
                         </div>
                       )}
                     </div>
                   );
                 })()}
               </div>
+
+              {/* Bottom Navigation - At the bottom of entire section */}
+              <div className="absolute bottom-0 left-0 right-0 bg-white border-t border-gray-200">
+                <div className="flex gap-2 p-3">
+                  <button
+                    onClick={handleBack}
+                    className="px-3 py-1 border border-gray-300 rounded text-sm text-gray-700 hover:bg-gray-50 transition-colors"
+                  >
+                    Back
+                  </button>
+                  <button
+                    onClick={handleNext}
+                    className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded text-sm transition-colors flex items-center gap-1"
+                  >
+                    Next
+                    <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
+                    </svg>
+                  </button>
+                </div>
+              </div>
             </div>
           )}
 
           {/* Completion Logic Section */}
           {activeSection === 'completion' && (
-            <div className="space-y-6">
+            <div className="p-8 overflow-y-auto">
+              <div className="space-y-6">
               {/* Completion Logic */}
               <div className="border-b border-gray-200 pb-6">
                 <h3 className="text-lg font-medium text-gray-800 mb-3">Completion Logic</h3>
@@ -591,8 +856,10 @@ export default function CreateCampaignForm({ onClose }: CreateCampaignFormProps)
                 </button>
               </div>
             </div>
+            </div>
           )}
       </div>
+
 
       {/* Topic Type Selection Modal */}
       {showTopicTypeModal && (

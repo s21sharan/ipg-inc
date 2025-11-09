@@ -33,39 +33,39 @@ export default function Dashboard() {
     // Show create modal in main content area
     if (showCreateModal) {
       return (
-        <div className="flex-1 bg-white p-8 overflow-y-auto">
+        <div className="flex-1 bg-white p-6 overflow-y-auto">
           <div>
-            <h2 className="text-3xl font-light text-gray-800 mb-8">How do you want to create your Campaign?</h2>
-            
-            <div className="grid grid-cols-2 gap-6">
+            <h2 className="text-xl font-light text-gray-800 mb-4">How do you want to create your Campaign?</h2>
+
+            <div className="grid grid-cols-2 gap-4">
               {/* Create from Scratch */}
               <button
                 onClick={() => {
                   setShowCreateModal(false);
                   setShowCreateForm(true);
                 }}
-                className="bg-gray-50 border-2 border-gray-300 rounded-xl p-8 hover:border-blue-500 hover:shadow-lg transition-all duration-200 text-left group"
+                className="bg-gray-50 border-2 border-gray-300 rounded-lg p-6 hover:border-blue-500 hover:shadow-lg transition-all duration-200 text-left group"
               >
-                <div className="w-16 h-16 bg-gray-100 rounded-full mx-auto mb-6 flex items-center justify-center group-hover:bg-blue-50 transition-colors">
-                  <svg className="w-8 h-8 text-gray-600 group-hover:text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div className="w-12 h-12 bg-gray-100 rounded-full mx-auto mb-3 flex items-center justify-center group-hover:bg-blue-50 transition-colors">
+                  <svg className="w-6 h-6 text-gray-600 group-hover:text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4" />
                   </svg>
                 </div>
-                <h3 className="text-xl font-medium text-gray-800 mb-3 text-center">Create from Scratch</h3>
-                <p className="text-gray-600 text-center">
+                <h3 className="text-base font-medium text-gray-800 mb-2 text-center">Create from Scratch</h3>
+                <p className="text-sm text-gray-600 text-center">
                   Start with a blank slate and build your Campaign from the ground up.
                 </p>
               </button>
 
               {/* Create from Prompt */}
-              <button className="bg-gray-50 border-2 border-gray-300 rounded-xl p-8 hover:border-blue-500 hover:shadow-lg transition-all duration-200 text-left group">
-                <div className="w-16 h-16 bg-gray-100 rounded-full mx-auto mb-6 flex items-center justify-center group-hover:bg-blue-50 transition-colors">
-                  <svg className="w-8 h-8 text-gray-600 group-hover:text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <button className="bg-gray-50 border-2 border-gray-300 rounded-lg p-6 hover:border-blue-500 hover:shadow-lg transition-all duration-200 text-left group">
+                <div className="w-12 h-12 bg-gray-100 rounded-full mx-auto mb-3 flex items-center justify-center group-hover:bg-blue-50 transition-colors">
+                  <svg className="w-6 h-6 text-gray-600 group-hover:text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                   </svg>
                 </div>
-                <h3 className="text-xl font-medium text-gray-800 mb-3 text-center">Create from Prompt</h3>
-                <p className="text-gray-600 text-center">
+                <h3 className="text-base font-medium text-gray-800 mb-2 text-center">Create from Prompt</h3>
+                <p className="text-sm text-gray-600 text-center">
                   Quickly describe what you want to learn and we'll build the Campaign for you.
                 </p>
               </button>
@@ -86,12 +86,12 @@ export default function Dashboard() {
           <div className="flex-1 flex flex-col">
             <div className="flex-1 flex items-center justify-center">
               <div className="text-center max-w-md mx-auto">
-                <div className="w-16 h-16 bg-gray-200 rounded-full mx-auto mb-6 flex items-center justify-center">
-                  <svg className="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div className="w-12 h-12 bg-gray-200 rounded-full mx-auto mb-3 flex items-center justify-center">
+                  <svg className="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
                   </svg>
                 </div>
-                <p className="text-gray-600 text-lg">Get started and create your first campaign!</p>
+                <p className="text-gray-600 text-sm">Get started and create your first campaign!</p>
               </div>
             </div>
           </div>
@@ -122,19 +122,19 @@ export default function Dashboard() {
   return (
     <div className="min-h-screen bg-gray-50 flex" style={{ fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif' }}>
       {/* Sidebar */}
-      <div className="w-64 bg-white border-r border-gray-200 flex flex-col">
+      <div className="w-56 bg-white border-r border-gray-200 flex flex-col">
         {/* Logo */}
-        <div className="p-6 border-b border-gray-200">
-          <h1 className="text-3xl font-bold font-serif text-gray-900">
+        <div className="p-4 border-b border-gray-200">
+          <h1 className="text-2xl font-bold font-serif text-gray-900">
             ipg<span className="text-blue-500">.</span>inc
           </h1>
-          <div className="mt-3 relative">
-            <button 
+          <div className="mt-2 relative">
+            <button
               onClick={() => setShowWorkspaceMenu(!showWorkspaceMenu)}
-              className="flex items-center justify-between w-full bg-gray-50 hover:bg-gray-100 border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-700 transition-colors"
+              className="flex items-center justify-between w-full bg-gray-50 hover:bg-gray-100 border border-gray-200 rounded px-2 py-1 text-xs text-gray-700 transition-colors"
             >
               <span>Personal Workspace</span>
-              <svg className={`w-4 h-4 text-gray-400 transition-transform ${showWorkspaceMenu ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className={`w-3 h-3 text-gray-400 transition-transform ${showWorkspaceMenu ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
               </svg>
             </button>
@@ -163,18 +163,18 @@ export default function Dashboard() {
         </div>
 
         {/* Navigation */}
-        <nav className="flex-1 p-4">
-          <div className="space-y-1">
+        <nav className="flex-1 p-3">
+          <div className="space-y-0.5">
 
             <button
               onClick={() => setActiveTab('campaigns')}
-              className={`w-full flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-lg transition-colors ${
+              className={`w-full flex items-center gap-2 px-2 py-1.5 text-xs font-medium rounded transition-colors ${
                 activeTab === 'campaigns'
                   ? 'bg-blue-50 text-blue-600'
                   : 'text-gray-700 hover:bg-gray-100'
               }`}
             >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
               </svg>
               Campaigns
@@ -182,13 +182,13 @@ export default function Dashboard() {
 
             <button
               onClick={() => setActiveTab('conversations')}
-              className={`w-full flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-lg transition-colors ${
+              className={`w-full flex items-center gap-2 px-2 py-1.5 text-xs font-medium rounded transition-colors ${
                 activeTab === 'conversations'
                   ? 'bg-blue-50 text-blue-600'
                   : 'text-gray-700 hover:bg-gray-100'
               }`}
             >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
               </svg>
               Conversations
@@ -196,13 +196,13 @@ export default function Dashboard() {
 
             <button
               onClick={() => setActiveTab('simulated-agents')}
-              className={`w-full flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-lg transition-colors ${
+              className={`w-full flex items-center gap-2 px-2 py-1.5 text-xs font-medium rounded transition-colors ${
                 activeTab === 'simulated-agents'
                   ? 'bg-blue-50 text-blue-600'
                   : 'text-gray-700 hover:bg-gray-100'
               }`}
             >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
               </svg>
               Simulated Agents
@@ -211,9 +211,9 @@ export default function Dashboard() {
         </nav>
 
         {/* Support */}
-        <div className="p-4 border-t border-gray-200">
-          <button className="w-full flex items-center gap-3 px-3 py-2 text-sm font-medium text-gray-700 rounded-lg hover:bg-gray-100 transition-colors">
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <div className="p-3 border-t border-gray-200">
+          <button className="w-full flex items-center gap-2 px-2 py-1.5 text-xs font-medium text-gray-700 rounded hover:bg-gray-100 transition-colors">
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
             Support
@@ -224,17 +224,17 @@ export default function Dashboard() {
         <div className="relative">
           <button
             onClick={() => setShowUserMenu(!showUserMenu)}
-            className="w-full p-4 text-left border-t border-gray-200 hover:bg-gray-50 transition-colors flex items-center justify-between"
+            className="w-full p-3 text-left border-t border-gray-200 hover:bg-gray-50 transition-colors flex items-center justify-between"
           >
-            <div className="flex items-center gap-3 flex-1 min-w-0">
-              <div className="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center flex-shrink-0">
-                <span className="text-sm font-medium text-gray-600">
+            <div className="flex items-center gap-2 flex-1 min-w-0">
+              <div className="w-6 h-6 bg-gray-200 rounded-full flex items-center justify-center flex-shrink-0">
+                <span className="text-xs font-medium text-gray-600">
                   {user?.email?.charAt(0).toUpperCase()}
                 </span>
               </div>
-              <p className="text-sm text-gray-900 truncate">{user?.email}</p>
+              <p className="text-xs text-gray-900 truncate">{user?.email}</p>
             </div>
-            <svg className={`w-4 h-4 text-gray-400 transition-transform ${showUserMenu ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className={`w-3 h-3 text-gray-400 transition-transform ${showUserMenu ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
             </svg>
           </button>
@@ -257,12 +257,12 @@ export default function Dashboard() {
       <div className="flex-1 flex flex-col">
         {/* Header */}
         {!showCreateModal && !showCreateForm && (
-          <header className="bg-white border-b border-gray-200 px-8 py-6">
+          <header className="bg-white border-b border-gray-200 px-6 py-3">
             <div className="flex items-center justify-between">
-              <h2 className="text-2xl font-light text-gray-800">Personal Workspace</h2>
-              <button 
+              <h2 className="text-lg font-light text-gray-800">Personal Workspace</h2>
+              <button
                 onClick={() => setShowCreateModal(true)}
-                className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-colors flex items-center gap-2"
+                className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 rounded text-sm transition-colors flex items-center gap-1"
               >
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
