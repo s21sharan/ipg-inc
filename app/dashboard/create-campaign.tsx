@@ -3,22 +3,6 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '@/lib/supabase';
 
-interface Campaign {
-  id?: string;
-  name: string;
-  title: string;
-  caption: string;
-  modality: string;
-  time_estimate: string;
-  topics: Topic[];
-  completion_logic: any;
-}
-
-interface CreateCampaignFormProps {
-  onClose: () => void;
-  campaign?: Campaign;
-}
-
 type TopicType = 'statement' | 'conversation' | 'question';
 
 interface Topic {
@@ -34,6 +18,31 @@ interface Topic {
   question?: string;
   probeQuestions?: string;
   probeDepth?: string;
+}
+
+interface CompletionLogic {
+  completionAction: string;
+  completionMessage: string;
+  completionUrl: string;
+  earlyExitAction: string;
+  exitMessage: string;
+  exitUrl: string;
+}
+
+interface Campaign {
+  id?: string;
+  name: string;
+  title: string;
+  caption: string;
+  modality: string;
+  time_estimate: string;
+  topics: Topic[];
+  completion_logic: CompletionLogic;
+}
+
+interface CreateCampaignFormProps {
+  onClose: () => void;
+  campaign?: Campaign;
 }
 
 export default function CreateCampaignForm({ onClose, campaign }: CreateCampaignFormProps) {
@@ -58,7 +67,7 @@ export default function CreateCampaignForm({ onClose, campaign }: CreateCampaign
   const [showTopicTypeModal, setShowTopicTypeModal] = useState(false);
   const [editingTopicName, setEditingTopicName] = useState(false);
 
-  const [completionLogic, setCompletionLogic] = useState(
+  const [completionLogic, setCompletionLogic] = useState<CompletionLogic>(
     campaign?.completion_logic || {
       completionAction: 'Show Message',
       completionMessage: '',
