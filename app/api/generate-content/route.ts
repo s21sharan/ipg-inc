@@ -11,7 +11,7 @@ export async function POST(request: Request) {
       );
     }
 
-    // Use the OpenAI Responses API directly
+    // Use the OpenAI Responses API
     const apiKey = process.env.OPENAI_API_KEY;
 
     if (!apiKey) {
@@ -26,19 +26,9 @@ export async function POST(request: Request) {
       },
       body: JSON.stringify({
         model: 'gpt-5-nano',
-        input: [
-          {
-            role: 'system',
-            content:
-              'You are a helpful assistant that creates professional and welcoming interview scripts. Generate a warm kickoff message and a brief signoff message for user interviews. Always respond in valid JSON format.',
-          },
-          {
-            role: 'user',
-            content: `Based on this campaign caption: "${caption}"\n\nGenerate:\n1. A kickoff message (2-3 sentences) - A warm, welcoming introduction that makes participants feel comfortable and valued. It should encourage honesty and openness.\n2. A signoff message (1-2 sentences) - A brief thank you message expressing gratitude for their time and participation.\n\nReturn your response in this exact JSON format:\n{\n  "kickoff": "your kickoff message here",\n  "signoff": "your signoff message here"\n}`,
-          },
-        ],
-        response_format: { type: 'json' },
-        temperature: 0.7,
+        input: `You are a helpful assistant that creates professional and welcoming interview scripts. Based on this campaign caption: "${caption}"\n\nGenerate:\n1. A kickoff message (2-3 sentences) - A warm, welcoming introduction that makes participants feel comfortable and valued. It should encourage honesty and openness.\n2. A signoff message (1-2 sentences) - A brief thank you message expressing gratitude for their time and participation.\n\nReturn your response in this exact JSON format:\n{\n  "kickoff": "your kickoff message here",\n  "signoff": "your signoff message here"\n}`,
+        reasoning: { effort: 'low' },
+        text: { verbosity: 'low' },
       }),
     });
 
@@ -50,10 +40,13 @@ export async function POST(request: Request) {
     const data = await response.json();
 
     // Extract the text from the Responses API output
-    const content = data.output?.[0]?.content?.[0]?.text?.value ?? null;
+    // Find the message in the output array (not the reasoning item)
+    const messageItem = data.output?.find((item: any) => item.type === 'message');
+    const content = messageItem?.content?.[0]?.text ?? null;
 
     if (!content) {
-      throw new Error('No content generated');
+      console.error('Failed to extract content. Full response:', data);
+      throw new Error('No content generated from OpenAI API');
     }
 
     const result = JSON.parse(content);

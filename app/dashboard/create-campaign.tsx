@@ -1,9 +1,22 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { supabase } from '@/lib/supabase';
+
+interface Campaign {
+  id?: string;
+  name: string;
+  title: string;
+  caption: string;
+  modality: string;
+  time_estimate: string;
+  topics: Topic[];
+  completion_logic: any;
+}
 
 interface CreateCampaignFormProps {
   onClose: () => void;
+  campaign?: Campaign;
 }
 
 type TopicType = 'statement' | 'conversation' | 'question';
@@ -23,44 +36,69 @@ interface Topic {
   probeDepth?: string;
 }
 
-export default function CreateCampaignForm({ onClose }: CreateCampaignFormProps) {
+export default function CreateCampaignForm({ onClose, campaign }: CreateCampaignFormProps) {
   const [activeSection, setActiveSection] = useState<'details' | 'guide' | 'completion'>('details');
   const [formData, setFormData] = useState({
-    name: '',
-    title: '',
-    caption: '',
-    modality: 'Audio + Video',
-    timeEstimate: ''
+    name: campaign?.name || '',
+    title: campaign?.title || '',
+    caption: campaign?.caption || '',
+    modality: campaign?.modality || 'Audio + Video',
+    timeEstimate: campaign?.time_estimate || ''
   });
 
-  const [topics, setTopics] = useState<Topic[]>([
-    { id: '1', name: 'Kickoff', type: 'statement', content: 'Thanks so much for meeting with us today! We\'re looking forward to hearing your thoughts and experiences—please feel free to be open and honest. Your feedback is valuable and will help us make things better.' },
-    { id: '3', name: 'Signoff', type: 'statement', content: '' }
-  ]);
+  const [topics, setTopics] = useState<Topic[]>(
+    campaign?.topics || [
+      { id: '1', name: 'Kickoff', type: 'statement', content: 'Thanks so much for meeting with us today! We\'re looking forward to hearing your thoughts and experiences—please feel free to be open and honest. Your feedback is valuable and will help us make things better.' },
+      { id: '3', name: 'Signoff', type: 'statement', content: '' }
+    ]
+  );
 
   const [selectedTopicId, setSelectedTopicId] = useState<string>('1');
   const [draggedTopicId, setDraggedTopicId] = useState<string | null>(null);
   const [showTopicTypeModal, setShowTopicTypeModal] = useState(false);
   const [editingTopicName, setEditingTopicName] = useState(false);
 
-  const [completionLogic, setCompletionLogic] = useState({
-    completionAction: 'Show Message',
-    completionMessage: '',
-    earlyExitAction: 'Show Message',
-    exitMessage: ''
-  });
+  const [completionLogic, setCompletionLogic] = useState(
+    campaign?.completion_logic || {
+      completionAction: 'Show Message',
+      completionMessage: '',
+      completionUrl: '',
+      earlyExitAction: 'Show Message',
+      exitMessage: '',
+      exitUrl: ''
+    }
+  );
 
   const [isGenerating, setIsGenerating] = useState(false);
   const [hasGenerated, setHasGenerated] = useState(false);
+  const [lastGeneratedCaption, setLastGeneratedCaption] = useState('');
+  const [isSaving, setIsSaving] = useState(false);
+  const [saveError, setSaveError] = useState<string | null>(null);
 
   // Validation state for inline errors
   const [validationErrors, setValidationErrors] = useState<Record<string, boolean>>({
     name: false,
     title: false,
     caption: false,
-    timeEstimate: false
+    timeEstimate: false,
+    completionUrl: false,
+    exitUrl: false
   });
   const [triggerWiggle, setTriggerWiggle] = useState(false);
+
+  // Debounce timer for auto-generating content
+  const [captionDebounceTimer, setCaptionDebounceTimer] = useState<NodeJS.Timeout | null>(null);
+
+  // URL validation function
+  const isValidUrl = (urlString: string): boolean => {
+    if (!urlString.trim()) return false;
+    try {
+      const url = new URL(urlString);
+      return url.protocol === 'http:' || url.protocol === 'https:';
+    } catch {
+      return false;
+    }
+  };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -74,6 +112,28 @@ export default function CreateCampaignForm({ onClose }: CreateCampaignFormProps)
         ...prev,
         [name]: false
       }));
+    }
+
+    // Auto-generate kickoff/signoff when caption changes (with debouncing)
+    if (name === 'caption' && value.trim()) {
+      // Reset hasGenerated if caption changed from what was previously generated
+      if (value.trim() !== lastGeneratedCaption) {
+        setHasGenerated(false);
+      }
+
+      // Clear existing timer
+      if (captionDebounceTimer) {
+        clearTimeout(captionDebounceTimer);
+      }
+
+      // Set new timer to generate after 1.5 seconds of no typing
+      const timer = setTimeout(() => {
+        if (value.trim() !== lastGeneratedCaption) {
+          generateContent(value);
+        }
+      }, 1500);
+
+      setCaptionDebounceTimer(timer);
     }
   };
 
@@ -106,6 +166,7 @@ export default function CreateCampaignForm({ onClose }: CreateCampaignFormProps)
       }));
 
       setHasGenerated(true);
+      setLastGeneratedCaption(caption);
     } catch (error) {
       console.error('Error generating content:', error);
     } finally {
@@ -114,10 +175,30 @@ export default function CreateCampaignForm({ onClose }: CreateCampaignFormProps)
   };
 
   const handleTopicChange = (id: string, field: string, value: string) => {
-    setTopics(prev => prev.map(topic => 
+    setTopics(prev => prev.map(topic =>
       topic.id === id ? { ...topic, [field]: value } : topic
     ));
   };
+
+  const autoResizeTextarea = (element: HTMLTextAreaElement) => {
+    element.style.height = 'auto';
+    element.style.height = element.scrollHeight + 'px';
+  };
+
+  // Auto-resize textarea on mount and when content changes
+  useEffect(() => {
+    const textareas = document.querySelectorAll<HTMLTextAreaElement>('textarea[data-auto-resize]');
+    textareas.forEach(textarea => autoResizeTextarea(textarea));
+  }, [selectedTopicId, topics]);
+
+  // Cleanup debounce timer on unmount
+  useEffect(() => {
+    return () => {
+      if (captionDebounceTimer) {
+        clearTimeout(captionDebounceTimer);
+      }
+    };
+  }, [captionDebounceTimer]);
 
   const addTopic = (type: TopicType) => {
     const newTopic: Topic = {
@@ -127,7 +208,7 @@ export default function CreateCampaignForm({ onClose }: CreateCampaignFormProps)
       content: '',
       // Initialize conversation-specific fields
       ...(type === 'conversation' && {
-        persona: 'The Curious Explorer',
+        persona: 'Jordan – The Empathetic Listener',
         goals: 'Example Goal 1\nExample Goal 2',
         maxDuration: ''
       }),
@@ -226,11 +307,13 @@ export default function CreateCampaignForm({ onClose }: CreateCampaignFormProps)
         name: false,
         title: false,
         caption: false,
-        timeEstimate: false
+        timeEstimate: false,
+        completionUrl: false,
+        exitUrl: false
       });
 
-      // Generate kickoff and signoff in the background (no await)
-      if (!hasGenerated && formData.caption.trim()) {
+      // Generate kickoff and signoff if caption changed or not yet generated
+      if (!isGenerating && formData.caption.trim() && formData.caption.trim() !== lastGeneratedCaption) {
         generateContent(formData.caption);
       }
 
@@ -249,10 +332,59 @@ export default function CreateCampaignForm({ onClose }: CreateCampaignFormProps)
     }
   };
 
-  const handleSave = () => {
-    // Handle save logic here
-    console.log('Campaign saved:', { formData, topics, completionLogic });
-    onClose();
+  const handleSave = async () => {
+    setIsSaving(true);
+    setSaveError(null);
+
+    try {
+      // Get the current user
+      const { data: { user }, error: userError } = await supabase.auth.getUser();
+
+      if (userError || !user) {
+        throw new Error('You must be logged in to save campaigns');
+      }
+
+      // Prepare campaign data
+      const campaignData = {
+        user_id: user.id,
+        name: formData.name,
+        title: formData.title,
+        caption: formData.caption,
+        modality: formData.modality,
+        time_estimate: formData.timeEstimate,
+        topics: topics,
+        completion_logic: completionLogic
+      };
+
+      if (campaign?.id) {
+        // Update existing campaign
+        const { error: updateError } = await supabase
+          .from('campaigns')
+          .update(campaignData)
+          .eq('id', campaign.id);
+
+        if (updateError) {
+          throw updateError;
+        }
+      } else {
+        // Insert new campaign
+        const { error: insertError } = await supabase
+          .from('campaigns')
+          .insert(campaignData);
+
+        if (insertError) {
+          throw insertError;
+        }
+      }
+
+      // Success! Close the form
+      onClose();
+    } catch (error) {
+      console.error('Error saving campaign:', error);
+      setSaveError(error instanceof Error ? error.message : 'Failed to save campaign');
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   return (
@@ -260,7 +392,7 @@ export default function CreateCampaignForm({ onClose }: CreateCampaignFormProps)
       {/* Header */}
       <div className="border-b border-gray-200 px-6 py-3">
           <div className="flex justify-between items-center">
-            <h2 className="text-xl font-light text-gray-800">Create Campaign</h2>
+            <h2 className="text-xl font-light text-gray-800">{campaign ? 'Edit Campaign' : 'Create Campaign'}</h2>
             <button
               onClick={onClose}
               className="text-gray-400 hover:text-gray-600 transition-colors flex items-center gap-1 text-sm"
@@ -382,6 +514,15 @@ export default function CreateCampaignForm({ onClose }: CreateCampaignFormProps)
                   name="caption"
                   value={formData.caption}
                   onChange={handleInputChange}
+                  onBlur={() => {
+                    // Trigger generation when user leaves the caption field
+                    if (formData.caption.trim() && formData.caption.trim() !== lastGeneratedCaption) {
+                      if (captionDebounceTimer) {
+                        clearTimeout(captionDebounceTimer);
+                      }
+                      generateContent(formData.caption);
+                    }
+                  }}
                   rows={3}
                   className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none text-gray-900 bg-white ${
                     validationErrors.caption
@@ -440,8 +581,8 @@ export default function CreateCampaignForm({ onClose }: CreateCampaignFormProps)
           {activeSection === 'guide' && (
             <div className="flex gap-0 flex-1 relative">
               {/* Left Sidebar - Topics List */}
-              <div className="w-64 bg-gray-50 border-r border-gray-200 flex flex-col pb-12">
-                <div className="p-3 space-y-1 flex-1">
+              <div className="w-64 bg-white border-r border-gray-200 flex flex-col pb-12">
+                <div className="p-4 space-y-1 flex-1">
                   {topics.map((topic, index) => (
                     <div
                       key={topic.id}
@@ -450,16 +591,18 @@ export default function CreateCampaignForm({ onClose }: CreateCampaignFormProps)
                       onDragOver={(e) => handleDragOver(e, topic.id)}
                       onDragEnd={handleDragEnd}
                       onClick={() => setSelectedTopicId(topic.id)}
-                      className={`flex items-center gap-2 px-2 py-1.5 rounded cursor-pointer transition-all text-sm ${
+                      className={`flex items-center gap-2 px-3 py-2 rounded-lg cursor-pointer transition-all text-sm ${
                         selectedTopicId === topic.id
-                          ? 'bg-white shadow-sm border border-gray-200'
-                          : 'hover:bg-gray-100'
+                          ? 'bg-blue-50 border border-blue-200 text-blue-900'
+                          : 'hover:bg-gray-50 text-gray-700'
                       } ${draggedTopicId === topic.id ? 'opacity-50' : ''}`}
                     >
-                      <div className="flex items-center gap-1.5 flex-1 min-w-0">
-                        <span className="text-red-500 text-xs">{getTopicIcon(topic.type)}</span>
-                        <span className="font-medium text-gray-600 text-xs">{index + 1}</span>
-                        <span className="text-gray-800 truncate text-sm">{topic.name}</span>
+                      <div className="flex items-center gap-2 flex-1 min-w-0">
+                        <span className={`text-xs ${selectedTopicId === topic.id ? 'text-blue-600' : 'text-gray-500'}`}>
+                          {getTopicIcon(topic.type)}
+                        </span>
+                        <span className="font-medium text-xs">{index + 1}</span>
+                        <span className="truncate">{topic.name}</span>
                       </div>
                       <svg className="w-3 h-3 text-gray-400 cursor-move flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 8h16M4 16h16" />
@@ -469,9 +612,9 @@ export default function CreateCampaignForm({ onClose }: CreateCampaignFormProps)
 
                   <button
                     onClick={() => setShowTopicTypeModal(true)}
-                    className="w-full flex items-center justify-center gap-1.5 px-2 py-1.5 text-xs text-gray-600 hover:text-blue-600 hover:bg-gray-100 rounded transition-colors mt-2"
+                    className="w-full flex items-center justify-center gap-2 px-3 py-2 text-sm text-blue-600 hover:bg-blue-50 rounded-lg transition-colors mt-2 border border-dashed border-blue-300"
                   >
-                    <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
                     </svg>
                     Add Topic
@@ -576,13 +719,16 @@ export default function CreateCampaignForm({ onClose }: CreateCampaignFormProps)
                                   </svg>
                                 </button>
                               </label>
-                              <input
-                                type="text"
-                                value={selectedTopic.persona || ''}
+                              <select
+                                value={selectedTopic.persona || 'Jordan – The Empathetic Listener'}
                                 onChange={(e) => handleTopicChange(selectedTopic.id, 'persona', e.target.value)}
-                                placeholder="The Curious Explorer"
-                                className="w-full px-2 py-1 text-sm border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-transparent text-gray-900 bg-white"
-                              />
+                                className="w-full px-3 py-1.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 bg-white appearance-none bg-[url('data:image/svg+xml;charset=UTF-8,%3csvg%20xmlns%3d%22http%3a%2f%2fwww.w3.org%2f2000%2fsvg%22%20width%3d%2212%22%20height%3d%2212%22%20viewBox%3d%220%200%2012%2012%22%3e%3cpath%20fill%3d%22%23333%22%20d%3d%22M10.293%203.293%206%207.586%201.707%203.293A1%201%200%200%200%20.293%204.707l5%205a1%201%200%200%200%201.414%200l5-5a1%201%200%201%200-1.414-1.414z%22%2f%3e%3c%2fsvg%3e')] bg-[length:12px] bg-[right_0.75rem_center] bg-no-repeat pr-10"
+                              >
+                                <option value="Jordan – The Empathetic Listener">Jordan – The Empathetic Listener</option>
+                                <option value="Riley – The Energetic Product Researcher">Riley – The Energetic Product Researcher</option>
+                                <option value="Sam – The Analytical Moderator">Sam – The Analytical Moderator</option>
+                                <option value="David - The Curious Friend">David - The Curious Friend</option>
+                              </select>
                             </div>
 
                             {/* Goals Field */}
@@ -602,7 +748,7 @@ export default function CreateCampaignForm({ onClose }: CreateCampaignFormProps)
                                 onChange={(e) => handleTopicChange(selectedTopic.id, 'goals', e.target.value)}
                                 placeholder="Example Goal 1&#10;Example Goal 2"
                                 rows={3}
-                                className="w-full px-2 py-1 text-sm border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-transparent resize-none text-gray-900 bg-white"
+                                className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none text-gray-900 bg-white"
                               />
                             </div>
 
@@ -615,23 +761,9 @@ export default function CreateCampaignForm({ onClose }: CreateCampaignFormProps)
                                 type="number"
                                 value={selectedTopic.maxDuration || ''}
                                 onChange={(e) => handleTopicChange(selectedTopic.id, 'maxDuration', e.target.value)}
-                                className="w-24 px-2 py-1 text-sm border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-transparent text-gray-900 bg-white"
+                                className="w-24 px-3 py-1.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 bg-white"
                               />
                             </div>
-
-                            {/* Advanced Options Dropdown */}
-                            <details className="group">
-                              <summary className="flex items-center gap-2 cursor-pointer text-sm text-gray-600 hover:text-gray-900">
-                                <svg className="w-4 h-4 transition-transform group-open:rotate-90" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
-                                </svg>
-                                Advanced Options (optional)
-                              </summary>
-                              <div className="mt-4 pl-6 space-y-4">
-                                {/* Add advanced options here when needed */}
-                                <p className="text-sm text-gray-500">No advanced options available yet</p>
-                              </div>
-                            </details>
                           </div>
                         ) : selectedTopic.type === 'question' ? (
                           // Question-specific fields
@@ -652,7 +784,7 @@ export default function CreateCampaignForm({ onClose }: CreateCampaignFormProps)
                                 value={selectedTopic.question || ''}
                                 onChange={(e) => handleTopicChange(selectedTopic.id, 'question', e.target.value)}
                                 rows={2}
-                                className="w-full px-2 py-1 text-sm border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-transparent resize-none text-gray-900 bg-white"
+                                className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none text-gray-900 bg-white"
                               />
                             </div>
 
@@ -672,7 +804,7 @@ export default function CreateCampaignForm({ onClose }: CreateCampaignFormProps)
                                 value={selectedTopic.probeQuestions || ''}
                                 onChange={(e) => handleTopicChange(selectedTopic.id, 'probeQuestions', e.target.value)}
                                 rows={3}
-                                className="w-full px-2 py-1 text-sm border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-transparent resize-none text-gray-900 bg-white"
+                                className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none text-gray-900 bg-white"
                               />
                             </div>
 
@@ -684,57 +816,48 @@ export default function CreateCampaignForm({ onClose }: CreateCampaignFormProps)
                               <select
                                 value={selectedTopic.probeDepth || 'No probe questions'}
                                 onChange={(e) => handleTopicChange(selectedTopic.id, 'probeDepth', e.target.value)}
-                                className="w-full px-2 py-1 text-sm border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-transparent text-gray-900 bg-white appearance-none bg-[url('data:image/svg+xml;charset=UTF-8,%3csvg%20xmlns%3d%22http%3a%2f%2fwww.w3.org%2f2000%2fsvg%22%20width%3d%2212%22%20height%3d%2212%22%20viewBox%3d%220%200%2012%2012%22%3e%3cpath%20fill%3d%22%23333%22%20d%3d%22M10.293%203.293%206%207.586%201.707%203.293A1%201%200%200%200%20.293%204.707l5%205a1%201%200%200%200%201.414%200l5-5a1%201%200%201%200-1.414-1.414z%22%2f%3e%3c%2fsvg%3e')] bg-[length:12px] bg-[right_1rem_center] bg-no-repeat pr-10"
+                                className="w-full px-3 py-1.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 bg-white appearance-none bg-[url('data:image/svg+xml;charset=UTF-8,%3csvg%20xmlns%3d%22http%3a%2f%2fwww.w3.org%2f2000%2fsvg%22%20width%3d%2212%22%20height%3d%2212%22%20viewBox%3d%220%200%2012%2012%22%3e%3cpath%20fill%3d%22%23333%22%20d%3d%22M10.293%203.293%206%207.586%201.707%203.293A1%201%200%200%200%20.293%204.707l5%205a1%201%200%200%200%201.414%200l5-5a1%201%200%201%200-1.414-1.414z%22%2f%3e%3c%2fsvg%3e')] bg-[length:12px] bg-[right_0.75rem_center] bg-no-repeat pr-10"
                               >
                                 <option value="No probe questions">No probe questions</option>
-                                <option value="1">1 probe question</option>
-                                <option value="2">2 probe questions</option>
-                                <option value="3">3 probe questions</option>
-                                <option value="4">4 probe questions</option>
-                                <option value="5">5 probe questions</option>
+                                <option value="1-2">1-2 questions</option>
+                                <option value="3-5">3-5 questions</option>
+                                <option value="5-10">5-10 questions</option>
                               </select>
                             </div>
-
-                            {/* Advanced Options Dropdown */}
-                            <details className="group">
-                              <summary className="flex items-center gap-2 cursor-pointer text-sm text-gray-600 hover:text-gray-900">
-                                <svg className="w-4 h-4 transition-transform group-open:rotate-90" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
-                                </svg>
-                                Advanced Options (optional)
-                              </summary>
-                              <div className="mt-4 pl-6 space-y-4">
-                                {/* Add advanced options here when needed */}
-                                <p className="text-sm text-gray-500">No advanced options available yet</p>
-                              </div>
-                            </details>
                           </div>
                         ) : (
                           // Statement content
                           <textarea
+                            data-auto-resize
                             value={selectedTopic.content}
-                            onChange={(e) => handleTopicChange(selectedTopic.id, 'content', e.target.value)}
+                            onChange={(e) => {
+                              handleTopicChange(selectedTopic.id, 'content', e.target.value);
+                              autoResizeTextarea(e.target);
+                            }}
+                            onInput={(e) => autoResizeTextarea(e.currentTarget)}
                             placeholder="Enter your statement here..."
-                            className="w-full flex-1 min-h-32 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none text-gray-900 bg-white"
+                            rows={3}
+                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none text-gray-900 bg-white overflow-hidden"
+                            style={{ minHeight: '80px' }}
                           />
                         )}
                       </div>
 
-                      {/* Delete Topic Section */}
+                      {/* Delete Topic Button */}
                       {selectedTopic.name !== 'Kickoff' && selectedTopic.name !== 'Signoff' && (
-                        <div className="pt-2 mt-2 border-t border-gray-200">
-                          <label className="flex items-center gap-2 text-sm text-gray-600 cursor-pointer hover:text-red-600">
-                            <input
-                              type="checkbox"
-                              className="rounded border-gray-300 text-red-600 focus:ring-red-500"
-                              onChange={(e) => {
-                                if (e.target.checked) {
-                                  setTimeout(() => removeTopic(selectedTopic.id), 300);
-                                }
-                              }}
-                            />
-                            <span>Delete Topic</span>
-                          </label>
+                        <div className="pt-4 mt-4 border-t border-gray-200">
+                          <button
+                            onClick={() => {
+                              if (window.confirm('Are you sure you want to delete this topic?')) {
+                                removeTopic(selectedTopic.id);
+                              }
+                            }}
+                            className="w-10 h-10 border-2 border-red-500 rounded-lg flex items-center justify-center text-red-500 hover:bg-red-50 transition-colors"
+                          >
+                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                            </svg>
+                          </button>
                         </div>
                       )}
                     </div>
@@ -802,6 +925,40 @@ export default function CreateCampaignForm({ onClose }: CreateCampaignFormProps)
                       />
                     </div>
                   )}
+
+                  {completionLogic.completionAction === 'Redirect' && (
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Redirect URL <span className="text-gray-400 font-normal">- URL to redirect to upon completing the interview</span>
+                      </label>
+                      <input
+                        type="url"
+                        value={completionLogic.completionUrl}
+                        onChange={(e) => {
+                          setCompletionLogic(prev => ({ ...prev, completionUrl: e.target.value }));
+                          // Clear validation error when user types
+                          if (validationErrors.completionUrl) {
+                            setValidationErrors(prev => ({ ...prev, completionUrl: false }));
+                          }
+                        }}
+                        onBlur={(e) => {
+                          // Validate on blur
+                          if (e.target.value && !isValidUrl(e.target.value)) {
+                            setValidationErrors(prev => ({ ...prev, completionUrl: true }));
+                          }
+                        }}
+                        placeholder="https://example.com/thank-you"
+                        className={`w-full px-3 py-1.5 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 bg-white ${
+                          validationErrors.completionUrl
+                            ? 'border-red-500 border-2'
+                            : 'border-gray-300'
+                        }`}
+                      />
+                      {validationErrors.completionUrl && (
+                        <p className="text-sm text-red-600 mt-1">Please enter a valid URL starting with http:// or https://</p>
+                      )}
+                    </div>
+                  )}
                 </div>
               </div>
 
@@ -838,21 +995,73 @@ export default function CreateCampaignForm({ onClose }: CreateCampaignFormProps)
                       />
                     </div>
                   )}
+
+                  {completionLogic.earlyExitAction === 'Redirect' && (
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Redirect URL <span className="text-gray-400 font-normal">- URL to redirect to upon exiting the interview early</span>
+                      </label>
+                      <input
+                        type="url"
+                        value={completionLogic.exitUrl}
+                        onChange={(e) => {
+                          setCompletionLogic(prev => ({ ...prev, exitUrl: e.target.value }));
+                          // Clear validation error when user types
+                          if (validationErrors.exitUrl) {
+                            setValidationErrors(prev => ({ ...prev, exitUrl: false }));
+                          }
+                        }}
+                        onBlur={(e) => {
+                          // Validate on blur
+                          if (e.target.value && !isValidUrl(e.target.value)) {
+                            setValidationErrors(prev => ({ ...prev, exitUrl: true }));
+                          }
+                        }}
+                        placeholder="https://example.com/exit"
+                        className={`w-full px-3 py-1.5 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 bg-white ${
+                          validationErrors.exitUrl
+                            ? 'border-red-500 border-2'
+                            : 'border-gray-300'
+                        }`}
+                      />
+                      {validationErrors.exitUrl && (
+                        <p className="text-sm text-red-600 mt-1">Please enter a valid URL starting with http:// or https://</p>
+                      )}
+                    </div>
+                  )}
                 </div>
               </div>
+
+              {saveError && (
+                <div className="p-3 bg-red-50 border border-red-200 rounded-lg text-sm text-red-700">
+                  {saveError}
+                </div>
+              )}
 
               <div className="flex gap-3">
                 <button
                   onClick={handleBack}
-                  className="px-4 py-1.5 border border-gray-300 rounded-lg font-medium text-gray-700 hover:bg-gray-50 transition-colors"
+                  disabled={isSaving}
+                  className="px-4 py-1.5 border border-gray-300 rounded-lg font-medium text-gray-700 hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   Back
                 </button>
                 <button
                   onClick={handleSave}
-                  className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-1.5 rounded-lg font-medium transition-colors"
+                  disabled={isSaving}
+                  className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-1.5 rounded-lg font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
                 >
-                  Save Campaign
+                  {isSaving ? (
+                    <>
+                      <svg className="animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                      </svg>
+                      Saving...
+                    </>
+                  ) : (
+                    'Save Campaign'
+                  )}
                 </button>
               </div>
             </div>
