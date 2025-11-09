@@ -80,3 +80,33 @@ Implemented complete Supabase authentication system with OTP verification and re
 
 ### #Background
 Project transitioned from static landing page to full authentication system using Supabase. Focus on email-first signup with OTP verification to prevent duplicate accounts and provide secure authentication flow.
+
+## 2025-11-09 – Compact Session
+
+### #CurrentFocus
+Built complete dashboard with campaign creation flow, using three-step form with progress bars.
+
+### #SessionChanges
+- Removed Home tab, made Campaigns default active tab in dashboard
+- Added Simulated Agents tab between Campaigns and Conversations
+- Created workspace selector dropdown with "Add workspace" option
+- Built two-option modal for campaign creation (Prompt vs Scratch)
+- Implemented 3-section form: Campaign Details, Discussion Guide, Completion Logic
+- Added preloaded topics: Kickoff (statement), middle topic, Signoff (statement)
+- Fixed input text colors and select dropdown arrows for visibility
+- Converted tabs to three-bar progress indicator showing completion status
+- Made forms stretch full width, removed constraining containers
+- Hide header title/button when in create campaign mode
+
+### #NextSteps
+- Implement "Create from Prompt" flow with AI assistance
+- Add form validation before allowing section navigation
+- Build campaign list view with created campaigns
+- Connect form submission to Supabase backend
+
+### #BugsAndTheories
+- White text in inputs ⇒ Missing text-gray-900 class (fixed)
+- Missing dropdown arrow ⇒ Browser default removed, custom SVG added (fixed)
+
+### #Background
+Dashboard implements PulseIQ-style interface adapted for ipg.inc. Campaign creation uses progressive disclosure with visual progress tracking. Changed "Pulses" terminology to "Campaigns" throughout.
