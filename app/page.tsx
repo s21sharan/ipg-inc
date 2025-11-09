@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import SleekLineCursor from './components/SleekLineCursor';
 
 export default function Home() {
   return (
@@ -71,6 +72,11 @@ export default function Home() {
             </div>
           </div>
         </footer>
+      </div>
+
+      {/* Sleek Line Cursor - Desktop only */}
+      <div className="hidden md:block">
+        <SleekLineCursor />
       </div>
     </div>
   );
