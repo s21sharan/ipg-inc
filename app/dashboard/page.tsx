@@ -38,21 +38,8 @@ export default function Dashboard() {
             <h2 className="text-3xl font-light text-gray-800 mb-8">How do you want to create your Campaign?</h2>
             
             <div className="grid grid-cols-2 gap-6">
-              {/* Create from Prompt */}
-              <button className="bg-gray-50 border-2 border-gray-300 rounded-xl p-8 hover:border-blue-500 hover:shadow-lg transition-all duration-200 text-left group">
-                <div className="w-16 h-16 bg-gray-100 rounded-full mx-auto mb-6 flex items-center justify-center group-hover:bg-blue-50 transition-colors">
-                  <svg className="w-8 h-8 text-gray-600 group-hover:text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                  </svg>
-                </div>
-                <h3 className="text-xl font-medium text-gray-800 mb-3 text-center">Create from Prompt</h3>
-                <p className="text-gray-600 text-center">
-                  Quickly describe what you want to learn and we'll build the Campaign for you.
-                </p>
-              </button>
-              
               {/* Create from Scratch */}
-              <button 
+              <button
                 onClick={() => {
                   setShowCreateModal(false);
                   setShowCreateForm(true);
@@ -67,6 +54,19 @@ export default function Dashboard() {
                 <h3 className="text-xl font-medium text-gray-800 mb-3 text-center">Create from Scratch</h3>
                 <p className="text-gray-600 text-center">
                   Start with a blank slate and build your Campaign from the ground up.
+                </p>
+              </button>
+
+              {/* Create from Prompt */}
+              <button className="bg-gray-50 border-2 border-gray-300 rounded-xl p-8 hover:border-blue-500 hover:shadow-lg transition-all duration-200 text-left group">
+                <div className="w-16 h-16 bg-gray-100 rounded-full mx-auto mb-6 flex items-center justify-center group-hover:bg-blue-50 transition-colors">
+                  <svg className="w-8 h-8 text-gray-600 group-hover:text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                  </svg>
+                </div>
+                <h3 className="text-xl font-medium text-gray-800 mb-3 text-center">Create from Prompt</h3>
+                <p className="text-gray-600 text-center">
+                  Quickly describe what you want to learn and we'll build the Campaign for you.
                 </p>
               </button>
             </div>
@@ -169,8 +169,8 @@ export default function Dashboard() {
             <button
               onClick={() => setActiveTab('campaigns')}
               className={`w-full flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-lg transition-colors ${
-                activeTab === 'campaigns' 
-                  ? 'bg-blue-50 text-blue-600' 
+                activeTab === 'campaigns'
+                  ? 'bg-blue-50 text-blue-600'
                   : 'text-gray-700 hover:bg-gray-100'
               }`}
             >
@@ -181,24 +181,10 @@ export default function Dashboard() {
             </button>
 
             <button
-              onClick={() => setActiveTab('simulated-agents')}
-              className={`w-full flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-lg transition-colors ${
-                activeTab === 'simulated-agents' 
-                  ? 'bg-blue-50 text-blue-600' 
-                  : 'text-gray-700 hover:bg-gray-100'
-              }`}
-            >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-              </svg>
-              Simulated Agents
-            </button>
-
-            <button
               onClick={() => setActiveTab('conversations')}
               className={`w-full flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-lg transition-colors ${
-                activeTab === 'conversations' 
-                  ? 'bg-blue-50 text-blue-600' 
+                activeTab === 'conversations'
+                  ? 'bg-blue-50 text-blue-600'
                   : 'text-gray-700 hover:bg-gray-100'
               }`}
             >
@@ -206,6 +192,20 @@ export default function Dashboard() {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
               </svg>
               Conversations
+            </button>
+
+            <button
+              onClick={() => setActiveTab('simulated-agents')}
+              className={`w-full flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-lg transition-colors ${
+                activeTab === 'simulated-agents'
+                  ? 'bg-blue-50 text-blue-600'
+                  : 'text-gray-700 hover:bg-gray-100'
+              }`}
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+              </svg>
+              Simulated Agents
             </button>
           </div>
         </nav>

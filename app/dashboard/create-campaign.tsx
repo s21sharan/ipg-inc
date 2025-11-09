@@ -26,10 +26,15 @@ export default function CreateCampaignForm({ onClose }: CreateCampaignFormProps)
   });
 
   const [topics, setTopics] = useState<Topic[]>([
-    { id: '1', name: 'Kickoff', type: 'statement', content: '' },
+    { id: '1', name: 'Kickoff', type: 'statement', content: 'Thanks so much for meeting with us today! We\'re looking forward to hearing your thoughts and experiences—please feel free to be open and honest. Your feedback is valuable and will help us make things better.' },
     { id: '2', name: 'Add Topic Name', type: 'conversation', content: '' },
     { id: '3', name: 'Signoff', type: 'statement', content: '' }
   ]);
+
+  const [selectedTopicId, setSelectedTopicId] = useState<string>('1');
+  const [draggedTopicId, setDraggedTopicId] = useState<string | null>(null);
+  const [showTopicTypeModal, setShowTopicTypeModal] = useState(false);
+  const [editingTopicName, setEditingTopicName] = useState(false);
 
   const [completionLogic, setCompletionLogic] = useState({
     completionAction: 'Show Message',
@@ -38,12 +43,56 @@ export default function CreateCampaignForm({ onClose }: CreateCampaignFormProps)
     exitMessage: ''
   });
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [hasGenerated, setHasGenerated] = useState(false);
+
+  const handleInputChange = async (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({
       ...prev,
       [name]: value
     }));
+
+    // Generate kickoff and signoff when caption is filled and hasn't been generated yet
+    if (name === 'caption' && value.trim() && !hasGenerated) {
+      await generateContent(value);
+    }
+  };
+
+  const generateContent = async (caption: string) => {
+    setIsGenerating(true);
+    try {
+      const response = await fetch('/api/generate-content', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ caption }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to generate content');
+      }
+
+      const data = await response.json();
+
+      // Update kickoff and signoff topics
+      setTopics(prev => prev.map(topic => {
+        if (topic.name === 'Kickoff') {
+          return { ...topic, content: data.kickoff };
+        }
+        if (topic.name === 'Signoff') {
+          return { ...topic, content: data.signoff };
+        }
+        return topic;
+      }));
+
+      setHasGenerated(true);
+    } catch (error) {
+      console.error('Error generating content:', error);
+    } finally {
+      setIsGenerating(false);
+    }
   };
 
   const handleTopicChange = (id: string, field: string, value: string) => {
@@ -52,22 +101,77 @@ export default function CreateCampaignForm({ onClose }: CreateCampaignFormProps)
     ));
   };
 
-  const addTopic = () => {
+  const addTopic = (type: TopicType) => {
     const newTopic: Topic = {
       id: Date.now().toString(),
-      name: 'New Topic',
-      type: 'conversation',
+      name: type === 'statement' ? 'New Statement' : type === 'conversation' ? 'New Conversation' : 'New Question',
+      type: type,
       content: ''
     };
-    setTopics(prev => [...prev, newTopic]);
+    setTopics(prev => [...prev.slice(0, -1), newTopic, prev[prev.length - 1]]);
+    setSelectedTopicId(newTopic.id);
+    setShowTopicTypeModal(false);
   };
 
   const removeTopic = (id: string) => {
     setTopics(prev => prev.filter(topic => topic.id !== id));
+    if (selectedTopicId === id && topics.length > 1) {
+      setSelectedTopicId(topics[0].id);
+    }
+  };
+
+  const handleDragStart = (id: string) => {
+    setDraggedTopicId(id);
+  };
+
+  const handleDragOver = (e: React.DragEvent, targetId: string) => {
+    e.preventDefault();
+    if (!draggedTopicId || draggedTopicId === targetId) return;
+
+    const draggedIndex = topics.findIndex(t => t.id === draggedTopicId);
+    const targetIndex = topics.findIndex(t => t.id === targetId);
+
+    const newTopics = [...topics];
+    const [draggedTopic] = newTopics.splice(draggedIndex, 1);
+    newTopics.splice(targetIndex, 0, draggedTopic);
+
+    setTopics(newTopics);
+  };
+
+  const handleDragEnd = () => {
+    setDraggedTopicId(null);
+  };
+
+  const getTopicIcon = (type: TopicType) => {
+    switch (type) {
+      case 'statement':
+        return (
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+          </svg>
+        );
+      case 'conversation':
+        return (
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+          </svg>
+        );
+      case 'question':
+        return (
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+        );
+    }
   };
 
   const handleNext = () => {
     if (activeSection === 'details') {
+      // Validate all required fields are filled
+      if (!formData.name.trim() || !formData.title.trim() || !formData.caption.trim() || !formData.timeEstimate.trim()) {
+        alert('Please fill out all required fields before continuing.');
+        return;
+      }
       setActiveSection('guide');
     } else if (activeSection === 'guide') {
       setActiveSection('completion');
@@ -108,7 +212,7 @@ export default function CreateCampaignForm({ onClose }: CreateCampaignFormProps)
         </div>
         
         {/* Progress Bar */}
-        <div className="px-8 py-6">
+        <div className="px-8 py-4">
           <div className="grid grid-cols-3 gap-4">
             {/* Campaign details */}
             <button
@@ -169,7 +273,7 @@ export default function CreateCampaignForm({ onClose }: CreateCampaignFormProps)
       <div className="flex-1 overflow-y-auto p-8">
           {/* Campaign Details Section */}
           {activeSection === 'details' && (
-            <div className="space-y-6">
+            <div className="space-y-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   Name <span className="text-gray-400 font-normal">- Identifier for the Campaign, used for internal reference</span>
@@ -180,7 +284,7 @@ export default function CreateCampaignForm({ onClose }: CreateCampaignFormProps)
                   value={formData.name}
                   onChange={handleInputChange}
                   placeholder="Your name"
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 bg-white"
+                  className="w-full px-3 py-1.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 bg-white"
                 />
               </div>
 
@@ -194,20 +298,22 @@ export default function CreateCampaignForm({ onClose }: CreateCampaignFormProps)
                   value={formData.title}
                   onChange={handleInputChange}
                   placeholder="Interview title"
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 bg-white"
+                  className="w-full px-3 py-1.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 bg-white"
                 />
               </div>
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   Caption <span className="text-gray-400 font-normal">- Rendered on the respondent Campaign screen prior to the user starting Campaign</span>
+                  {isGenerating && <span className="ml-2 text-blue-600 text-xs">Generating kickoff and signoff...</span>}
                 </label>
                 <textarea
                   name="caption"
                   value={formData.caption}
                   onChange={handleInputChange}
                   rows={3}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none text-gray-900 bg-white"
+                  disabled={isGenerating}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none text-gray-900 bg-white disabled:bg-gray-100 disabled:cursor-not-allowed"
                 />
               </div>
 
@@ -241,7 +347,7 @@ export default function CreateCampaignForm({ onClose }: CreateCampaignFormProps)
 
               <button
                 onClick={handleNext}
-                className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-medium transition-colors flex items-center gap-2"
+                className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-1.5 rounded-lg font-medium transition-colors flex items-center gap-2"
               >
                 Next
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -253,97 +359,154 @@ export default function CreateCampaignForm({ onClose }: CreateCampaignFormProps)
 
           {/* Discussion Guide Section */}
           {activeSection === 'guide' && (
-            <div className="space-y-6">
-              <div className="space-y-4">
-                {topics.map((topic, index) => (
-                  <div key={topic.id} className="border border-gray-200 rounded-lg p-4">
-                    <div className="flex items-center gap-3 mb-4">
-                      <span className="text-red-500 font-medium">{index + 1}</span>
-                      <input
-                        type="text"
-                        value={topic.name}
-                        onChange={(e) => handleTopicChange(topic.id, 'name', e.target.value)}
-                        className="flex-1 px-3 py-1 text-sm font-medium border-b border-gray-300 focus:border-blue-500 focus:outline-none text-gray-900 bg-transparent"
-                      />
-                      {topics.length > 3 && (
-                        <button
-                          onClick={() => removeTopic(topic.id)}
-                          className="text-gray-400 hover:text-red-500 transition-colors"
-                        >
-                          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
-                          </svg>
-                        </button>
-                      )}
-                    </div>
-                    
-                    <div className="mb-3">
-                      <div className="flex items-center gap-2 mb-2">
-                        <select
-                          value={topic.type}
-                          onChange={(e) => handleTopicChange(topic.id, 'type', e.target.value)}
-                          className="text-sm px-3 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 bg-white"
-                        >
-                          <option value="statement">Statement</option>
-                          <option value="conversation">Conversation</option>
-                          <option value="question">Question</option>
-                        </select>
-                        <span className="text-sm text-gray-500">
-                          - {topic.type === 'statement' 
-                            ? 'The AI moderator will state this verbatim to the user' 
-                            : topic.type === 'conversation'
-                            ? 'Dynamic conversation based on the topic'
-                            : 'Direct question to the user'}
-                        </span>
+            <div className="flex gap-0 h-full -m-8 relative">
+              {/* Left Sidebar - Topics List */}
+              <div className="w-80 bg-white border-r border-gray-200 flex flex-col">
+                <div className="p-6 space-y-2 flex-1">
+                  {topics.map((topic, index) => (
+                    <div
+                      key={topic.id}
+                      draggable
+                      onDragStart={() => handleDragStart(topic.id)}
+                      onDragOver={(e) => handleDragOver(e, topic.id)}
+                      onDragEnd={handleDragEnd}
+                      onClick={() => setSelectedTopicId(topic.id)}
+                      className={`flex items-center gap-3 px-3 py-2.5 rounded-lg cursor-pointer transition-all ${
+                        selectedTopicId === topic.id
+                          ? 'bg-gray-50 shadow-sm border border-gray-200'
+                          : 'hover:bg-gray-50'
+                      } ${draggedTopicId === topic.id ? 'opacity-50' : ''}`}
+                    >
+                      <div className="flex items-center gap-2 flex-1 min-w-0">
+                        <span className="text-red-500 text-sm">{getTopicIcon(topic.type)}</span>
+                        <span className="text-sm font-medium text-gray-700">{index + 1}</span>
+                        <span className="text-sm text-gray-900 truncate">{topic.name}</span>
                       </div>
-                      <textarea
-                        value={topic.content}
-                        onChange={(e) => handleTopicChange(topic.id, 'content', e.target.value)}
-                        placeholder={topic.type === 'statement' ? 'Enter your statement here...' : 'Enter content here...'}
-                        rows={3}
-                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none text-gray-900 bg-white"
-                      />
+                      <svg className="w-4 h-4 text-gray-400 cursor-move flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 8h16M4 16h16" />
+                      </svg>
                     </div>
+                  ))}
+
+                  <button
+                    onClick={() => setShowTopicTypeModal(true)}
+                    className="w-full flex items-center justify-center gap-2 px-3 py-2.5 text-sm text-gray-600 hover:text-blue-600 hover:bg-gray-50 rounded-lg transition-colors"
+                  >
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                    </svg>
+                    Add Topic
+                  </button>
+                </div>
+
+                {/* Bottom Navigation - Fixed at bottom of sidebar */}
+                <div className="p-6 pb-8 bg-white mt-auto">
+                  <div className="flex gap-3">
+                    <button
+                      onClick={handleBack}
+                      className="px-4 py-1.5 border border-gray-300 rounded-lg font-medium text-gray-700 hover:bg-gray-50 transition-colors"
+                    >
+                      Back
+                    </button>
+                    <button
+                      onClick={handleNext}
+                      className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-1.5 rounded-lg font-medium transition-colors flex items-center gap-2"
+                    >
+                      Next
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
+                      </svg>
+                    </button>
                   </div>
-                ))}
+                </div>
               </div>
 
-              <button
-                onClick={addTopic}
-                className="flex items-center gap-2 text-blue-600 hover:text-blue-700 transition-colors"
-              >
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-                </svg>
-                Add Topic
-              </button>
+              {/* Right Content - Topic Editor */}
+              <div className="flex-1 flex flex-col">
+                {(() => {
+                  const selectedTopic = topics.find(t => t.id === selectedTopicId);
+                  if (!selectedTopic) return null;
 
-              <div className="flex gap-3">
-                <button
-                  onClick={handleBack}
-                  className="px-6 py-2 border border-gray-300 rounded-lg font-medium hover:bg-gray-50 transition-colors"
-                >
-                  Back
-                </button>
-                <button
-                  onClick={handleNext}
-                  className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-medium transition-colors flex items-center gap-2"
-                >
-                  Next
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
-                  </svg>
-                </button>
+                  return (
+                    <div className="flex-1 flex flex-col p-6">
+                      {/* Topic Header */}
+                      <div className="mb-4 pb-3 border-b border-gray-200">
+                        <div className="flex items-center gap-3 mb-3">
+                          {editingTopicName ? (
+                            <input
+                              type="text"
+                              value={selectedTopic.name}
+                              onChange={(e) => handleTopicChange(selectedTopic.id, 'name', e.target.value)}
+                              onBlur={() => setEditingTopicName(false)}
+                              onKeyDown={(e) => {
+                                if (e.key === 'Enter') setEditingTopicName(false);
+                              }}
+                              autoFocus
+                              className="text-3xl font-light text-gray-900 border-b-2 border-blue-500 focus:outline-none bg-transparent flex-1"
+                            />
+                          ) : (
+                            <>
+                              <h2 className="text-3xl font-light text-gray-900">{selectedTopic.name}</h2>
+                              <button
+                                onClick={() => setEditingTopicName(true)}
+                                className="text-gray-400 hover:text-blue-600 transition-colors"
+                              >
+                                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                                </svg>
+                              </button>
+                            </>
+                          )}
+                        </div>
+
+                        <div className="flex items-start gap-2">
+                          <span className="text-sm px-3 py-1.5 bg-gray-100 rounded-lg text-gray-700 font-medium">
+                            {selectedTopic.type.charAt(0).toUpperCase() + selectedTopic.type.slice(1)}
+                          </span>
+                          <span className="text-sm text-gray-500 pt-1.5">
+                            - {selectedTopic.type === 'statement'
+                              ? 'The AI moderator will state this statement verbatim to the user'
+                              : selectedTopic.type === 'conversation'
+                              ? 'Dynamic conversation based on the topic'
+                              : 'Direct question to the user'}
+                          </span>
+                        </div>
+                      </div>
+
+                      {/* Topic Content */}
+                      <div className="flex-1 mb-4">
+                        <textarea
+                          value={selectedTopic.content}
+                          onChange={(e) => handleTopicChange(selectedTopic.id, 'content', e.target.value)}
+                          placeholder={selectedTopic.type === 'statement' ? 'Enter your statement here...' : 'Enter content here...'}
+                          className="w-full h-32 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none text-gray-900 bg-white"
+                        />
+                      </div>
+
+                      {/* Action Buttons */}
+                      {selectedTopic.name !== 'Kickoff' && selectedTopic.name !== 'Signoff' && (
+                        <div className="flex justify-end pt-4 border-t border-gray-200">
+                          <button
+                            onClick={() => removeTopic(selectedTopic.id)}
+                            className="px-4 py-1.5 border border-red-300 text-red-600 rounded-lg text-sm font-medium hover:bg-red-50 transition-colors"
+                          >
+                            Delete Topic
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  );
+                })()}
               </div>
             </div>
           )}
 
           {/* Completion Logic Section */}
           {activeSection === 'completion' && (
-            <div className="space-y-8">
+            <div className="space-y-6">
               {/* Completion Logic */}
-              <div className="border-b border-gray-200 pb-8">
-                <h3 className="text-lg font-medium text-gray-800 mb-4">Completion Logic</h3>
+              <div className="border-b border-gray-200 pb-6">
+                <h3 className="text-lg font-medium text-gray-800 mb-3">Completion Logic</h3>
                 
                 <div className="space-y-4">
                   <div>
@@ -353,7 +516,7 @@ export default function CreateCampaignForm({ onClose }: CreateCampaignFormProps)
                     <select
                       value={completionLogic.completionAction}
                       onChange={(e) => setCompletionLogic(prev => ({ ...prev, completionAction: e.target.value }))}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 bg-white"
+                      className="w-full px-3 py-1.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 bg-white"
                     >
                       <option value="Show Message">Show Message</option>
                       <option value="Redirect">Redirect to URL</option>
@@ -370,7 +533,7 @@ export default function CreateCampaignForm({ onClose }: CreateCampaignFormProps)
                         onChange={(e) => setCompletionLogic(prev => ({ ...prev, completionMessage: e.target.value }))}
                         placeholder="Enter the completion message here..."
                         rows={3}
-                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none text-gray-900 bg-white"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none text-gray-900 bg-white"
                       />
                     </div>
                   )}
@@ -379,7 +542,7 @@ export default function CreateCampaignForm({ onClose }: CreateCampaignFormProps)
 
               {/* Early Exit Logic */}
               <div>
-                <h3 className="text-lg font-medium text-gray-800 mb-4">Early Exit Logic</h3>
+                <h3 className="text-lg font-medium text-gray-800 mb-3">Early Exit Logic</h3>
                 
                 <div className="space-y-4">
                   <div>
@@ -389,7 +552,7 @@ export default function CreateCampaignForm({ onClose }: CreateCampaignFormProps)
                     <select
                       value={completionLogic.earlyExitAction}
                       onChange={(e) => setCompletionLogic(prev => ({ ...prev, earlyExitAction: e.target.value }))}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 bg-white"
+                      className="w-full px-3 py-1.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 bg-white"
                     >
                       <option value="Show Message">Show Message</option>
                       <option value="Redirect">Redirect to URL</option>
@@ -406,36 +569,23 @@ export default function CreateCampaignForm({ onClose }: CreateCampaignFormProps)
                         onChange={(e) => setCompletionLogic(prev => ({ ...prev, exitMessage: e.target.value }))}
                         placeholder="Enter the exit message here..."
                         rows={3}
-                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none text-gray-900 bg-white"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none text-gray-900 bg-white"
                       />
                     </div>
                   )}
                 </div>
               </div>
 
-              {/* Advanced Options */}
-              <details className="group">
-                <summary className="flex items-center gap-2 cursor-pointer text-sm text-gray-600 hover:text-gray-800">
-                  <svg className="w-4 h-4 group-open:rotate-90 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
-                  </svg>
-                  Advanced Options
-                </summary>
-                <div className="mt-4 pl-6 text-sm text-gray-500">
-                  Advanced options coming soon...
-                </div>
-              </details>
-
               <div className="flex gap-3">
                 <button
                   onClick={handleBack}
-                  className="px-6 py-2 border border-gray-300 rounded-lg font-medium hover:bg-gray-50 transition-colors"
+                  className="px-4 py-1.5 border border-gray-300 rounded-lg font-medium text-gray-700 hover:bg-gray-50 transition-colors"
                 >
                   Back
                 </button>
                 <button
                   onClick={handleSave}
-                  className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-medium transition-colors"
+                  className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-1.5 rounded-lg font-medium transition-colors"
                 >
                   Save Campaign
                 </button>
@@ -443,6 +593,84 @@ export default function CreateCampaignForm({ onClose }: CreateCampaignFormProps)
             </div>
           )}
       </div>
+
+      {/* Topic Type Selection Modal */}
+      {showTopicTypeModal && (
+        <div className="fixed inset-0 flex items-center justify-center z-50">
+          <div className="bg-white rounded-xl shadow-2xl max-w-2xl w-full mx-4 p-8">
+            <h2 className="text-2xl font-light text-gray-900 mb-6">Choose Topic Type</h2>
+
+            <div className="space-y-4 mb-8">
+              {/* Statement Option */}
+              <button
+                onClick={() => addTopic('statement')}
+                className="w-full text-left p-6 border-2 border-gray-200 rounded-xl hover:border-blue-500 hover:shadow-lg transition-all group"
+              >
+                <div className="flex items-start gap-4">
+                  <div className="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center group-hover:bg-blue-50 transition-colors flex-shrink-0">
+                    <svg className="w-5 h-5 text-gray-600 group-hover:text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                    </svg>
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="text-lg font-medium text-gray-900 mb-1">Statement</h3>
+                    <p className="text-sm text-gray-700 mb-2">A statement shared with the user.</p>
+                    <p className="text-sm text-gray-500 italic">Best for introductions, briefings, or sign-offs</p>
+                  </div>
+                </div>
+              </button>
+
+              {/* Conversation Option */}
+              <button
+                onClick={() => addTopic('conversation')}
+                className="w-full text-left p-6 border-2 border-gray-200 rounded-xl hover:border-blue-500 hover:shadow-lg transition-all group"
+              >
+                <div className="flex items-start gap-4">
+                  <div className="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center group-hover:bg-blue-50 transition-colors flex-shrink-0">
+                    <svg className="w-5 h-5 text-gray-600 group-hover:text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                    </svg>
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="text-lg font-medium text-gray-900 mb-1">Conversation</h3>
+                    <p className="text-sm text-gray-700 mb-2">An open-ended discussion with the user using a defined persona</p>
+                    <p className="text-sm text-gray-500 italic">Best for exploring experiences, stories, and perspectives to uncover deeper insights or unknowns</p>
+                  </div>
+                </div>
+              </button>
+
+              {/* Question Option */}
+              <button
+                onClick={() => addTopic('question')}
+                className="w-full text-left p-6 border-2 border-gray-200 rounded-xl hover:border-blue-500 hover:shadow-lg transition-all group"
+              >
+                <div className="flex items-start gap-4">
+                  <div className="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center group-hover:bg-blue-50 transition-colors flex-shrink-0">
+                    <svg className="w-5 h-5 text-gray-600 group-hover:text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="text-lg font-medium text-gray-900 mb-1">Question</h3>
+                    <p className="text-sm text-gray-700 mb-2">A verbatim question asked to the user with specific follow-up probes.</p>
+                    <p className="text-sm text-gray-500 italic">Best for structured interviews, benchmarking, or quantitative follow-ups where consistency matters</p>
+                  </div>
+                </div>
+              </button>
+            </div>
+
+            {/* Modal Actions */}
+            <div className="flex justify-end gap-3">
+              <button
+                onClick={() => setShowTopicTypeModal(false)}
+                className="px-6 py-2 text-gray-700 hover:bg-gray-100 rounded-lg font-medium transition-colors"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
