@@ -16,7 +16,7 @@ export default function Home() {
         {/* Hero Section */}
         <section className="mb-12 md:mb-16 text-left">
           <h1 className="text-4xl sm:text-5xl md:text-6xl font-light mb-4 md:mb-6 font-serif">
-            ipg<span className="text-blue-500">.</span>inc
+            ipg<span style={{ color: '#11766E' }}>.</span>inc
           </h1>
           <p className="text-gray-400 italic text-sm md:text-base font-serif">
             Talk to your users 24/7.
