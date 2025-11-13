@@ -25,9 +25,15 @@ export default function Dashboard() {
   const [showWorkspaceMenu, setShowWorkspaceMenu] = useState(false);
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [showCreateForm, setShowCreateForm] = useState(false);
+  const [showPromptBox, setShowPromptBox] = useState(false);
+  const [promptText, setPromptText] = useState('');
+  const [isDraftingCampaign, setIsDraftingCampaign] = useState(false);
+  const [draftedCampaign, setDraftedCampaign] = useState<Campaign | null>(null);
   const [campaigns, setCampaigns] = useState<Campaign[]>([]);
   const [loadingCampaigns, setLoadingCampaigns] = useState(true);
   const [editingCampaign, setEditingCampaign] = useState<Campaign | null>(null);
+  const [viewingCampaign, setViewingCampaign] = useState<Campaign | null>(null);
+  const [campaignViewTab, setCampaignViewTab] = useState<'summary' | 'conversations' | 'share' | 'analyze'>('summary');
   const router = useRouter();
 
   useEffect(() => {
@@ -87,7 +93,325 @@ export default function Dashboard() {
     router.push('/');
   };
 
+  const handleDraftCampaign = async () => {
+    if (!promptText.trim()) return;
+
+    setIsDraftingCampaign(true);
+    try {
+      const response = await fetch('/api/draft-campaign', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ prompt: promptText }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to draft campaign');
+      }
+
+      const data = await response.json();
+
+      // Create a campaign object from the drafted data
+      const drafted: Campaign = {
+        name: data.basicDetails.name,
+        title: data.basicDetails.title,
+        caption: data.basicDetails.caption,
+        modality: 'Audio + Video',
+        time_estimate: data.basicDetails.timeEstimate,
+        topics: data.topics,
+        completion_logic: data.completionLogic,
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+      };
+
+      setDraftedCampaign(drafted);
+      setShowPromptBox(false);
+      setShowCreateForm(true);
+      setPromptText('');
+    } catch (error) {
+      console.error('Error drafting campaign:', error);
+      alert('Failed to draft campaign. Please try again.');
+    } finally {
+      setIsDraftingCampaign(false);
+    }
+  };
+
   const renderMainContent = () => {
+    // Show campaign view
+    if (viewingCampaign) {
+      const renderCampaignTabContent = () => {
+        switch (campaignViewTab) {
+          case 'summary':
+            return (
+              <div className="p-8">
+                <div className="max-w-3xl space-y-8">
+                  {/* Name */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1.5">Name</label>
+                    <p className="text-base text-gray-900">{viewingCampaign.name}</p>
+                  </div>
+
+                  {/* Title */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1.5">Title</label>
+                    <p className="text-base text-gray-900">{viewingCampaign.title}</p>
+                  </div>
+
+                  {/* Status */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1.5">Status</label>
+                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-md text-xs font-medium bg-green-50 text-green-700 border border-green-200">
+                      Live
+                    </span>
+                  </div>
+
+                  {/* URL */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1.5">URL</label>
+                    <div className="flex items-center gap-2 bg-gray-50 border border-gray-200 rounded-lg p-3">
+                      <a
+                        href={`${window.location.origin}/campaign/${viewingCampaign.id}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-sm text-blue-600 hover:text-blue-700 underline break-all flex-1"
+                      >
+                        {`${window.location.origin}/campaign/${viewingCampaign.id}`}
+                      </a>
+                      <button
+                        onClick={() => {
+                          navigator.clipboard.writeText(`${window.location.origin}/campaign/${viewingCampaign.id}`);
+                        }}
+                        className="text-gray-400 hover:text-gray-600 flex-shrink-0 transition-colors"
+                        title="Copy URL"
+                      >
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                        </svg>
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Conversations */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1.5">Conversations</label>
+                    <p className="text-base text-gray-900">0 completed (0 total)</p>
+                  </div>
+                </div>
+              </div>
+            );
+
+          case 'conversations':
+            return (
+              <div className="p-8">
+                <div className="bg-gray-50 rounded-lg border-2 border-dashed border-gray-300 p-16 text-center">
+                  <svg className="w-12 h-12 mx-auto mb-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                  </svg>
+                  <p className="text-sm text-gray-500">No conversations yet</p>
+                  <p className="text-xs text-gray-400 mt-2">Share your campaign link to start collecting responses</p>
+                </div>
+              </div>
+            );
+
+          case 'share':
+            return (
+              <div className="p-8">
+                <div className="max-w-3xl">
+                  <div className="bg-white border border-gray-200 rounded-lg p-8 shadow-sm">
+                    <h3 className="text-lg font-medium text-gray-900 mb-3">Ready to recruit conversations?</h3>
+                    <p className="text-sm text-gray-600 mb-6 leading-relaxed">
+                      Your interview is live — now it's time to start collecting responses. Share this link with
+                      customers, panelists, or teammates to start capturing meaningful feedback.
+                    </p>
+
+                    <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 mb-6">
+                      <div className="flex items-center justify-between gap-3">
+                        <code className="text-sm text-blue-600 break-all flex-1">
+                          {`${window.location.origin}/campaign/${viewingCampaign.id}`}
+                        </code>
+                        <button
+                          onClick={() => {
+                            navigator.clipboard.writeText(`${window.location.origin}/campaign/${viewingCampaign.id}`);
+                          }}
+                          className="flex-shrink-0 text-gray-400 hover:text-gray-600 transition-colors"
+                          title="Copy URL"
+                        >
+                          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                          </svg>
+                        </button>
+                      </div>
+                    </div>
+
+                    <p className="text-xs text-gray-500">
+                      Or explore options to embed, leverage research panels, or integrate with CRM tools →
+                    </p>
+                  </div>
+                </div>
+              </div>
+            );
+
+          case 'analyze':
+            return (
+              <div className="p-8">
+                <div className="bg-gray-50 rounded-lg border-2 border-dashed border-gray-300 p-16 text-center">
+                  <svg className="w-12 h-12 mx-auto mb-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                  </svg>
+                  <p className="text-sm text-gray-500">No data to analyze yet</p>
+                  <p className="text-xs text-gray-400 mt-2">Analytics will appear once you have conversations</p>
+                </div>
+              </div>
+            );
+
+          default:
+            return null;
+        }
+      };
+
+      return (
+        <div className="flex-1 flex flex-col bg-white overflow-hidden">
+          {/* Header */}
+          <div className="border-b border-gray-200 px-8 py-4">
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center gap-3">
+                <button
+                  onClick={() => {
+                    setViewingCampaign(null);
+                    setCampaignViewTab('summary');
+                  }}
+                  className="text-gray-400 hover:text-gray-600 transition-colors"
+                >
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" />
+                  </svg>
+                </button>
+                <h1 className="text-xl font-light text-gray-900">{viewingCampaign.title}</h1>
+              </div>
+              <button
+                onClick={() => {
+                  setViewingCampaign(null);
+                  setEditingCampaign(viewingCampaign);
+                }}
+                className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-1.5 rounded-lg text-sm font-medium transition-colors"
+              >
+                Edit Pulse
+              </button>
+            </div>
+
+            {/* Tabs */}
+            <nav className="flex gap-6 -mb-px">
+              <button
+                onClick={() => setCampaignViewTab('summary')}
+                className={`pb-3 text-sm font-medium border-b-2 transition-colors ${
+                  campaignViewTab === 'summary'
+                    ? 'border-blue-600 text-blue-600'
+                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                }`}
+              >
+                Summary
+              </button>
+              <button
+                onClick={() => setCampaignViewTab('conversations')}
+                className={`pb-3 text-sm font-medium border-b-2 transition-colors ${
+                  campaignViewTab === 'conversations'
+                    ? 'border-blue-600 text-blue-600'
+                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                }`}
+              >
+                Conversations
+              </button>
+              <button
+                onClick={() => setCampaignViewTab('share')}
+                className={`pb-3 text-sm font-medium border-b-2 transition-colors ${
+                  campaignViewTab === 'share'
+                    ? 'border-blue-600 text-blue-600'
+                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                }`}
+              >
+                Share
+              </button>
+              <button
+                onClick={() => setCampaignViewTab('analyze')}
+                className={`pb-3 text-sm font-medium border-b-2 transition-colors ${
+                  campaignViewTab === 'analyze'
+                    ? 'border-blue-600 text-blue-600'
+                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                }`}
+              >
+                Analyze
+              </button>
+            </nav>
+          </div>
+
+          {/* Content */}
+          <div className="flex-1 overflow-y-auto bg-gray-50">
+            {renderCampaignTabContent()}
+          </div>
+        </div>
+      );
+    }
+
+    // Show prompt box for create from prompt
+    if (showPromptBox) {
+      return (
+        <div className="flex-1 flex flex-col bg-white overflow-hidden">
+          {/* Header */}
+          <div className="border-b border-gray-200 px-6 py-3">
+            <div className="flex justify-between items-center">
+              <h2 className="text-xl font-light text-gray-800">Create Campaign from Prompt</h2>
+              <button
+                onClick={() => {
+                  setShowPromptBox(false);
+                  setShowCreateModal(true);
+                }}
+                className="text-gray-400 hover:text-gray-600 transition-colors flex items-center gap-1 text-sm"
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" />
+                </svg>
+                Back
+              </button>
+            </div>
+          </div>
+
+          {/* Main Content Area */}
+          <div className="flex-1 flex flex-col p-8 overflow-y-auto">
+            <div className="max-w-4xl w-full mx-auto">
+              <textarea
+                value={promptText}
+                onChange={(e) => setPromptText(e.target.value)}
+                placeholder="What are you hoping to learn from your audience? Share your study objective and any context that will help us draft your campaign."
+                rows={14}
+                className="w-full px-4 py-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none text-gray-900 bg-white placeholder:text-gray-400 text-base leading-relaxed"
+                disabled={isDraftingCampaign}
+              />
+              <div className="flex justify-end mt-4">
+                <button
+                  onClick={handleDraftCampaign}
+                  disabled={!promptText.trim() || isDraftingCampaign}
+                  className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2.5 rounded-lg font-medium transition-colors shadow-sm disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                >
+                  {isDraftingCampaign ? (
+                    <>
+                      <svg className="animate-spin h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                      </svg>
+                      Drafting...
+                    </>
+                  ) : (
+                    'Draft Campaign'
+                  )}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
     // Show create modal in main content area
     if (showCreateModal) {
       return (
@@ -126,18 +450,21 @@ export default function Dashboard() {
                 </p>
               </button>
 
-              {/* Create from Prompt - Disabled */}
+              {/* Create from Prompt */}
               <button
-                disabled
-                className="bg-gray-100 border-2 border-gray-200 rounded-lg p-6 text-left opacity-50 cursor-not-allowed"
+                onClick={() => {
+                  setShowCreateModal(false);
+                  setShowPromptBox(true);
+                }}
+                className="bg-gray-50 border-2 border-gray-300 rounded-lg p-6 hover:border-blue-500 hover:shadow-lg transition-all duration-200 text-left group"
               >
-                <div className="w-12 h-12 bg-gray-200 rounded-full mx-auto mb-3 flex items-center justify-center">
-                  <svg className="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div className="w-12 h-12 bg-gray-100 rounded-full mx-auto mb-3 flex items-center justify-center group-hover:bg-blue-50 transition-colors">
+                  <svg className="w-6 h-6 text-gray-600 group-hover:text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                   </svg>
                 </div>
-                <h3 className="text-base font-medium text-gray-500 mb-2 text-center">Create from Prompt</h3>
-                <p className="text-sm text-gray-400 text-center">
+                <h3 className="text-base font-medium text-gray-800 mb-2 text-center">Create from Prompt</h3>
+                <p className="text-sm text-gray-600 text-center">
                   Quickly describe what you want to learn and we'll build the Campaign for you.
                 </p>
               </button>
@@ -148,14 +475,20 @@ export default function Dashboard() {
     }
 
     // Show create/edit form in main content area
-    if (showCreateForm || editingCampaign) {
+    if (showCreateForm || editingCampaign || draftedCampaign) {
       return <CreateCampaignForm
-        campaign={editingCampaign || undefined}
+        campaign={editingCampaign || draftedCampaign || undefined}
         onClose={() => {
           setShowCreateForm(false);
           setEditingCampaign(null);
+          setDraftedCampaign(null);
           fetchCampaigns(); // Refresh campaigns list
         }}
+        onBack={!editingCampaign ? () => {
+          setShowCreateForm(false);
+          setDraftedCampaign(null);
+          setShowCreateModal(true);
+        } : undefined}
       />;
     }
 
@@ -186,7 +519,8 @@ export default function Dashboard() {
                 {campaigns.map((campaign) => (
                   <div
                     key={campaign.id}
-                    className="bg-white border border-gray-200 rounded-lg p-4 hover:shadow-lg transition-shadow duration-200"
+                    className="bg-white border border-gray-200 rounded-lg p-4 hover:shadow-lg transition-shadow duration-200 cursor-pointer"
+                    onClick={() => setViewingCampaign(campaign)}
                   >
                     <div className="flex items-start justify-between mb-3">
                       <div className="flex-1">
@@ -195,7 +529,10 @@ export default function Dashboard() {
                       </div>
                       <div className="flex items-center gap-1 flex-shrink-0 ml-2">
                         <button
-                          onClick={() => setEditingCampaign(campaign)}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setEditingCampaign(campaign);
+                          }}
                           className="text-gray-400 hover:text-blue-600 transition-colors p-1"
                           title="Edit campaign"
                         >
@@ -204,7 +541,10 @@ export default function Dashboard() {
                           </svg>
                         </button>
                         <button
-                          onClick={() => deleteCampaign(campaign.id)}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            deleteCampaign(campaign.id);
+                          }}
                           className="text-gray-400 hover:text-red-600 transition-colors p-1"
                           title="Delete campaign"
                         >
@@ -370,27 +710,25 @@ export default function Dashboard() {
         </div>
 
         {/* User Menu */}
-        <div className="relative">
+        <div className="relative p-3 border-t border-gray-200">
           <button
             onClick={() => setShowUserMenu(!showUserMenu)}
-            className="w-full p-3 text-left border-t border-gray-200 hover:bg-gray-50 transition-colors flex items-center justify-between"
+            className="w-full flex items-center gap-3 px-3 py-2.5 text-sm font-medium text-gray-700 rounded hover:bg-gray-100 transition-colors"
           >
-            <div className="flex items-center gap-2 flex-1 min-w-0">
-              <div className="w-6 h-6 bg-gray-200 rounded-full flex items-center justify-center flex-shrink-0">
-                <span className="text-xs font-medium text-gray-600">
-                  {user?.email?.charAt(0).toUpperCase()}
-                </span>
-              </div>
-              <p className="text-xs text-gray-900 truncate">{user?.email}</p>
+            <div className="w-5 h-5 bg-gray-200 rounded-full flex items-center justify-center flex-shrink-0">
+              <span className="text-xs font-medium text-gray-600">
+                {user?.email?.charAt(0).toUpperCase()}
+              </span>
             </div>
-            <svg className={`w-3 h-3 text-gray-400 transition-transform ${showUserMenu ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <p className="text-sm text-gray-700 truncate flex-1 text-left">{user?.email}</p>
+            <svg className={`w-3 h-3 text-gray-400 transition-transform flex-shrink-0 ${showUserMenu ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
             </svg>
           </button>
 
           {/* Dropdown Menu */}
           {showUserMenu && (
-            <div className="absolute bottom-full left-0 right-0 bg-white border border-gray-200 rounded-lg shadow-lg mb-1 overflow-hidden">
+            <div className="absolute bottom-full left-3 right-3 bg-white border border-gray-200 rounded-lg shadow-lg mb-1 overflow-hidden">
               <button
                 onClick={handleSignOut}
                 className="w-full px-4 py-3 text-left text-sm text-gray-700 hover:bg-gray-50 transition-colors"
@@ -405,7 +743,7 @@ export default function Dashboard() {
       {/* Main Content */}
       <div className="flex-1 flex flex-col">
         {/* Header */}
-        {!showCreateModal && !showCreateForm && !editingCampaign && (
+        {!showCreateModal && !showCreateForm && !editingCampaign && !showPromptBox && !viewingCampaign && (
           <header className="bg-white border-b border-gray-200 px-6 py-3">
             <div className="flex items-center justify-between">
               <h2 className="text-lg font-light text-gray-800">Personal Workspace</h2>

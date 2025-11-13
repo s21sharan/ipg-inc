@@ -99,10 +99,10 @@ Built complete dashboard with campaign creation flow, using three-step form with
 - Hide header title/button when in create campaign mode
 
 ### #NextSteps
-- Implement "Create from Prompt" flow with AI assistance
-- Add form validation before allowing section navigation
-- Build campaign list view with created campaigns
-- Connect form submission to Supabase backend
+- Implement "Create from Prompt" flow with AI assistance #Deprecated
+- Add form validation before allowing section navigation #Deprecated
+- Build campaign list view with created campaigns #Deprecated
+- Connect form submission to Supabase backend #Deprecated
 
 ### #BugsAndTheories
 - White text in inputs ⇒ Missing text-gray-900 class (fixed)
@@ -110,3 +110,30 @@ Built complete dashboard with campaign creation flow, using three-step form with
 
 ### #Background
 Dashboard implements PulseIQ-style interface adapted for ipg.inc. Campaign creation uses progressive disclosure with visual progress tracking. Changed "Pulses" terminology to "Campaigns" throughout.
+
+## 2025-11-13 – Compact Session
+
+### #CurrentFocus
+Enhanced campaign creation UI with auto-growing textareas, persistent save functionality, and "Create from Prompt" interface.
+
+### #SessionChanges
+- Added auto-growing textareas in Discussion Guide (Goals, Question, Probe Questions) with 150px max height and scrollbars
+- Added "Save" button to all campaign form sections (Details, Guide, Completion) positioned bottom-right
+- Modified save function to keep users on same page instead of redirecting to dashboard
+- Changed save button text from "Save Campaign" to "Save"
+- Built "Create from Prompt" UI with large textarea and "Draft Campaign" button
+- Enabled "Create from Prompt" option in campaign creation modal
+- Aligned profile section styling with other sidebar buttons (Campaigns, Conversations, etc.)
+- Connected campaign form to Supabase for create/update operations
+- Added campaign list view with edit/delete functionality in dashboard
+
+### #NextSteps
+- Implement AI-powered campaign generation from user prompts
+- Add backend API route for draft campaign generation
+- Test campaign save/edit flows with Supabase
+
+### #BugsAndTheories
+- None identified this session
+
+### #Background
+Session focused on UX improvements for campaign creation. Auto-growing textareas prevent page scrolling while providing flexibility. Save buttons allow iterative editing without losing context. "Create from Prompt" offers AI-assisted campaign creation workflow.

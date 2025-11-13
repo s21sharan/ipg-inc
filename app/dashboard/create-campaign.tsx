@@ -42,11 +42,14 @@ interface Campaign {
 
 interface CreateCampaignFormProps {
   onClose: () => void;
+  onBack?: () => void;
   campaign?: Campaign;
 }
 
-export default function CreateCampaignForm({ onClose, campaign }: CreateCampaignFormProps) {
+export default function CreateCampaignForm({ onClose, onBack, campaign }: CreateCampaignFormProps) {
   const [activeSection, setActiveSection] = useState<'details' | 'guide' | 'completion'>('details');
+  const [showPromptBox, setShowPromptBox] = useState(false);
+  const [promptText, setPromptText] = useState('');
   const [formData, setFormData] = useState({
     name: campaign?.name || '',
     title: campaign?.title || '',
@@ -386,8 +389,7 @@ export default function CreateCampaignForm({ onClose, campaign }: CreateCampaign
         }
       }
 
-      // Success! Close the form
-      onClose();
+      // Success! Stay on the page (don't close the form)
     } catch (error) {
       console.error('Error saving campaign:', error);
       setSaveError(error instanceof Error ? error.message : 'Failed to save campaign');
@@ -403,7 +405,7 @@ export default function CreateCampaignForm({ onClose, campaign }: CreateCampaign
           <div className="flex justify-between items-center">
             <h2 className="text-xl font-light text-gray-800">{campaign ? 'Edit Campaign' : 'Create Campaign'}</h2>
             <button
-              onClick={onClose}
+              onClick={onBack || onClose}
               className="text-gray-400 hover:text-gray-600 transition-colors flex items-center gap-1 text-sm"
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -573,15 +575,34 @@ export default function CreateCampaignForm({ onClose, campaign }: CreateCampaign
                 />
               </div>
 
-              <button
-                onClick={handleNext}
-                className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-1.5 rounded-lg font-medium transition-colors flex items-center gap-2"
-              >
-                Next
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
-                </svg>
-              </button>
+              <div className="flex justify-between items-center">
+                <button
+                  onClick={handleNext}
+                  className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-1.5 rounded-lg font-medium transition-colors flex items-center gap-2"
+                >
+                  Next
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
+                  </svg>
+                </button>
+                <button
+                  onClick={handleSave}
+                  disabled={isSaving}
+                  className="bg-green-600 hover:bg-green-700 text-white px-4 py-1.5 rounded-lg font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                >
+                  {isSaving ? (
+                    <>
+                      <svg className="animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                      </svg>
+                      Saving...
+                    </>
+                  ) : (
+                    'Save'
+                  )}
+                </button>
+              </div>
             </div>
             </div>
           )}
@@ -754,10 +775,19 @@ export default function CreateCampaignForm({ onClose, campaign }: CreateCampaign
                               </label>
                               <textarea
                                 value={selectedTopic.goals || ''}
-                                onChange={(e) => handleTopicChange(selectedTopic.id, 'goals', e.target.value)}
+                                onChange={(e) => {
+                                  handleTopicChange(selectedTopic.id, 'goals', e.target.value);
+                                  e.target.style.height = 'auto';
+                                  e.target.style.height = Math.min(e.target.scrollHeight, 150) + 'px';
+                                }}
+                                onInput={(e) => {
+                                  e.currentTarget.style.height = 'auto';
+                                  e.currentTarget.style.height = Math.min(e.currentTarget.scrollHeight, 150) + 'px';
+                                }}
                                 placeholder="Example Goal 1&#10;Example Goal 2"
                                 rows={3}
-                                className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none text-gray-900 bg-white"
+                                className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none text-gray-900 bg-white overflow-y-auto"
+                                style={{ minHeight: '72px', maxHeight: '150px' }}
                               />
                             </div>
 
@@ -791,9 +821,18 @@ export default function CreateCampaignForm({ onClose, campaign }: CreateCampaign
                               </label>
                               <textarea
                                 value={selectedTopic.question || ''}
-                                onChange={(e) => handleTopicChange(selectedTopic.id, 'question', e.target.value)}
+                                onChange={(e) => {
+                                  handleTopicChange(selectedTopic.id, 'question', e.target.value);
+                                  e.target.style.height = 'auto';
+                                  e.target.style.height = Math.min(e.target.scrollHeight, 150) + 'px';
+                                }}
+                                onInput={(e) => {
+                                  e.currentTarget.style.height = 'auto';
+                                  e.currentTarget.style.height = Math.min(e.currentTarget.scrollHeight, 150) + 'px';
+                                }}
                                 rows={2}
-                                className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none text-gray-900 bg-white"
+                                className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none text-gray-900 bg-white overflow-y-auto"
+                                style={{ minHeight: '60px', maxHeight: '150px' }}
                               />
                             </div>
 
@@ -811,9 +850,18 @@ export default function CreateCampaignForm({ onClose, campaign }: CreateCampaign
                               </label>
                               <textarea
                                 value={selectedTopic.probeQuestions || ''}
-                                onChange={(e) => handleTopicChange(selectedTopic.id, 'probeQuestions', e.target.value)}
+                                onChange={(e) => {
+                                  handleTopicChange(selectedTopic.id, 'probeQuestions', e.target.value);
+                                  e.target.style.height = 'auto';
+                                  e.target.style.height = Math.min(e.target.scrollHeight, 150) + 'px';
+                                }}
+                                onInput={(e) => {
+                                  e.currentTarget.style.height = 'auto';
+                                  e.currentTarget.style.height = Math.min(e.currentTarget.scrollHeight, 150) + 'px';
+                                }}
                                 rows={3}
-                                className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none text-gray-900 bg-white"
+                                className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none text-gray-900 bg-white overflow-y-auto"
+                                style={{ minHeight: '72px', maxHeight: '150px' }}
                               />
                             </div>
 
@@ -876,21 +924,40 @@ export default function CreateCampaignForm({ onClose, campaign }: CreateCampaign
 
               {/* Bottom Navigation - At the bottom of entire section */}
               <div className="absolute bottom-0 left-0 right-0 bg-white border-t border-gray-200">
-                <div className="flex gap-2 p-3">
+                <div className="flex justify-between items-center p-3">
+                  <div className="flex gap-2">
+                    <button
+                      onClick={handleBack}
+                      className="px-3 py-1 border border-gray-300 rounded text-sm text-gray-700 hover:bg-gray-50 transition-colors"
+                    >
+                      Back
+                    </button>
+                    <button
+                      onClick={handleNext}
+                      className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded text-sm transition-colors flex items-center gap-1"
+                    >
+                      Next
+                      <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
+                      </svg>
+                    </button>
+                  </div>
                   <button
-                    onClick={handleBack}
-                    className="px-3 py-1 border border-gray-300 rounded text-sm text-gray-700 hover:bg-gray-50 transition-colors"
+                    onClick={handleSave}
+                    disabled={isSaving}
+                    className="bg-green-600 hover:bg-green-700 text-white px-4 py-1 rounded text-sm transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
                   >
-                    Back
-                  </button>
-                  <button
-                    onClick={handleNext}
-                    className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded text-sm transition-colors flex items-center gap-1"
-                  >
-                    Next
-                    <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
-                    </svg>
+                    {isSaving ? (
+                      <>
+                        <svg className="animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        Saving...
+                      </>
+                    ) : (
+                      'Save'
+                    )}
                   </button>
                 </div>
               </div>
@@ -1069,7 +1136,7 @@ export default function CreateCampaignForm({ onClose, campaign }: CreateCampaign
                       Saving...
                     </>
                   ) : (
-                    'Save Campaign'
+                    'Save'
                   )}
                 </button>
               </div>
