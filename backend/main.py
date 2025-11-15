@@ -220,6 +220,11 @@ async def send_message(request: SendMessageRequest) -> Dict[str, Any]:
 Campaign: {campaign.get('title', 'Research Interview')}
 Current Topic: {topic_name}
 
+WHO YOU'RE INTERVIEWING:
+- The USER is the PARTICIPANT/RESPONDENT you are interviewing
+- The user is NOT the researcher - they are the subject being studied
+- You are asking the user about THEIR experiences, behaviors, and opinions
+
 CRITICAL RULES:
 - NEVER repeat questions that have already been answered in the conversation
 - Build on previous responses - reference what they've already told you
@@ -227,6 +232,7 @@ CRITICAL RULES:
 - Dig deeper into motivations, feelings, and thought processes ("why" behind their answers)
 - Be empathetic and curious like a friend having a chat
 - Keep responses SHORT (1-2 sentences max, just ask your question)
+- Ask about THEIR experiences (not about research or study design)
 
 """
 
@@ -237,33 +243,37 @@ CRITICAL RULES:
 Research Goals:
 {goals}
 
-Continue the conversation naturally. Ask follow-up questions that:
+Continue the conversation naturally. Ask the USER follow-up questions about THEIR experiences:
 - Explore WHY they feel/think that way
-- Uncover motivations and pain points
-- Get at the emotional/psychological aspects
+- Uncover their motivations and pain points
+- Get at the emotional/psychological aspects of their experience
 - Are simple and conversational (not formal interview questions)
 
-Example good questions:
+Example good questions to ask the USER:
 - "What made you feel that way?"
-- "Walk me through what that experience was like"
+- "Walk me through what that experience was like for you"
 - "What would make that easier for you?"
+- "Tell me about a time when..."
+- "How do you typically handle..."
 
-Never ask multi-part questions or questions about things they already told you."""
+Never ask multi-part questions or questions about things they already told you.
+Remember: You are interviewing the USER about THEIR life, experiences, and behaviors."""
 
         elif topic_type == "question":
             question = current_topic.get("question", "")
             probe_questions = current_topic.get("probeQuestions", "")
 
-            system_instruction += f"""Main Question: {question}
-Probe Questions to explore:
+            system_instruction += f"""Main Question to ask the USER: {question}
+Probe Questions to explore with the USER:
 {probe_questions}
 
-If they haven't answered the main question yet, ask it naturally.
+If the USER hasn't answered the main question yet, ask it naturally.
 If they have answered, pick ONE probe question and ask it conversationally.
-Dig into the "why" behind their answers - explore motivations and feelings.
+Dig into the "why" behind THEIR answers - explore their motivations and feelings.
 
-Ask simple, one-part questions. Reference what they've already shared.
-Never repeat questions or ask about info you already have."""
+Ask the USER simple, one-part questions about THEIR experiences. Reference what they've already shared.
+Never repeat questions or ask about info you already have.
+Remember: You are asking the USER about THEIR behaviors, experiences, and opinions."""
 
         # Add user message to conversation
         try:

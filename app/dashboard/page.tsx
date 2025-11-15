@@ -59,7 +59,15 @@ export default function Dashboard() {
         .select('*')
         .order('created_at', { ascending: false });
 
-      if (error) throw error;
+      if (error) {
+        console.error('Supabase error details:', {
+          message: error.message,
+          details: error.details,
+          hint: error.hint,
+          code: error.code,
+        });
+        throw error;
+      }
 
       setCampaigns(data || []);
     } catch (error) {
@@ -227,9 +235,14 @@ export default function Dashboard() {
 
                     <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 mb-6">
                       <div className="flex items-center justify-between gap-3">
-                        <code className="text-sm text-blue-600 break-all flex-1">
+                        <a
+                          href={`/campaign/${viewingCampaign.id}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-sm text-blue-600 hover:text-blue-700 underline break-all flex-1"
+                        >
                           {`${window.location.origin}/campaign/${viewingCampaign.id}`}
-                        </code>
+                        </a>
                         <button
                           onClick={() => {
                             navigator.clipboard.writeText(`${window.location.origin}/campaign/${viewingCampaign.id}`);

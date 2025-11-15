@@ -137,3 +137,27 @@ Enhanced campaign creation UI with auto-growing textareas, persistent save funct
 
 ### #Background
 Session focused on UX improvements for campaign creation. Auto-growing textareas prevent page scrolling while providing flexibility. Save buttons allow iterative editing without losing context. "Create from Prompt" offers AI-assisted campaign creation workflow.
+
+## 2025-11-14 – Compact Session
+
+### #CurrentFocus
+Implemented campaign URL redirect to public interview page at `/campaign/[id]` route.
+
+### #SessionChanges
+- Made campaign URL clickable in Share tab (app/dashboard/page.tsx:230-237) with anchor tag
+- Created dynamic route `/app/campaign/[id]/page.tsx` for public campaign access
+- Built public interview interface with auto-start functionality for anonymous users
+- Added detailed Supabase error logging to fetchCampaigns function showing RLS policy errors
+- Diagnosed infinite recursion in workspace_members RLS policy causing campaign fetch failure
+
+### #NextSteps
+- Run SQL fix script in Supabase to remove circular RLS policy dependencies
+- Test campaign URL redirect and public interview page after RLS fix
+- Verify anonymous users can access campaigns via public link
+
+### #BugsAndTheories
+- Campaign fetch 500 error ⇒ Infinite recursion in workspace_members RLS policy (SQL fix provided)
+- Empty campaigns list in dashboard ⇒ RLS policy blocking SELECT queries on campaigns table
+
+### #Background
+Campaign URLs generated as `/campaign/[id]` but route didn't exist. Created public interview page mirroring /interview functionality with anonymous access. RLS policies on workspace_members table have circular dependency causing Postgres error 42P17.
