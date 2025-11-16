@@ -5,3 +5,10 @@ supabase==2.16.0
 python-dotenv==1.0.1
 pydantic>=2.10.6
 requests>=2.32.3
+pipecat-ai[daily,assemblyai,deepgram]>=0.0.47
+websockets>=12.0
+daily-python>=0.10.1
+loguru>=0.7.0
+aiohttp>=3.9.0
+assemblyai>=0.28.0
+deepgram-sdk>=3.0.0

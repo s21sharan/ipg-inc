@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.78.0",
+    "@daily-co/daily-js": "^0.76.0",
     "next": "16.0.1",
     "openai": "^5.0.0-beta.0",
     "react": "19.2.0",

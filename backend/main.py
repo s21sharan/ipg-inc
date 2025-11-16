@@ -1,12 +1,17 @@
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, BackgroundTasks
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import Optional, List, Dict, Any
 import os
+import uuid
+import asyncio
 from pathlib import Path
 from dotenv import load_dotenv
 import requests
+import aiohttp
 from supabase import create_client, Client
+from loguru import logger
+from realtime_service import create_realtime_session
 
 # Load environment variables from multiple possible locations
 load_dotenv()  # Load from backend/.env if exists
@@ -26,6 +31,10 @@ app.add_middleware(
 
 # Get environment variables (support both NEXT_PUBLIC_ prefix and without)
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
+DAILY_API_KEY = os.getenv("DAILY_API_KEY")  # For creating rooms
+ASSEMBLYAI_API_KEY = os.getenv("ASSEMBLYAI_API_KEY")  # For STT
+DEEPGRAM_API_KEY = os.getenv("DEEPGRAM_API_KEY")  # For TTS
+KRISP_API_KEY = os.getenv("KRISP_API_KEY")  # For noise cancellation (optional)
 SUPABASE_URL = os.getenv("SUPABASE_URL") or os.getenv("NEXT_PUBLIC_SUPABASE_URL")
 # Try service role key first (for backend), fallback to anon key
 SUPABASE_KEY = (
@@ -37,13 +46,22 @@ SUPABASE_KEY = (
 
 if not OPENAI_API_KEY:
     raise ValueError("OPENAI_API_KEY environment variable is required")
+if not DAILY_API_KEY:
+    logger.warning("DAILY_API_KEY not set - voice sessions will not work")
+if not ASSEMBLYAI_API_KEY:
+    logger.warning("ASSEMBLYAI_API_KEY not set - voice STT will not work")
+if not DEEPGRAM_API_KEY:
+    logger.warning("DEEPGRAM_API_KEY not set - voice TTS will not work")
+if KRISP_API_KEY:
+    logger.info("Krisp VIVA noise cancellation enabled")
 if not SUPABASE_URL:
     raise ValueError("SUPABASE_URL or NEXT_PUBLIC_SUPABASE_URL environment variable is required")
 if not SUPABASE_KEY:
     raise ValueError("SUPABASE_KEY, SUPABASE_SERVICE_ROLE_KEY, or NEXT_PUBLIC_SUPABASE_ANON_KEY environment variable is required")
 
-print(f"Using Supabase URL: {SUPABASE_URL}")
-print(f"Using key type: {'SERVICE_ROLE' if os.getenv('SUPABASE_SERVICE_ROLE_KEY') else 'ANON'}")
+logger.info(f"Using Supabase URL: {SUPABASE_URL}")
+logger.info(f"Using key type: {'SERVICE_ROLE' if os.getenv('SUPABASE_SERVICE_ROLE_KEY') else 'ANON'}")
+logger.info("Voice pipeline: AssemblyAI (STT) → OpenAI (LLM) → Deepgram (TTS)")
 
 # Initialize clients
 supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
@@ -454,6 +472,185 @@ async def get_session(session_id: str):
         "total_topics": len(session["topics"]),
         "response_count": len(session["responses"])
     }
+
+
+# ============================================================================
+# VOICE INTERVIEW ENDPOINTS (Pipecat + Daily.co)
+# ============================================================================
+
+class StartVoiceInterviewRequest(BaseModel):
+    campaign_id: str
+    user_id: Optional[str] = "anonymous"
+
+
+class VoiceSessionResponse(BaseModel):
+    session_id: str
+    room_url: str
+    token: str
+    campaign_title: str
+    expiry: int  # Unix timestamp
+
+
+@app.post("/interview/voice/start")
+async def start_voice_interview(
+    request: StartVoiceInterviewRequest,
+    background_tasks: BackgroundTasks
+) -> VoiceSessionResponse:
+    """
+    Start a voice interview session
+    Creates Daily.co room and starts Pipecat bot
+    """
+    if not DAILY_API_KEY:
+        raise HTTPException(status_code=500, detail="Voice interviews not configured (missing DAILY_API_KEY)")
+
+    # Fetch campaign from Supabase
+    try:
+        response = supabase.table("campaigns").select("*").eq("id", request.campaign_id).execute()
+        campaign = response.data[0] if response.data else None
+        if not campaign:
+            raise HTTPException(status_code=404, detail=f"Campaign {request.campaign_id} not found")
+    except Exception as e:
+        logger.error(f"Error fetching campaign: {e}")
+        raise HTTPException(status_code=500, detail=f"Failed to fetch campaign: {str(e)}")
+
+    # Generate session ID
+    session_id = str(uuid.uuid4())
+
+    # Create Daily.co room
+    try:
+        async with aiohttp.ClientSession() as session:
+            async with session.post(
+                "https://api.daily.co/v1/rooms",
+                headers={
+                    "Authorization": f"Bearer {DAILY_API_KEY}",
+                    "Content-Type": "application/json",
+                },
+                json={
+                    "properties": {
+                        "exp": 3600,  # 1 hour expiry
+                        "enable_chat": False,
+                        "enable_screenshare": False,
+                        "enable_recording": "cloud",  # Record interviews
+                        "start_video_off": True,
+                        "start_audio_off": False,
+                    }
+                },
+            ) as resp:
+                if resp.status != 200:
+                    error_text = await resp.text()
+                    logger.error(f"Daily.co room creation failed: {error_text}")
+                    raise HTTPException(status_code=500, detail="Failed to create voice room")
+                room_data = await resp.json()
+                room_url = room_data["url"]
+                room_name = room_data["name"]
+
+        logger.info(f"Created Daily room: {room_url}")
+
+        # Create participant token for user
+        async with aiohttp.ClientSession() as session:
+            async with session.post(
+                "https://api.daily.co/v1/meeting-tokens",
+                headers={
+                    "Authorization": f"Bearer {DAILY_API_KEY}",
+                    "Content-Type": "application/json",
+                },
+                json={
+                    "properties": {
+                        "room_name": room_name,
+                        "is_owner": False,
+                        "user_name": request.user_id or "Participant",
+                    }
+                },
+            ) as resp:
+                if resp.status != 200:
+                    error_text = await resp.text()
+                    logger.error(f"Daily.co token creation failed: {error_text}")
+                    raise HTTPException(status_code=500, detail="Failed to create user token")
+                token_data = await resp.json()
+                user_token = token_data["token"]
+
+        # Create bot token
+        async with aiohttp.ClientSession() as session:
+            async with session.post(
+                "https://api.daily.co/v1/meeting-tokens",
+                headers={
+                    "Authorization": f"Bearer {DAILY_API_KEY}",
+                    "Content-Type": "application/json",
+                },
+                json={
+                    "properties": {
+                        "room_name": room_name,
+                        "is_owner": True,
+                        "user_name": "Interview Agent",
+                    }
+                },
+            ) as resp:
+                if resp.status != 200:
+                    error_text = await resp.text()
+                    logger.error(f"Daily.co bot token creation failed: {error_text}")
+                    raise HTTPException(status_code=500, detail="Failed to create bot token")
+                bot_token_data = await resp.json()
+                bot_token = bot_token_data["token"]
+
+        # Start Pipecat bot in background
+        from pipecat_service import run_interview_bot
+
+        async def start_bot():
+            try:
+                await run_interview_bot(
+                    session_id=session_id,
+                    campaign=campaign,
+                    room_url=room_url,
+                    token=bot_token,
+                    openai_api_key=OPENAI_API_KEY,
+                    assemblyai_api_key=ASSEMBLYAI_API_KEY,
+                    deepgram_api_key=DEEPGRAM_API_KEY,
+                    krisp_api_key=KRISP_API_KEY,
+                )
+            except Exception as e:
+                logger.error(f"Bot error in session {session_id}: {e}")
+
+        background_tasks.add_task(start_bot)
+
+        logger.info(f"Started voice interview session {session_id} for campaign {campaign.get('title')}")
+
+        return VoiceSessionResponse(
+            session_id=session_id,
+            room_url=room_url,
+            token=user_token,
+            campaign_title=campaign.get("title", "Interview"),
+            expiry=3600,
+        )
+
+    except aiohttp.ClientError as e:
+        logger.error(f"Daily.co API error: {e}")
+        raise HTTPException(status_code=500, detail=f"Failed to create voice session: {str(e)}")
+
+
+@app.post("/interview/realtime/start")
+async def start_realtime_interview(request: StartVoiceInterviewRequest):
+    """
+    Start a voice interview using OpenAI Realtime API
+    Returns client secret for WebRTC connection
+    """
+    # Fetch campaign from Supabase
+    try:
+        response = supabase.table("campaigns").select("*").eq("id", request.campaign_id).execute()
+        campaign = response.data[0] if response.data else None
+        if not campaign:
+            raise HTTPException(status_code=404, detail=f"Campaign {request.campaign_id} not found")
+    except Exception as e:
+        logger.error(f"Error fetching campaign: {e}")
+        raise HTTPException(status_code=500, detail=f"Failed to fetch campaign: {str(e)}")
+
+    # Create OpenAI Realtime session
+    try:
+        session_data = create_realtime_session(campaign, request.user_id)
+        logger.info(f"Created Realtime session {session_data['session_id']} for campaign {campaign.get('title')}")
+        return session_data
+    except Exception as e:
+        logger.error(f"Failed to create Realtime session: {e}")
+        raise HTTPException(status_code=500, detail=f"Failed to create Realtime session: {str(e)}")
 
 
 if __name__ == "__main__":
