@@ -79,10 +79,7 @@ class DailyTransport(FrameProcessor):
             self.event_loop = asyncio.get_event_loop()
             print(f"Event loop stored: {self.event_loop}")
 
-            # Initialize Daily client
-            Daily.init()
-            print("Daily.init() completed")
-
+            # Create Daily client (Daily.init() is called once at app startup)
             self.client = CallClient(event_handler=DailyEventHandler(self))
             print("CallClient created")
 
@@ -150,10 +147,7 @@ class DailyTransport(FrameProcessor):
         self.audio_source = None
         self.audio_track = None
 
-        try:
-            Daily.deinit()
-        except:
-            pass
+        # Note: Daily.deinit() is called once at app shutdown, not per-session
 
     async def _join_room(self) -> None:
         """Join the Daily room"""

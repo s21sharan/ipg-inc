@@ -142,7 +142,7 @@ class SessionManager:
 
         session = self.sessions[session_id]
 
-        # Create and start agent
+        # Create agent
         agent = VoiceInterviewAgent(
             guide=session["guide"],
             room_url=session["room_info"]["room_url"],
@@ -153,8 +153,12 @@ class SessionManager:
         self.agents[session_id] = agent
         session["status"] = "active"
 
-        # Start agent in background
-        asyncio.create_task(agent.start())
+        # Start agent in background (non-blocking)
+        agent_task = asyncio.create_task(agent.start())
+
+        # Wait a moment for agent to join room and be ready
+        await asyncio.sleep(2)
+        print(f"Agent initialization complete for session {session_id}")
 
         # Update Supabase status
         supabase = SupabaseClient()
@@ -245,11 +249,26 @@ session_manager = SessionManager()
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     """Application lifespan manager"""
-    # Startup
+    # Startup - Initialize Daily SDK ONCE at application level
+    import sys
+    print("Initializing Daily SDK...", file=sys.stderr, flush=True)
+    from daily import Daily
+    Daily.init()
+
+    # Set Pipecat's class variable to prevent it from calling Daily.init() again
+    from pipecat.transports.services.daily import DailyTransportClient
+    DailyTransportClient._daily_initialized = True
+    print("Daily SDK initialized", file=sys.stderr, flush=True)
+
     await session_manager.start()
     yield
+
     # Shutdown
     await session_manager.stop()
+
+    print("Deinitializing Daily SDK...", file=sys.stderr, flush=True)
+    Daily.deinit()
+    print("Daily SDK deinitialized", file=sys.stderr, flush=True)
 
 
 # Create FastAPI app
@@ -296,11 +315,10 @@ async def create_session(
             enable_recording=request.enable_recording
         )
 
-        # Start agent in background
-        background_tasks.add_task(
-            session_manager.start_agent,
-            session_info["id"]
-        )
+        # Start agent BEFORE returning (so it's ready when participant joins)
+        print(f"Starting agent for session {session_info['id']}...")
+        await session_manager.start_agent(session_info["id"])
+        print(f"Agent started and ready for session {session_info['id']}")
 
         return CreateSessionResponse(
             session_id=session_info["id"],

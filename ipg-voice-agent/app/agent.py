@@ -29,10 +29,11 @@ from pipecat.services.deepgram import DeepgramSTTService
 from pipecat.services.cartesia import CartesiaTTSService
 from pipecat.services.openai import OpenAILLMService
 
+from pipecat.transports.services.daily import DailyTransport, DailyParams
+
 from app.config import get_settings
 from app.guide_models import DiscussionGuide, StatementStep, ConversationStep, QuestionStep
 from app.guide_engine import GuideEngine
-from app.daily_transport import DailyTransport
 from app.logging_utils import ConversationLogger
 
 
@@ -52,6 +53,8 @@ class InterviewAgentProcessor(FrameProcessor):
         self.guide_engine = guide_engine
         self.llm_service = llm_service
         self.logger = logger
+
+        # Initialize context without messages - we'll manage context manually
         self.llm_context = OpenAILLMContext()
 
         # State management
@@ -62,9 +65,11 @@ class InterviewAgentProcessor(FrameProcessor):
 
     async def process_frame(self, frame: Frame, direction: FrameDirection) -> None:
         """Process incoming frames and manage interview flow"""
+        print(f"InterviewAgentProcessor.process_frame() called with frame type: {type(frame).__name__}, direction: {direction}")
 
         # Handle start of interview
         if isinstance(frame, StartFrame):
+            print("InterviewAgentProcessor: Detected StartFrame!")
             await self._start_interview()
 
         # Handle user speech transcription
@@ -90,25 +95,34 @@ class InterviewAgentProcessor(FrameProcessor):
 
     async def _start_interview(self) -> None:
         """Start the interview with the first step"""
+        print("InterviewAgentProcessor: Starting interview...")
         first_step = await self.guide_engine.start()
+        print(f"InterviewAgentProcessor: First step = {first_step}")
         if first_step:
             await self._execute_current_step()
+        else:
+            print("InterviewAgentProcessor: No first step found!")
 
     async def _execute_current_step(self) -> None:
         """Execute the current guide step"""
+        print("InterviewAgentProcessor: Executing current step...")
         step = self.guide_engine.get_current_step()
+        print(f"InterviewAgentProcessor: Current step type = {type(step).__name__ if step else None}")
         if not step:
             await self._end_interview()
             return
 
         self.current_step_initialized = True
 
-        # Update LLM system prompt for this step
+        # Clear conversation history and set new system prompt for this step
         system_prompt = self.guide_engine.get_system_prompt_for_step()
-        self.llm_context.set_system_prompt(system_prompt)
+        self.conversation_history = [
+            {"role": "system", "content": system_prompt}
+        ]
 
         if isinstance(step, StatementStep):
             # For statements, speak the content directly
+            print(f"InterviewAgentProcessor: Speaking statement: {step.content[:50]}...")
             await self._speak(step.content)
             self.guide_engine.record_agent_turn()
 
@@ -119,12 +133,14 @@ class InterviewAgentProcessor(FrameProcessor):
         elif isinstance(step, ConversationStep):
             # Start conversation with opening question based on goals
             opening = self._generate_conversation_opener(step)
+            print(f"InterviewAgentProcessor: Speaking conversation opener: {opening[:50]}...")
             await self._speak(opening)
             self.guide_engine.record_agent_turn()
             self.waiting_for_response = True
 
         elif isinstance(step, QuestionStep):
             # Ask the primary question
+            print(f"InterviewAgentProcessor: Speaking question: {step.question[:50]}...")
             await self._speak(step.question)
             self.guide_engine.record_agent_turn()
             self.waiting_for_response = True
@@ -189,18 +205,13 @@ class InterviewAgentProcessor(FrameProcessor):
 
     async def _generate_llm_response(self) -> str:
         """Generate response using LLM"""
-        # Build messages for LLM
-        messages = [
-            {"role": "system", "content": self.guide_engine.get_system_prompt_for_step()}
-        ]
-
-        # Add recent conversation history (last 5 exchanges)
+        # Use conversation_history which already includes system prompt
+        # Limit to recent messages to avoid context length issues
         recent_history = self.conversation_history[-10:] if len(self.conversation_history) > 10 else self.conversation_history
-        messages.extend(recent_history)
 
         # Generate response
         try:
-            response = await self.llm_service.generate(messages)
+            response = await self.llm_service.generate(recent_history)
             # Add to history
             self.conversation_history.append({
                 "role": "assistant",
@@ -239,6 +250,8 @@ class InterviewAgentProcessor(FrameProcessor):
         if not text:
             return
 
+        print(f"InterviewAgentProcessor: _speak() called with text: {text[:100]}...")
+
         # Log agent utterance
         await self.logger.log_agent_utterance(
             text,
@@ -247,7 +260,9 @@ class InterviewAgentProcessor(FrameProcessor):
 
         # Send to TTS
         tts_frame = TextFrame(text=text)
+        print(f"InterviewAgentProcessor: Pushing TextFrame downstream...")
         await self.push_frame(tts_frame, FrameDirection.DOWNSTREAM)
+        print(f"InterviewAgentProcessor: TextFrame pushed")
 
     async def _transition_to_next_step(self) -> None:
         """Transition to the next step in the guide"""
@@ -304,12 +319,21 @@ class VoiceInterviewAgent:
         # Initialize guide engine
         self.guide_engine = GuideEngine(self.guide, self.logger)
 
-        # Initialize transport
+        # Initialize Daily transport with proper params
+        daily_params = DailyParams(
+            audio_in_enabled=True,
+            audio_out_enabled=True,
+            camera_out_enabled=False,
+            vad_enabled=True,
+            vad_analyzer=None,  # Use default WebRTC VAD
+            transcription_enabled=False  # We use Deepgram for STT
+        )
+
         self.transport = DailyTransport(
             room_url=self.room_url,
             token=self.token,
-            sample_rate=16000,
-            channels=1
+            bot_name="Interview Agent",
+            params=daily_params
         )
 
         # Initialize STT service
@@ -351,14 +375,13 @@ class VoiceInterviewAgent:
             logger=self.logger
         )
 
-        # Build pipeline
+        # Build pipeline - DailyTransport provides separate input/output
         pipeline = Pipeline([
-            self.transport,
-            self.stt_service,
-            interview_processor,
-            self.llm_service,
-            self.tts_service,
-            self.transport  # Back to transport for output
+            self.transport.input(),   # Audio input from Daily
+            self.stt_service,         # Speech to text
+            interview_processor,      # Interview logic
+            self.tts_service,         # Text to speech
+            self.transport.output()   # Audio output to Daily
         ])
 
         # Create and start pipeline task
@@ -371,8 +394,8 @@ class VoiceInterviewAgent:
         if self.pipeline_task:
             await self.pipeline_task.cancel()
 
-        if self.transport:
-            await self.transport.cleanup()
+        # Transport cleanup is handled by the pipeline task
+        # No need to call transport.cleanup() directly
 
         if self.logger:
             await self.logger.finalize()

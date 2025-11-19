@@ -175,3 +175,38 @@ Built standalone Python/Pipecat voice agent backend with Daily.co integration fo
 
 ### #Background
 Built production-ready voice interview agent as standalone Python service using Pipecat framework. Integrates with existing Next.js campaign system via format converters. Uses Daily.co for WebRTC instead of raw WebSocket per user preference. Agent conducts interviews following structured discussion guides with three step types, intelligent probe selection, and natural conversation flow. Generates digital twin profiles for simulation. All API keys already configured from existing .env.local.
+
+## 2025-11-19 – Compact Session
+
+### #CurrentFocus
+Fixed Daily.co Python SDK integration and threading issues to enable voice agent audio streaming with Pipecat pipeline.
+
+### #SessionChanges
+- Commented out nginx service in docker-compose.yml (file didn't exist, causing mount errors)
+- Pinned gotrue==2.4.2 to fix httpx compatibility (TypeError: unexpected 'proxy' argument)
+- Changed DailyTransport inheritance from BaseTransport to FrameProcessor (BaseTransport has no push_frame/process_frame methods)
+- Fixed Daily.co join() API: moved token to meeting_token parameter, updated client_settings to use inputs/publishing keys only
+- Removed invalid update_subscription_profiles() call (wrong API keys: subscribed, maxBitrate not supported)
+- Fixed event handler signatures: on_active_speaker_change → on_active_speaker_changed, added reason parameter to on_participant_left
+- Implemented CustomAudioSource and CustomAudioTrack for sending agent audio instead of non-existent send_audio() method
+- Used set_audio_renderer() callback to receive participant audio instead of non-existent on_audio_data event
+- Fixed threading errors: used asyncio.run_coroutine_threadsafe() for Daily callbacks (run on Daily's thread, not event loop)
+- Stored event_loop reference during start() for cross-thread communication
+- Added comprehensive logging to DailyTransport.start() and process_frame() for debugging
+
+### #NextSteps
+- Investigate why StartFrame not reaching process_frame() despite pipeline linking successfully
+- Verify agent initialization triggers and Daily room join process
+- Test complete audio flow: participant speaks → STT → LLM → TTS → agent speaks
+- Debug why no "DailyTransport: Processing StartFrame" log appears in output
+
+### #BugsAndTheories
+- nginx mount error ⇒ docker-compose.yml referenced non-existent nginx.conf file (fixed: commented out service)
+- gotrue/httpx incompatibility ⇒ gotrue 2.12.4 uses proxy parameter not in httpx 0.25.2 (fixed: pinned gotrue==2.4.2)
+- BaseTransport missing methods ⇒ Doesn't inherit FrameProcessor, no push_frame/process_frame (fixed: inherit FrameProcessor)
+- Daily.co API errors ⇒ Python SDK uses different structure than JS SDK (fixed: meeting_token param, inputs/publishing settings)
+- RuntimeError: no running event loop ⇒ Daily callbacks run on separate thread (fixed: run_coroutine_threadsafe with stored loop)
+- Agent not speaking ⇒ StartFrame likely not triggering start() method, pipeline runs but transport never initializes
+
+### #Background
+Session focused on debugging Daily.co Python SDK integration. Major discovery: BaseTransport is abstract and doesn't provide frame processing - must use FrameProcessor. Daily Python SDK has completely different API from JS version (callbacks run on separate threads, different method signatures). Successfully resolved all API compatibility and threading issues, but agent still not initializing despite pipeline linking. Added extensive logging to diagnose startup flow.

@@ -1,0 +1,5 @@
+{"type": "step_started", "timestamp": "2025-11-19T08:55:15.730161", "step_id": "1", "step_name": "Kickoff"}
+{"id": 0, "timestamp": "2025-11-19T08:55:15.732875", "speaker": "agent", "text": "Thank you for joining us today. We\u2019re talking with EV owners to understand charging experiences\u2014what\u2019s convenient, what\u2019s frustrating, and what could be improved. Your honest insights will help shape a more accessible and user-friendly charging future.", "step_id": "1", "metadata": {}}
+{"type": "step_completed", "timestamp": "2025-11-19T08:55:17.235519", "step_id": "1", "metadata": {}}
+{"type": "step_started", "timestamp": "2025-11-19T08:55:17.240367", "step_id": "1762729396681", "step_name": "Daily Charging Habits"}
+{"id": 1, "timestamp": "2025-11-19T08:55:17.242373", "speaker": "agent", "text": "Let's start by talking about your typical day with your EV. Walk me through how charging fits into your daily routine.", "step_id": "1762729396681", "metadata": {}}

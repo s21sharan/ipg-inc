@@ -2,6 +2,7 @@ version: '3.8'
 
 services:
   voice-agent:
+    platform: linux/amd64  # Force x86_64 for Daily SDK compatibility
     build:
       context: .
       dockerfile: Dockerfile
