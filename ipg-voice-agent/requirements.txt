@@ -1,0 +1,57 @@
+# Core Framework
+fastapi>=0.109.0
+uvicorn[standard]>=0.27.0
+pydantic>=2.5.0
+python-dotenv>=1.0.0
+
+# Pipecat - Voice Agent Framework
+pipecat-ai==0.0.39
+
+# Speech-to-Text
+deepgram-sdk==3.2.0
+
+# Text-to-Speech (Cartesia) & Async
+websockets>=12.0
+aiohttp>=3.9.5
+
+# Large Language Models
+openai>=1.12.0
+
+# Database
+supabase==2.3.4
+postgrest==0.13.2
+gotrue==2.4.2
+
+# Daily.co (WebRTC)
+daily-python>=0.5.0
+
+# Audio Processing (let pip choose compatible versions)
+numpy>=1.22.0
+scipy>=1.10.0
+pyaudio>=0.2.14
+
+# Async Support
+aiodns>=3.1.0
+
+# Logging and Monitoring
+loguru>=0.7.0
+python-json-logger>=2.0.0
+
+# Date/Time
+python-dateutil>=2.8.0
+
+# HTTP Client (compatible with supabase <0.26)
+httpx>=0.24.0,<0.26.0
+
+# Testing (optional)
+pytest>=7.4.0
+pytest-asyncio>=0.23.0
+pytest-cov>=4.1.0
+
+# Code Quality (optional)
+black>=24.0.0
+flake8>=7.0.0
+mypy>=1.8.0
+
+# Additional utilities
+uuid>=1.30

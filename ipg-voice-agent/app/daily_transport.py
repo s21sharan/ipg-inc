@@ -1,0 +1,371 @@
+"""
+Daily.co transport layer for Pipecat.
+Handles WebRTC audio streaming through Daily.co infrastructure.
+"""
+
+import asyncio
+import numpy as np
+from typing import Optional, Callable, Any
+from pipecat.processors.frame_processor import FrameProcessor, FrameDirection
+from pipecat.frames.frames import (
+    Frame,
+    AudioRawFrame,
+    StartFrame,
+    EndFrame,
+    TranscriptionFrame,
+    TextFrame,
+    UserStartedSpeakingFrame,
+    UserStoppedSpeakingFrame
+)
+from daily import Daily, CallClient, EventHandler, CustomAudioSource, CustomAudioTrack
+
+
+class DailyTransport(FrameProcessor):
+    """
+    Custom Pipecat transport for Daily.co WebRTC integration.
+    Bridges Daily.co audio streams with Pipecat pipeline.
+    """
+
+    def __init__(
+        self,
+        room_url: str,
+        token: str,
+        sample_rate: int = 16000,
+        channels: int = 1,
+        vad_enabled: bool = True,
+        vad_threshold: float = 0.5
+    ):
+        super().__init__()
+        self.room_url = room_url
+        self.token = token
+        self.sample_rate = sample_rate
+        self.channels = channels
+        self.vad_enabled = vad_enabled
+        self.vad_threshold = vad_threshold
+
+        # Daily client
+        self.client: Optional[CallClient] = None
+        self.event_handler: Optional[DailyEventHandler] = None
+
+        # Custom audio track for sending
+        self.audio_source: Optional[CustomAudioSource] = None
+        self.audio_track: Optional[CustomAudioTrack] = None
+
+        # Audio buffers
+        self.input_audio_buffer = asyncio.Queue()
+        self.output_audio_buffer = asyncio.Queue()
+
+        # State
+        self.connected = False
+        self.participant_id: Optional[str] = None
+        self.participant_speaking = False
+        self.event_loop: Optional[asyncio.AbstractEventLoop] = None
+
+        # Tasks
+        self.receive_task: Optional[asyncio.Task] = None
+        self.send_task: Optional[asyncio.Task] = None
+
+    async def start(self, frame: Frame) -> None:
+        """Start the Daily transport when receiving start frame"""
+        print(f"DailyTransport.start() called, connected={self.connected}")
+
+        # Only initialize once
+        if self.connected:
+            print("Already connected, skipping initialization")
+            return
+
+        try:
+            # Store the event loop for cross-thread communication
+            self.event_loop = asyncio.get_event_loop()
+            print(f"Event loop stored: {self.event_loop}")
+
+            # Initialize Daily client
+            Daily.init()
+            print("Daily.init() completed")
+
+            self.client = CallClient(event_handler=DailyEventHandler(self))
+            print("CallClient created")
+
+            # Create custom audio source and track for sending audio
+            self.audio_source = CustomAudioSource(
+                sample_rate=self.sample_rate,
+                channels=self.channels
+            )
+            self.audio_track = CustomAudioTrack(self.audio_source)
+            print(f"Custom audio track created: sample_rate={self.sample_rate}, channels={self.channels}")
+
+            # Join the room
+            print(f"Attempting to join room: {self.room_url}")
+            await self._join_room()
+
+            # Add custom audio track to the client
+            self.client.add_custom_audio_track("agent-audio", self.audio_track)
+            print("Custom audio track added to client")
+
+            # Start audio processing tasks
+            self.receive_task = asyncio.create_task(self._receive_audio_task())
+            self.send_task = asyncio.create_task(self._send_audio_task())
+            print("Audio processing tasks started")
+
+            # Pass the start frame downstream
+            await self.push_frame(frame)
+            print("StartFrame pushed downstream")
+        except Exception as e:
+            print(f"ERROR in DailyTransport.start(): {e}")
+            import traceback
+            traceback.print_exc()
+
+    async def stop(self, frame: Frame) -> None:
+        """Stop the Daily transport when receiving stop/end frame"""
+        await self.cleanup()
+        # Pass the stop frame downstream
+        await self.push_frame(frame)
+
+    async def cleanup(self) -> None:
+        """Cleanup resources (can be called directly without a frame)"""
+        self.connected = False
+
+        # Cancel tasks
+        if self.receive_task:
+            self.receive_task.cancel()
+        if self.send_task:
+            self.send_task.cancel()
+
+        # Remove custom audio track
+        if self.client and self.audio_track:
+            try:
+                self.client.remove_custom_audio_track("agent-audio")
+            except:
+                pass
+
+        # Leave the room
+        if self.client:
+            try:
+                self.client.leave()
+            except:
+                pass
+            self.client = None
+
+        # Clean up audio resources
+        self.audio_source = None
+        self.audio_track = None
+
+        try:
+            Daily.deinit()
+        except:
+            pass
+
+    async def _join_room(self) -> None:
+        """Join the Daily room"""
+        try:
+            self.client.join(
+                self.room_url,
+                meeting_token=self.token,
+                client_settings={
+                    "inputs": {
+                        "camera": False,
+                        "microphone": True
+                    },
+                    "publishing": {
+                        "camera": False,
+                        "microphone": True
+                    }
+                }
+            )
+            self.connected = True
+            print(f"Successfully joined Daily room: {self.room_url}")
+        except Exception as e:
+            print(f"Error joining Daily room: {e}")
+            raise
+
+    async def _receive_audio_task(self) -> None:
+        """Task to receive audio from Daily and push to Pipecat pipeline"""
+        while self.connected:
+            try:
+                # Get audio from input buffer (populated by Daily callbacks)
+                audio_data = await self.input_audio_buffer.get()
+
+                # Convert to AudioRawFrame
+                frame = AudioRawFrame(
+                    audio=audio_data,
+                    sample_rate=self.sample_rate,
+                    num_channels=self.channels
+                )
+
+                # Push to pipeline
+                await self.push_frame(frame, FrameDirection.DOWNSTREAM)
+
+            except asyncio.CancelledError:
+                break
+            except Exception as e:
+                print(f"Error in receive audio task: {e}")
+
+    async def _send_audio_task(self) -> None:
+        """Task to send audio from Pipecat pipeline to Daily"""
+        while self.connected:
+            try:
+                # Get audio from output buffer
+                audio_frame = await self.output_audio_buffer.get()
+
+                if isinstance(audio_frame, AudioRawFrame) and self.audio_source:
+                    # Write frames to the custom audio source
+                    # AudioRawFrame.audio is bytes, which is what write_frames expects
+                    self.audio_source.write_frames(audio_frame.audio)
+
+            except asyncio.CancelledError:
+                break
+            except Exception as e:
+                print(f"Error in send audio task: {e}")
+
+    async def process_frame(self, frame: Frame, direction: FrameDirection) -> None:
+        """Process frames from the Pipecat pipeline"""
+        try:
+            # Handle start frame
+            if isinstance(frame, StartFrame):
+                print(f"DailyTransport: Processing StartFrame")
+                await self.start(frame)
+                return
+
+            # Handle end frame
+            if isinstance(frame, EndFrame):
+                print(f"DailyTransport: Processing EndFrame")
+                await self.stop(frame)
+                return
+
+            # Handle outgoing audio (downstream to Daily)
+            if isinstance(frame, AudioRawFrame) and direction == FrameDirection.DOWNSTREAM:
+                # Queue audio for sending to Daily
+                await self.output_audio_buffer.put(frame)
+                return
+
+            # Pass through all other frames
+            await self.push_frame(frame, direction)
+        except Exception as e:
+            print(f"DailyTransport.process_frame error: {e}")
+            import traceback
+            traceback.print_exc()
+
+    def handle_participant_joined(self, participant: dict) -> None:
+        """Handle participant joining the room"""
+        if participant.get("info", {}).get("isLocal"):
+            return  # Skip self
+
+        self.participant_id = participant.get("id")
+        print(f"Participant joined: {participant.get('info', {}).get('userName', 'Unknown')}")
+
+    def handle_participant_left(self, participant: dict) -> None:
+        """Handle participant leaving the room"""
+        if participant.get("id") == self.participant_id:
+            self.participant_id = None
+            print("Participant left the room")
+
+    def setup_audio_renderer(self, participant_id: str) -> None:
+        """Set up audio renderer for a participant using Daily's set_audio_renderer"""
+        if not self.client:
+            return
+
+        def audio_callback(participant_id: str, audio_data, audio_source: str):
+            """Callback when audio data is received (called from Daily's audio thread)"""
+            # Convert AudioData to bytes and queue for processing
+            # Use run_coroutine_threadsafe since this is called from a different thread
+            if audio_data and audio_data.audio_frames and self.event_loop:
+                try:
+                    asyncio.run_coroutine_threadsafe(
+                        self.input_audio_buffer.put(audio_data.audio_frames),
+                        self.event_loop
+                    )
+                except Exception as e:
+                    print(f"Error queueing audio data: {e}")
+
+        try:
+            self.client.set_audio_renderer(
+                participant_id=participant_id,
+                callback=audio_callback,
+                audio_source="microphone",
+                sample_rate=self.sample_rate,
+                callback_interval_ms=20  # 20ms chunks
+            )
+            print(f"Audio renderer set up for participant: {participant_id}")
+        except Exception as e:
+            print(f"Error setting up audio renderer for {participant_id}: {e}")
+
+    def handle_active_speaker_change(self, participant: dict) -> None:
+        """Handle active speaker changes for VAD"""
+        if not self.vad_enabled or not self.event_loop:
+            return
+
+        # The participant parameter is the active speaker
+        participant_id = participant.get("id") if participant else None
+
+        if participant_id == self.participant_id:
+            if not self.participant_speaking:
+                self.participant_speaking = True
+                asyncio.run_coroutine_threadsafe(
+                    self.push_frame(UserStartedSpeakingFrame()),
+                    self.event_loop
+                )
+        else:
+            if self.participant_speaking:
+                self.participant_speaking = False
+                asyncio.run_coroutine_threadsafe(
+                    self.push_frame(UserStoppedSpeakingFrame()),
+                    self.event_loop
+                )
+
+
+class DailyEventHandler(EventHandler):
+    """Event handler for Daily.co events"""
+
+    def __init__(self, transport: DailyTransport):
+        super().__init__()
+        self.transport = transport
+
+    def on_participant_joined(self, participant: dict) -> None:
+        """Called when a participant joins"""
+        self.transport.handle_participant_joined(participant)
+        # Set up audio renderer for this participant
+        participant_id = participant.get("id")
+        if participant_id and not participant.get("local"):
+            self.transport.setup_audio_renderer(participant_id)
+
+    def on_participant_left(self, participant: dict, reason: str) -> None:
+        """Called when a participant leaves"""
+        self.transport.handle_participant_left(participant)
+
+    def on_active_speaker_changed(self, participant: dict) -> None:
+        """Called when the active speaker changes"""
+        self.transport.handle_active_speaker_change(participant)
+
+    def on_error(self, message: str) -> None:
+        """Called when an error occurs"""
+        print(f"Daily error: {message}")
+
+
+class DailyTransportFactory:
+    """Factory for creating Daily transports"""
+
+    @staticmethod
+    def create_transport(
+        room_url: str,
+        token: str,
+        **kwargs
+    ) -> DailyTransport:
+        """
+        Create a Daily transport instance.
+
+        Args:
+            room_url: The Daily room URL
+            token: The meeting token for authentication
+            **kwargs: Additional transport configuration
+
+        Returns:
+            Configured DailyTransport instance
+        """
+        return DailyTransport(
+            room_url=room_url,
+            token=token,
+            sample_rate=kwargs.get("sample_rate", 16000),
+            channels=kwargs.get("channels", 1),
+            vad_enabled=kwargs.get("vad_enabled", True),
+            vad_threshold=kwargs.get("vad_threshold", 0.5)
+        )

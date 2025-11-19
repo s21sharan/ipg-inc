@@ -137,3 +137,41 @@ Enhanced campaign creation UI with auto-growing textareas, persistent save funct
 
 ### #Background
 Session focused on UX improvements for campaign creation. Auto-growing textareas prevent page scrolling while providing flexibility. Save buttons allow iterative editing without losing context. "Create from Prompt" offers AI-assisted campaign creation workflow.
+
+## 2025-11-18 – Compact Session
+
+### #CurrentFocus
+Built standalone Python/Pipecat voice agent backend with Daily.co integration for conducting AI-moderated interviews.
+
+### #SessionChanges
+- Created ipg-voice-agent/ directory with complete Python backend structure
+- Built Pydantic models for discussion guides (Statement, Conversation, Question step types)
+- Implemented format converter between Supabase campaign schema and agent guide format
+- Created Supabase client for fetching campaigns and saving interview transcripts
+- Built Daily.co client for WebRTC room management and token generation
+- Implemented guide engine with step transitions, timing logic, and probe selection
+- Created Daily.co transport layer for Pipecat audio streaming
+- Built main Pipecat agent with Deepgram STT, Cartesia TTS, and OpenAI LLM orchestration
+- Implemented FastAPI server with session management and REST endpoints
+- Created digital twin profiling system for generating personality profiles from transcripts
+- Added conversation logging utilities saving to files and Supabase
+- Built test client with HTML/JavaScript for standalone testing
+- Created Dockerfile and docker-compose.yml for containerized deployment
+- Fixed Python dependency conflicts (aiohttp, httpx, numpy versions) by loosening version constraints
+- Updated CameraView.tsx to integrate with voice agent backend API
+- Created Supabase migration for interviews, transcript_entries, and digital_twin_profiles tables
+
+### #NextSteps
+- Run Supabase SQL migration to create interview tables
+- Fix nginx.conf mounting error in docker-compose (file vs directory issue)
+- Test voice agent backend startup and health check endpoint
+- Complete full integration test: Next.js app → Python backend → Daily.co → Voice interview
+- Test campaign format conversion and guide execution flow
+
+### #BugsAndTheories
+- Docker dependency conflicts ⇒ Exact version pins incompatible (fixed: use >= constraints)
+- nginx mount error ⇒ nginx.conf file doesn't exist, docker-compose trying to mount non-existent file
+- Pipecat version conflicts ⇒ pipecat-ai 0.0.39 requires specific numpy/aiohttp versions (fixed: flexible ranges)
+
+### #Background
+Built production-ready voice interview agent as standalone Python service using Pipecat framework. Integrates with existing Next.js campaign system via format converters. Uses Daily.co for WebRTC instead of raw WebSocket per user preference. Agent conducts interviews following structured discussion guides with three step types, intelligent probe selection, and natural conversation flow. Generates digital twin profiles for simulation. All API keys already configured from existing .env.local.

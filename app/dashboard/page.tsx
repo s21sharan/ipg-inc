@@ -114,6 +114,7 @@ export default function Dashboard() {
 
       // Create a campaign object from the drafted data
       const drafted: Campaign = {
+        id: `draft-${Date.now()}`, // Temporary ID for drafted campaign
         name: data.basicDetails.name,
         title: data.basicDetails.title,
         caption: data.basicDetails.caption,
@@ -171,16 +172,16 @@ export default function Dashboard() {
                     <label className="block text-sm font-medium text-gray-700 mb-1.5">URL</label>
                     <div className="flex items-center gap-2 bg-gray-50 border border-gray-200 rounded-lg p-3">
                       <a
-                        href={`${window.location.origin}/campaign/${viewingCampaign.id}`}
+                        href={`${window.location.origin}/interview/${viewingCampaign.id}`}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="text-sm text-blue-600 hover:text-blue-700 underline break-all flex-1"
                       >
-                        {`${window.location.origin}/campaign/${viewingCampaign.id}`}
+                        {`${window.location.origin}/interview/${viewingCampaign.id}`}
                       </a>
                       <button
                         onClick={() => {
-                          navigator.clipboard.writeText(`${window.location.origin}/campaign/${viewingCampaign.id}`);
+                          navigator.clipboard.writeText(`${window.location.origin}/interview/${viewingCampaign.id}`);
                         }}
                         className="text-gray-400 hover:text-gray-600 flex-shrink-0 transition-colors"
                         title="Copy URL"
@@ -228,11 +229,11 @@ export default function Dashboard() {
                     <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 mb-6">
                       <div className="flex items-center justify-between gap-3">
                         <code className="text-sm text-blue-600 break-all flex-1">
-                          {`${window.location.origin}/campaign/${viewingCampaign.id}`}
+                          {`${window.location.origin}/interview/${viewingCampaign.id}`}
                         </code>
                         <button
                           onClick={() => {
-                            navigator.clipboard.writeText(`${window.location.origin}/campaign/${viewingCampaign.id}`);
+                            navigator.clipboard.writeText(`${window.location.origin}/interview/${viewingCampaign.id}`);
                           }}
                           className="flex-shrink-0 text-gray-400 hover:text-gray-600 transition-colors"
                           title="Copy URL"

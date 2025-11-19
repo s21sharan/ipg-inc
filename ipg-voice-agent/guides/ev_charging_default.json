@@ -1,0 +1,73 @@
+[
+  {
+    "id": "1",
+    "name": "Kickoff",
+    "type": "statement",
+    "content": "Thank you for joining us today. We're talking with EV owners to understand charging experiences—what's convenient, what's frustrating, and what could be improved. Your honest insights will help shape a more accessible and user-friendly charging future.",
+    "maxDuration": "1"
+  },
+  {
+    "id": "1762729396681",
+    "name": "Daily Charging Habits",
+    "type": "conversation",
+    "goals": "Understand how participants currently charge their electric vehicles.\nIdentify common frustrations or pain points during the charging process.\nLearn what factors influence when, where, and how people choose to charge.",
+    "content": "",
+    "persona": "David - The Curious Friend",
+    "maxDuration": "5"
+  },
+  {
+    "id": "1762729414208",
+    "name": "Frustrations and Challenges",
+    "type": "question",
+    "content": "",
+    "question": "What are some frustrations or challenges you've experienced while charging your EV?",
+    "probeDepth": "1-2",
+    "maxDuration": "3",
+    "probeQuestions": "Have you ever had trouble finding an available charging station?\nAre there any issues with speed, cost, or reliability?\nDo you plan ahead for charging, or is it more spontaneous?\nHow does this affect your overall satisfaction with owning an EV?"
+  },
+  {
+    "id": "1762729424567",
+    "name": "Charging Location Preferences",
+    "type": "conversation",
+    "goals": "Explore where participants prefer to charge their EVs and why.\nUnderstand the trade-offs they make between home, work, and public charging.\nIdentify what makes a charging location ideal for them.",
+    "content": "",
+    "persona": "David - The Curious Friend",
+    "maxDuration": "4"
+  },
+  {
+    "id": "1762729434890",
+    "name": "Future Improvements",
+    "type": "question",
+    "content": "",
+    "question": "If you could wave a magic wand and change anything about EV charging, what would it be?",
+    "probeDepth": "2-3",
+    "maxDuration": "4",
+    "probeQuestions": "What specific features would make charging more convenient?\nHow important is charging speed versus cost for you?\nWould you prefer more charging stations or better quality stations?\nWhat would make you more confident about long-distance EV travel?"
+  },
+  {
+    "id": "1762729445123",
+    "name": "Technology and Apps",
+    "type": "conversation",
+    "goals": "Understand how participants use technology to manage charging.\nLearn about their experiences with charging apps and payment systems.\nIdentify pain points in the digital experience.",
+    "content": "",
+    "persona": "David - The Curious Friend",
+    "maxDuration": "3"
+  },
+  {
+    "id": "1762729456789",
+    "name": "Comparison to Gas Stations",
+    "type": "question",
+    "content": "",
+    "question": "How does your EV charging experience compare to your previous experience with gas stations?",
+    "probeDepth": "1-2",
+    "maxDuration": "3",
+    "probeQuestions": "What do you miss about gas stations, if anything?\nWhat aspects of EV charging are better than refueling with gas?\nHow has the transition affected your daily routine?"
+  },
+  {
+    "id": "3",
+    "name": "Signoff",
+    "type": "statement",
+    "content": "Thanks for your time and thoughtful responses. We appreciate your help in shaping better EV charging for everyone. Your insights will directly contribute to improving the charging experience for current and future EV owners.",
+    "maxDuration": "1"
+  }
+]

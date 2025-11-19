@@ -1,0 +1,80 @@
+version: '3.8'
+
+services:
+  voice-agent:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: ipg-voice-agent
+    restart: unless-stopped
+    ports:
+      - "8001:8001"
+    environment:
+      # OpenAI Configuration
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - OPENAI_MODEL_NAME=${OPENAI_MODEL_NAME:-gpt-4o-mini}
+
+      # Deepgram Configuration
+      - DEEPGRAM_API_KEY=${DEEPGRAM_API_KEY}
+
+      # Cartesia Configuration
+      - CARTESIA_API_KEY=${CARTESIA_API_KEY}
+      - CARTESIA_VOICE_ID=${CARTESIA_VOICE_ID:-95856005-0332-41b0-935f-352e296aa0df}
+
+      # Daily.co Configuration
+      - DAILY_API_KEY=${DAILY_API_KEY}
+      - DAILY_DOMAIN=${DAILY_DOMAIN}
+
+      # Supabase Configuration
+      - SUPABASE_URL=${SUPABASE_URL}
+      - SUPABASE_ANON_KEY=${SUPABASE_ANON_KEY}
+      - SUPABASE_SERVICE_KEY=${SUPABASE_SERVICE_KEY}
+
+      # Server Configuration
+      - SERVER_HOST=0.0.0.0
+      - SERVER_PORT=8001
+      - LOG_LEVEL=${LOG_LEVEL:-INFO}
+      - PIPECAT_LOG_LEVEL=${PIPECAT_LOG_LEVEL:-INFO}
+
+      # Optional AWS Configuration
+      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID:-}
+      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY:-}
+      - AWS_S3_BUCKET=${AWS_S3_BUCKET:-}
+      - AWS_REGION=${AWS_REGION:-us-west-2}
+    volumes:
+      - ./logs:/app/logs
+      - ./guides:/app/guides
+    networks:
+      - voice-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8001/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # Optional: Nginx reverse proxy (commented out - create nginx.conf to enable)
+  # nginx:
+  #   image: nginx:alpine
+  #   container_name: ipg-nginx
+  #   restart: unless-stopped
+  #   ports:
+  #     - "80:80"
+  #     - "443:443"
+  #   volumes:
+  #     - ./nginx.conf:/etc/nginx/nginx.conf:ro
+  #     - ./ssl:/etc/nginx/ssl:ro
+  #   networks:
+  #     - voice-network
+  #   depends_on:
+  #     - voice-agent
+
+networks:
+  voice-network:
+    driver: bridge
+
+volumes:
+  logs:
+    driver: local
+  guides:
+    driver: local
