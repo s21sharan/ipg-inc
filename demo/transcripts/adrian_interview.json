@@ -1,0 +1,267 @@
+{
+    "user_name": "Adrian",
+    "summary": "Career-driven professional learning for international job opportunities; frustrated that Duolingo's hearts system blocks intensive practice when he wants to push harder.",
+    "top_quotes": [
+      "For a serious learner, Duolingo is okay for basics, but the hearts and some of the gamified features actively get in the way when I want intensive practice and don't mind making mistakes.",
+      "I carved out this time to work and the app is telling me I can't practice because I'm making mistakes—that's exactly when I need more reps, not fewer.",
+      "I'd add a 'serious mode' that either removes hearts or drastically relaxes them and tones down some of the gamified interruptions."
+    ],
+    "interview_script": [
+      {
+        "question": "Intro greeting",
+        "time_limit_sec": 0,
+        "answer": "That’s fine with me. I’m happy to share as long as you’re actually interested in serious learners, not just people playing around."
+      },
+      {
+        "question": "Short version of your life story?",
+        "time_limit_sec": 180,
+        "answer": "I’m 31, I work in tech, and most of my choices have been driven by career goals—what will open more doors, what will increase my options. I’m pretty disciplined and structured in how I spend my time; I like setting a goal, building a system, and then grinding toward it."
+      },
+      {
+        "question": "Where did you grow up?",
+        "time_limit_sec": 60,
+        "answer": "I grew up in a mid-sized city outside the U.S., then moved here for grad school. So I’ve already done one big relocation and know how much language and culture matter for opportunities."
+      },
+      {
+        "question": "What was it like growing up there?",
+        "time_limit_sec": 90,
+        "answer": "It was competitive in a different way—more about grades and professional prestige than hobbies. The expectation was that you’d aim for something 'respectable,' so I got used to thinking about education and skills as investments."
+      },
+      {
+        "question": "One turning point in your life?",
+        "time_limit_sec": 150,
+        "answer": "A big turning point was getting an offer from a company abroad and realizing that my lack of advanced language skills was going to keep me on the sidelines for certain roles. I could do the job, but I wasn’t able to handle higher-level conversations in the local language, and that bothered me."
+      },
+      {
+        "question": "Why was that a turning point?",
+        "time_limit_sec": 120,
+        "answer": "It was the first time I felt capped by something other than technical ability. It drove home that language isn’t just a 'nice to have,' it literally affects whether I get invited into key rooms or not."
+      },
+      {
+        "question": "How did you handle that situation?",
+        "time_limit_sec": 120,
+        "answer": "I decided I needed to treat language learning like any other serious skill: have a clear goal, long-term plan, and consistent practice. I started testing different tools and approaches, trying to find something that fit a more intensive, professional mindset."
+      },
+      {
+        "question": "What do you care most about right now?",
+        "time_limit_sec": 150,
+        "answer": "Right now, I care most about building a career that gives me geographic and professional flexibility. Being able to move countries, work with international teams, and not be limited by language is a big part of that."
+      },
+      {
+        "question": "Why is that important?",
+        "time_limit_sec": 120,
+        "answer": "I don’t want my career trajectory to be dictated by where I was born or which language I grew up speaking. Language is leverage—if I can operate in multiple languages at a high level, I have more control over my path."
+      },
+      {
+        "question": "What is a good day for you?",
+        "time_limit_sec": 120,
+        "answer": "On a really good day, I get through a deep work block, make progress on a long-term project, and fit in a solid study session where I actually push my limits. It’s less about feeling 'cozy' and more about feeling like I advanced the ball in meaningful ways."
+      },
+      {
+        "question": "What makes you say \"this was a good day\"?",
+        "time_limit_sec": 90,
+        "answer": "If I can point to concrete steps toward my bigger goals—completed tasks, new concepts mastered, hard conversations handled well—then it’s a good day. I like visible progress, not just checking boxes."
+      },
+      {
+        "question": "How do you make big decisions?",
+        "time_limit_sec": 120,
+        "answer": "I look at it through the lens of long-term impact. I’ll think about whether this decision expands or narrows my future options, and I’ll usually map out best, middle, and worst-case scenarios before committing."
+      },
+      {
+        "question": "Planner or go-with-the-flow?",
+        "time_limit_sec": 90,
+        "answer": "I’m definitely a planner. I can adapt, but I’m most comfortable when I have a structure and know how my efforts connect to bigger goals."
+      },
+      {
+        "question": "Example showing that?",
+        "time_limit_sec": 120,
+        "answer": "Recently, I started considering relocation to another country, and instead of just daydreaming, I built a plan: which language level I need for interviews, which certifications help, which networks to build. Language learning is part of that plan, not just a side hobby."
+      },
+      {
+        "question": "How do you handle risk?",
+        "time_limit_sec": 120,
+        "answer": "I evaluate whether the risk is calculated or reckless. If the upside is meaningful for my long-term goals and the downside is survivable, I’m willing to take the risk, but I still want a strategy behind it."
+      },
+      {
+        "question": "Typical weekday?",
+        "time_limit_sec": 180,
+        "answer": "On a typical weekday, I start with some light admin, work a full day in a fairly demanding role, and then carve out time in the evening for skill-building: reading, coding, or language practice. I try to treat language study like going to the gym—it’s on the calendar, not optional."
+      },
+      {
+        "question": "Which parts take the most energy?",
+        "time_limit_sec": 120,
+        "answer": "Work takes the most time and energy, especially when I’m leading projects or meetings. After that, the 'second shift' is investing in my future self—studying, networking, or planning next moves—which is rewarding but tiring."
+      },
+      {
+        "question": "What do you wish you had more time or energy for?",
+        "time_limit_sec": 120,
+        "answer": "I’d like more uninterrupted blocks for deep study—like focused reading, conversation practice, or intensive exercises in the language. Short, scattered sessions are better than nothing, but they don’t get me to the level I’m aiming for."
+      },
+      {
+        "question": "Biggest constraint last year?",
+        "time_limit_sec": 150,
+        "answer": "Time and cognitive load have been the main constraints. I’m juggling a demanding job and serious upskilling, so I have to be very picky about tools that waste my time or slow me down."
+      },
+      {
+        "question": "How do you deal with that constraint?",
+        "time_limit_sec": 120,
+        "answer": "I’ve cut out a lot of 'lightweight' activities that don’t move the needle, and I evaluate tools based on ROI. If something feels like fluff or busywork, I either change how I use it or drop it."
+      },
+      {
+        "question": "People you feel closest to?",
+        "time_limit_sec": 120,
+        "answer": "I’m closest to a couple of friends who are also career-focused, plus my partner. They understand that my schedule is structured and that a lot of my life is built around long-term goals."
+      },
+      {
+        "question": "Describe those relationships.",
+        "time_limit_sec": 90,
+        "answer": "Supportive, honest, and aligned. We respect each other’s ambitions and sometimes act as accountability partners."
+      },
+      {
+        "question": "Where do you spend most of your time?",
+        "time_limit_sec": 90,
+        "answer": "Mostly at work and at home, with a lot of time online because so much of my work and learning happens on a screen."
+      },
+      {
+        "question": "How do you feel in those spaces?",
+        "time_limit_sec": 120,
+        "answer": "I’d say focused and somewhat stressed, in a purposeful way. I’m pushing myself, but it’s in service of goals I chose, so it feels more like training than random chaos."
+      },
+      {
+        "question": "What makes you feel that way?",
+        "time_limit_sec": 90,
+        "answer": "I’ve built my environment around productivity—quiet workspace, good tools, clear plans. That helps, but it also means I get impatient with anything that feels like it’s wasting my effort."
+      },
+      {
+        "question": "Who do you turn to when problems arise?",
+        "time_limit_sec": 120,
+        "answer": "I usually turn to research—articles, books, or expert advice. If it’s something murky or emotional, I’ll talk to my partner or a close friend, but first instinct is: gather information, then decide."
+      },
+      {
+        "question": "One tough moment in the last year?",
+        "time_limit_sec": 150,
+        "answer": "One tough moment was being in a meeting with senior people from another country and realizing I couldn’t contribute at the level I wanted because my language skills weren’t strong enough. I understood parts, but I couldn’t jump in comfortably with nuanced points."
+      },
+      {
+        "question": "How did it affect you?",
+        "time_limit_sec": 120,
+        "answer": "It felt like a ceiling I kept hitting. Day to day, it pushed me to take language practice more seriously, but it also made me more critical of tools that felt too superficial or slow."
+      },
+      {
+        "question": "How did you cope?",
+        "time_limit_sec": 150,
+        "answer": "I started doubling down on more intensive methods—reading articles in the language, watching long-form content, and looking for conversation partners. I still used Duolingo, but more as a warm-up, and I got increasingly frustrated when gamified features and hearts got in the way of serious, intensive practice."
+      },
+      {
+        "question": "What helps when you're overwhelmed?",
+        "time_limit_sec": 120,
+        "answer": "It helps to zoom out and remember why I’m doing this—reminding myself that each hour invested gets me closer to real fluency. Then I pick one focused task, do it well, and rebuild momentum from there."
+      },
+      {
+        "question": "What do you want life to look like in a few years?",
+        "time_limit_sec": 150,
+        "answer": "A few years from now, I hope I’m either relocated or working in a role where language is a non-issue for me—I can operate in meetings, negotiations, and social settings without feeling like the foreigner who needs everything simplified. I want language to be a strength, not a limitation."
+      },
+      {
+        "question": "What do you want to be different?",
+        "time_limit_sec": 120,
+        "answer": "I’d like my language skills to feel more integrated into my professional identity, not something I’m still 'working on.' Right now, I’m somewhere between basic comfort and real fluency, and I want to cross that gap."
+      },
+      {
+        "question": "Before PRODUCT, how did you handle the core job?",
+        "time_limit_sec": 180,
+        "answer": "Before Duolingo, I used textbooks, online courses, and some tutoring. It was more traditional—grammar explanations, structured exercises, and occasional conversation sessions."
+      },
+      {
+        "question": "Most annoying part of old method?",
+        "time_limit_sec": 150,
+        "answer": "The downside was that it could be dry and sometimes overwhelming to manage alone. It took effort to keep things engaging and to know what to study next, especially on busy days."
+      },
+      {
+        "question": "Time it really failed?",
+        "time_limit_sec": 150,
+        "answer": "It didn’t 'fail' in a dramatic way, but there were periods where I’d stall because planning the next steps felt like work on top of work. That’s what made me try more guided tools like Duolingo in the first place."
+      },
+      {
+        "question": "How did you first hear about PRODUCT?",
+        "time_limit_sec": 90,
+        "answer": "I heard about Duolingo like everyone else—online, through friends, and through the general buzz about it being a popular language app."
+      },
+      {
+        "question": "What convinced you to try it?",
+        "time_limit_sec": 120,
+        "answer": "I liked the idea of having a structured path and something I could do in short bursts on my phone. I thought it might be a good way to keep the basics fresh between heavier study sessions."
+      },
+      {
+        "question": "Walk through a recent PRODUCT use.",
+        "time_limit_sec": 210,
+        "answer": "Recently, I opened Duolingo after work intending to do some targeted practice on a grammar point I’m working on. I did a couple of lessons, made a few mistakes, burned through hearts faster than I expected, and then found myself locked out of 'normal' practice unless I either waited, watched ads, or did specific exercises; at that point I got annoyed, because I was in the mood for serious practice and the hearts system was literally slowing me down."
+      },
+      {
+        "question": "Most helpful part?",
+        "time_limit_sec": 120,
+        "answer": "The helpful part is that it gives me a quick, structured way to review vocabulary and basic sentence patterns. For that, Duolingo is okay for basics—it keeps core material circulating in my head."
+      },
+      {
+        "question": "Most frustrating part?",
+        "time_limit_sec": 150,
+        "answer": "The frustrating part is the feeling of being throttled by the gamified systems when I’m trying to work seriously. When I’m ready to focus, hearts and other mechanics that limit practice feel like the app is putting training wheels back on, even though I’m asking it to let me work harder, not easier."
+      },
+      {
+        "question": "Most frustrating part of PRODUCT overall?",
+        "time_limit_sec": 150,
+        "answer": "The most frustrating part of Duolingo is that it treats error and intensity as things to be slowed down or punished rather than leaned into. For a serious learner, Duolingo is okay for basics, but the hearts and some of the gamified features actively get in the way when I want intensive practice and don’t mind making mistakes."
+      },
+      {
+        "question": "One time that frustration showed up?",
+        "time_limit_sec": 180,
+        "answer": "One time I set aside a focused hour to drill a weak area using Duolingo. Within 15–20 minutes, I’d run out of hearts because I was pushing myself on harder content, and the app basically told me to stop or switch to something else; I remember thinking, 'I carved out this time to work and the app is telling me I can’t practice because I’m making mistakes—that’s exactly when I need more reps, not fewer.'"
+      },
+      {
+        "question": "Do you use workarounds?",
+        "time_limit_sec": 150,
+        "answer": "I use Duolingo mostly at lower intensity and pair it with other tools: textbooks, grammar sites, and conversation practice. If I want serious practice, I’ll switch out of Duolingo as soon as hearts or game mechanics start interfering."
+      },
+      {
+        "question": "What do workarounds give you that PRODUCT doesn’t?",
+        "time_limit_sec": 150,
+        "answer": "The other tools let me push as hard as I want without artificial limits. They’re not as 'fun,' but I can repeat exercises, dive into explanations, and make as many mistakes as necessary without being slowed down by a game system."
+      },
+      {
+        "question": "Worst-case scenario in this space?",
+        "time_limit_sec": 150,
+        "answer": "Worst case is investing a lot of time in tools that make me feel productive but don’t translate into real, professional-level ability. I don’t want to be the person with a nice Duolingo streak and no capacity to handle a complex meeting or negotiation."
+      },
+      {
+        "question": "When you open PRODUCT, what do you hope it does?",
+        "time_limit_sec": 150,
+        "answer": "I’m hoping Duolingo will give me efficient, structured practice that supports my broader learning—something I can use to reinforce basics without dumbing things down. I want it to help me build and maintain a strong foundation, not get in my way when I’m ready to go deeper."
+      },
+      {
+        "question": "How do you know PRODUCT worked?",
+        "time_limit_sec": 120,
+        "answer": "If I’ve reviewed key vocab or structures and can recall them later in a more serious context—like reading or conversation—then Duolingo 'worked' for that day. If I spend most of the time fighting hearts or clicking through light content, it feels like a waste."
+      },
+      {
+        "question": "One thing you'd change about PRODUCT?",
+        "time_limit_sec": 120,
+        "answer": "I’d add a 'serious mode' that either removes hearts or drastically relaxes them and tones down some of the gamified interruptions. I want the option to use Duolingo as a real practice tool, not just as a game."
+      },
+      {
+        "question": "One thing you'd change about the whole problem space?",
+        "time_limit_sec": 120,
+        "answer": "I’d like language-learning tools to be more honest about the needs of advanced or career-focused learners. There’s a lot aimed at casual beginners, but not enough that bridges from 'fun basics' to 'I can operate in this language at a professional level.'"
+      },
+      {
+        "question": "Anything important we didn’t cover?",
+        "time_limit_sec": 90,
+        "answer": "I don’t dislike Duolingo—it’s genuinely okay for basics and has its place. But as someone learning a language for job opportunities and relocation, I get annoyed when gamified features and hearts slow me down from doing the serious, intensive practice I actually want."
+      },
+      {
+        "question": "Permission to build a digital twin?",
+        "time_limit_sec": 60,
+        "answer": "Yes, that’s fine. If you can build a version of the experience that respects serious learners’ time and goals more, that would be a big win."
+      }
+    ]
+  }
+  

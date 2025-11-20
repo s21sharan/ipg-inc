@@ -1,0 +1,267 @@
+{
+    "user_name": "Ethan",
+    "summary": "Creative multi-passionate learner who excels in burst-mode sprints; shuts down when streak pressure and 'you're behind' messaging kicks in.",
+    "top_quotes": [
+      "It's great at capturing my short learning sprints, but the moment it starts nagging or making me feel behind, I shut down and disappear instead of re-engaging in a small way.",
+      "I literally just came back, and you're already telling me I'm behind.",
+      "I'd add a 'burst mode' or 'casual mode' that turns down streak pressure, leagues, and 'you missed a day' messaging."
+    ],
+    "interview_script": [
+      {
+        "question": "Intro greeting",
+        "time_limit_sec": 0,
+        "answer": "That’s totally fine. I’m happy to talk—just know I tend to follow my thoughts in loops, kind of like how I use apps."
+      },
+      {
+        "question": "Short version of your life story?",
+        "time_limit_sec": 180,
+        "answer": "I’m 24, a very “many tabs open” kind of person. I’ve bounced between different creative hobbies—drawing, music, writing, random online courses—and I get really into things in bursts, then drift away when the energy shifts."
+      },
+      {
+        "question": "Where did you grow up?",
+        "time_limit_sec": 60,
+        "answer": "I grew up in a fairly normal town, nothing wild, with a lot of time to entertain myself."
+      },
+      {
+        "question": "What was it like growing up there?",
+        "time_limit_sec": 90,
+        "answer": "It was safe but a little boring, which pushed me into my own worlds—books, games, internet rabbit holes. I learned pretty early that I’m happiest when I’m exploring something new, even if I don’t stick with it forever."
+      },
+      {
+        "question": "One turning point in your life?",
+        "time_limit_sec": 150,
+        "answer": "A turning point was realizing I wasn’t “broken” for hopping between interests. I watched a video about “multi-passionate” people and went, “Oh, okay, I’m not failing, I just have a wandering focus.”"
+      },
+      {
+        "question": "Why was that a turning point?",
+        "time_limit_sec": 120,
+        "answer": "Before that, I always felt guilty for not sticking with things long enough to become “amazing” at them. That moment reframed it—my bursts of motivation are a feature, not just a bug, as long as I find ways to use them."
+      },
+      {
+        "question": "How did you handle that realization?",
+        "time_limit_sec": 120,
+        "answer": "I started leaning into short, intense sprints instead of pretending I’m going to do something every single day forever. I still like the idea of consistency, but I know myself enough to plan around waves of energy instead of fighting them."
+      },
+      {
+        "question": "What do you care most about right now?",
+        "time_limit_sec": 150,
+        "answer": "I care about feeling creatively alive and not getting stuck in a boring, drained version of myself. That means having work that pays the bills, but also having enough space to jump into different hobbies and projects when inspiration hits."
+      },
+      {
+        "question": "Why is that important to you?",
+        "time_limit_sec": 120,
+        "answer": "When I’m forced into rigid routines with no room for curiosity, I shut down. I start doing the bare minimum and lose that spark that makes me feel like myself."
+      },
+      {
+        "question": "On a really good day, what are you doing?",
+        "time_limit_sec": 120,
+        "answer": "On a really good day, I’m bouncing between a few things in a fun way—maybe sketching for a bit, then doing a Duolingo sprint, then falling into a documentary about some random topic. It feels like following a trail of “oh that’s interesting” all day."
+      },
+      {
+        "question": "What makes you say \"this was a good day\"?",
+        "time_limit_sec": 90,
+        "answer": "If I followed my curiosity, made or learned something new, and didn’t spend the whole day feeling guilty about what I didn’t do, it was a good day."
+      },
+      {
+        "question": "How do you make big decisions?",
+        "time_limit_sec": 120,
+        "answer": "I usually journal or type out whatever’s in my head first, then talk to someone who’s more grounded than I am. I’m good at brainstorming options, less good at picking one, so outside perspectives help."
+      },
+      {
+        "question": "Planner or go-with-the-flow?",
+        "time_limit_sec": 90,
+        "answer": "Definitely more “go with the flow,” with occasional bursts of intense planning when I’m excited about something."
+      },
+      {
+        "question": "Example that shows that side of you?",
+        "time_limit_sec": 120,
+        "answer": "Recently I got obsessed with the idea of maybe traveling in a year or two, and suddenly I was doing multiple Duolingo lessons a day, watching travel vlogs, and planning routes. Then the wave calmed down and I shifted back to other projects for a bit."
+      },
+      {
+        "question": "How do you decide about risky things?",
+        "time_limit_sec": 120,
+        "answer": "I try to feel it out—what does my gut say, and what does the practical side say? If the excitement outweighs the fear and the consequences aren’t catastrophic, I’ll usually try it at least once."
+      },
+      {
+        "question": "Typical weekday?",
+        "time_limit_sec": 180,
+        "answer": "A typical weekday is work during the day, then a rotating cast of hobbies at night. Some evenings I’m deep into drawing, other nights I’m doing language sprints, other nights I’m just scrolling or gaming. I don’t have one stable “routine” outside of work; it’s more like rotating seasons of focus."
+      },
+      {
+        "question": "What takes the most energy?",
+        "time_limit_sec": 120,
+        "answer": "Work drains a lot of my structured energy. After that, whatever I do has to feel voluntary and interesting or my brain checks out."
+      },
+      {
+        "question": "What do you wish you had more time/energy for?",
+        "time_limit_sec": 120,
+        "answer": "I wish I had slightly more sustained focus for things I actually care about, like languages and certain creative projects. I don’t need to become a robot of consistency, just a little better at not dropping things the second they start to feel like obligations."
+      },
+      {
+        "question": "Biggest constraint in the last year?",
+        "time_limit_sec": 150,
+        "answer": "Mental energy and attention have been the biggest constraints. I have ideas and interests, but when my brain is scattered or tired, I default to low-effort distractions instead of the things I genuinely want to explore."
+      },
+      {
+        "question": "How have you dealt with that constraint?",
+        "time_limit_sec": 120,
+        "answer": "I’ve tried to ride my motivation waves instead of fighting them—doing mini “sprints” when I’m excited and giving myself permission to rest when I’m not. I also try not to sign up for too many rigid commitments."
+      },
+      {
+        "question": "Who are you closest to right now?",
+        "time_limit_sec": 120,
+        "answer": "I’m closest to a small circle of friends who are also creative and a bit chaotic in their interests. We send each other whatever we’re currently obsessed with—music, apps, random deep dives."
+      },
+      {
+        "question": "Describe those relationships in a few words.",
+        "time_limit_sec": 90,
+        "answer": "Supportive, non-judgmental, very “oh you’re into that this week? cool.” We encourage each other’s phases instead of mocking them."
+      },
+      {
+        "question": "Where do you spend most of your time?",
+        "time_limit_sec": 90,
+        "answer": "Mostly at work and at home, with a lot of time online hopping between apps and content."
+      },
+      {
+        "question": "How do you feel in those spaces?",
+        "time_limit_sec": 120,
+        "answer": "I feel mostly safe, sometimes restless. My environment isn’t hostile, it’s just easy to fall into aimless scrolling instead of intentional exploring, which frustrates me later."
+      },
+      {
+        "question": "What makes you feel that way?",
+        "time_limit_sec": 90,
+        "answer": "The same phone that gives me access to Duolingo and cool learning stuff also gives me infinite distraction. If something starts to feel like pressure, my brain quickly switches to something lighter."
+      },
+      {
+        "question": "Who/what do you turn to when problems arise?",
+        "time_limit_sec": 120,
+        "answer": "I usually turn to the internet—articles, videos, forums—and then, if I’m still stuck, I might ask a friend. I like seeing different perspectives before I commit to a solution."
+      },
+      {
+        "question": "One tough moment in the last year?",
+        "time_limit_sec": 150,
+        "answer": "A tough moment was realizing I’d dropped a bunch of things I cared about—drawing, language, a couple of online courses—because they all quietly turned into “to-dos” instead of exciting projects. I felt like I’d let myself down."
+      },
+      {
+        "question": "How did that affect you day to day?",
+        "time_limit_sec": 120,
+        "answer": "For a while, every time I opened an app related to those things, I just felt behind. That “you’re behind” feeling made me shut down and disappear instead of re-engaging in a small way."
+      },
+      {
+        "question": "What did you do to cope or get through it?",
+        "time_limit_sec": 150,
+        "answer": "I took a break from tracking and streaks and tried to come back to things with a “let’s just play with this for 10 minutes” mindset instead of, “You’ve already failed.” It’s still a work in progress, but it helps."
+      },
+      {
+        "question": "What helps when you feel overwhelmed?",
+        "time_limit_sec": 120,
+        "answer": "Doing something tiny and low-stakes helps—one short lesson, one sketch, one page of reading. If an app nags me or makes me feel like I have a backlog, I usually close it and go do something else."
+      },
+      {
+        "question": "What do you hope life looks like in a few years?",
+        "time_limit_sec": 150,
+        "answer": "A few years from now, I hope I’ve kept up enough with a few key interests—like one or two languages and a main creative outlet—that they feel like part of who I am, not just phases I cycled through. I still expect to bounce around, just with a bit more continuity."
+      },
+      {
+        "question": "What would you like to be different compared to today?",
+        "time_limit_sec": 120,
+        "answer": "I’d like less guilt around “inconsistency.” I want tools and routines that work with my bursts of motivation instead of making me feel like I’ve already fallen behind."
+      },
+      {
+        "question": "Before PRODUCT, how did you handle the core job?",
+        "time_limit_sec": 180,
+        "answer": "Before Duolingo, my language learning was mostly random—YouTube videos, phrase lists, maybe an app I’d download and forget about. I’d have these intense bursts where I’d study a lot for a few days and then drift away."
+      },
+      {
+        "question": "Most annoying part of the old way?",
+        "time_limit_sec": 150,
+        "answer": "The annoying part was feeling like I was always starting over. Every new burst of motivation felt like “day one again,” which made it hard to see any long-term progress."
+      },
+      {
+        "question": "Did it ever really fail you?",
+        "time_limit_sec": 150,
+        "answer": "Not a dramatic failure, more this slow, frustrating pattern where I’d be excited, make progress, then drop it and feel like I wasted that energy. It made me hesitant to even start again sometimes."
+      },
+      {
+        "question": "How did you first hear about PRODUCT?",
+        "time_limit_sec": 90,
+        "answer": "Through friends, memes, and just seeing the green owl everywhere. It’s kind of impossible to miss online."
+      },
+      {
+        "question": "What convinced you to try PRODUCT?",
+        "time_limit_sec": 120,
+        "answer": "The idea that I could channel my bursts of motivation into actual structured lessons was appealing. Duolingo looked like something I could binge when I was in the mood and then lightly dip into when the energy dropped."
+      },
+      {
+        "question": "Walk through a recent time you used PRODUCT.",
+        "time_limit_sec": 210,
+        "answer": "Recently, I had a random spike of motivation after watching a movie in another language, so I opened Duolingo and did a bunch of lessons in one sitting—like a little sprint. It felt good; I was in the zone. But over the next few days, the app started pinging me about streaks, leagues, and how I was “falling behind,” and instead of pulling me back in, that pressure made me shut down and disappear for a bit."
+      },
+      {
+        "question": "What part of that experience was most helpful?",
+        "time_limit_sec": 120,
+        "answer": "The most helpful part was how easy it was to ride that wave of motivation. I could jump in, do a string of lessons, and feel like I’d actually moved forward instead of just watching another video."
+      },
+      {
+        "question": "What part was confusing, slow, or frustrating?",
+        "time_limit_sec": 150,
+        "answer": "The frustrating part was how fast the app shifted from “hey, explore this language” to “maintain your streak, don’t fall behind, look at your league.” Once the nagging started and I felt like I was behind some invisible standard, I lost the playful curiosity that got me there in the first place."
+      },
+      {
+        "question": "Most frustrating part of PRODUCT overall?",
+        "time_limit_sec": 150,
+        "answer": "The most frustrating part of Duolingo is that it doesn’t always respect my stop-and-go rhythm. It’s great at capturing my short learning sprints, but the moment it starts nagging or making me feel behind, I shut down and disappear instead of re-engaging in a small way."
+      },
+      {
+        "question": "One time that frustration really showed up?",
+        "time_limit_sec": 180,
+        "answer": "There was a time I came back after a couple of weeks away, did one lesson, and immediately got hit with broken streak reminders, cracked skills, and “your friends are ahead of you” vibes. I remember thinking, “I literally just came back, and you’re already telling me I’m behind,” and I closed the app and didn’t reopen it for a while."
+      },
+      {
+        "question": "Do you use any workarounds or hacks?",
+        "time_limit_sec": 150,
+        "answer": "Sometimes I’ll turn off most notifications so I can use it on my terms. I also treat it like a “pop-in” tool—when I’m excited, I do a bunch at once; when I’m not, I try not to open it so I don’t get the guilt wave."
+      },
+      {
+        "question": "What do those workarounds do that PRODUCT doesn’t?",
+        "time_limit_sec": 150,
+        "answer": "They protect my curiosity. Turning off notifications and ignoring streaks lets me think of Duolingo as a place I can drop into when I’m energized, instead of a judge that’s keeping track of how long I’ve been away."
+      },
+      {
+        "question": "Worst-case scenario for you in this space?",
+        "time_limit_sec": 150,
+        "answer": "Worst case is I start associating language learning with pressure and guilt instead of curiosity and fun. If every time I come back I feel like I’ve already failed, I’m much more likely to just give up and wander off to another hobby."
+      },
+      {
+        "question": "When you open PRODUCT, what are you hoping it will do?",
+        "time_limit_sec": 150,
+        "answer": "I’m hoping Duolingo will capture my bursts of motivation and turn them into real progress, without punishing me when the bursts fade. I want it to feel like a playground I can return to, not a reminder that I can’t stick with things."
+      },
+      {
+        "question": "How do you know PRODUCT \"worked\" for you that day?",
+        "time_limit_sec": 120,
+        "answer": "If I do a few lessons, learn or reinforce some phrases, and leave feeling energized or at least neutral—not guilty or “behind”—then it worked. If I walk away feeling nagged, it didn’t."
+      },
+      {
+        "question": "One thing you'd change about PRODUCT?",
+        "time_limit_sec": 120,
+        "answer": "I’d add a “burst mode” or “casual mode” that turns down streak pressure, leagues, and “you missed a day” messaging. Let the app welcome me back with “cool, you’re here now” instead of “where have you been?”"
+      },
+      {
+        "question": "One thing you'd change about the whole problem space?",
+        "time_limit_sec": 120,
+        "answer": "I’d love if language-learning tools were designed more for people whose energy comes in waves—systems that expect pauses and make it easy to re-enter without feeling like you’ve broken something important."
+      },
+      {
+        "question": "Anything important about you and PRODUCT we didn't cover?",
+        "time_limit_sec": 90,
+        "answer": "Duolingo genuinely helps me channel bursts of motivation into short learning sprints, which I love. It’s just that when the app starts nagging or makes me feel behind, I shut down and disappear, even though I actually like the language and the learning."
+      },
+      {
+        "question": "Permission to build a digital twin?",
+        "time_limit_sec": 60,
+        "answer": "Yeah, that’s fine. If you can build an experience that works with wandering focus instead of against it, I think a lot of people like me would stick around more."
+      }
+    ]
+  }
+  

@@ -1,0 +1,266 @@
+{
+  "user_name": "Jason",
+  "summary": "Exhausted parent juggling work and family; feels punished by the hearts system when he tries to learn after long days and makes mistakes.",
+  "top_quotes": [
+    "After a long day, I finally sit down to try, make some mistakes because I'm human, and then the app basically tells me, 'You're done, come back later or jump through hoops.' It makes me feel punished for trying.",
+    "I hate that on the nights I need kindness the most, hitting the hearts limit makes me feel punished for trying, so I close the app instead of learning.",
+    "I want it to meet me where I am—tired, overextended, but genuinely trying—without making me feel bad for not being perfect."
+  ],
+  "interview_script": [
+    {
+      "question": "Intro greeting",
+      "time_limit_sec": 0,
+      "answer": "That sounds okay. Just know I’m probably going to talk a lot about being tired."
+    },
+    {
+      "question": "Short version of your life story?",
+      "time_limit_sec": 180,
+      "answer": "I’m 36, I work full-time, and I have two kids, so most of my life story right now is “juggling.” I’ve always cared about learning and being kind to people around me, but these days I’m mostly trying to keep everyone fed, on time, and somewhat happy, including myself when I remember."
+    },
+    {
+      "question": "Where did you grow up?",
+      "time_limit_sec": 60,
+      "answer": "I grew up in a small city, pretty normal upbringing—school, family, not a ton of drama."
+    },
+    {
+      "question": "What was it like growing up there?",
+      "time_limit_sec": 90,
+      "answer": "It was stable and family-centered. My parents were busy but very present, and I remember them making time to read or learn things for themselves, which I think is why I still try to carve out a little learning for me, even in the middle of chaos."
+    },
+    {
+      "question": "One turning point in your life?",
+      "time_limit_sec": 150,
+      "answer": "A big turning point was having my first child. Overnight, my time stopped being “mine” in the way it used to be, and I had to relearn how to fit my own goals into the cracks between everyone else’s needs."
+    },
+    {
+      "question": "Why was that a turning point?",
+      "time_limit_sec": 120,
+      "answer": "It changed how I thought about energy and priorities. Suddenly, things like language learning went from “I’ll spend an hour on this” to “maybe I can squeeze in five minutes if no one needs water or help with homework.”"
+    },
+    {
+      "question": "How did you handle that situation?",
+      "time_limit_sec": 120,
+      "answer": "I adjusted my expectations. Instead of big, ambitious plans, I started looking for small, manageable things I could do in short bursts—hence apps like Duolingo. I still care about growing, but it has to fit around everything else."
+    },
+    {
+      "question": "What do you care most about right now?",
+      "time_limit_sec": 150,
+      "answer": "I care most about my family being okay—emotionally, physically, financially—and about not losing myself completely in the process. Learning a language is a little promise to myself that I’m more than just my to-do list."
+    },
+    {
+      "question": "Why is that important?",
+      "time_limit_sec": 120,
+      "answer": "Because it’s very easy for me to put everyone else first and forget that I had interests and plans before kids. Doing something like Duolingo is a small way of saying, “I still exist in here.”"
+    },
+    {
+      "question": "What is a good day for you?",
+      "time_limit_sec": 120,
+      "answer": "On a really good day, the kids are in a decent mood, work isn’t on fire, dinner isn’t a disaster, and I get 10–20 quiet minutes to myself. Maybe I read, maybe I do a Duolingo lesson without being interrupted three times—that feels like a luxury."
+    },
+    {
+      "question": "What makes you say \"this was a good day\"?",
+      "time_limit_sec": 90,
+      "answer": "If everyone made it through the day without major meltdowns, and I did at least one small thing just for me, I feel like it was a good day. It doesn’t have to be glamorous; it just has to feel a little bit balanced."
+    },
+    {
+      "question": "How do you make big decisions?",
+      "time_limit_sec": 120,
+      "answer": "I think about how it affects the kids and our routine, then I think about finances, then I think about my own sanity. I might talk it through with my partner or a close friend, but the kids usually come first in the calculus."
+    },
+    {
+      "question": "Planner or go-with-the-flow?",
+      "time_limit_sec": 90,
+      "answer": "I’m a planner in theory and “go with the flow” in practice. I have plans, then someone gets sick or there’s a school event I forgot about, and everything shifts."
+    },
+    {
+      "question": "Example showing that?",
+      "time_limit_sec": 120,
+      "answer": "I had this idea of doing my Duolingo lesson every evening after dinner, and it worked for about three days. Then there were late meetings, school projects, and bedtime battles, and now I just grab my phone whenever there’s a spare five minutes, like in the car line or before bed."
+    },
+    {
+      "question": "How do you handle risk?",
+      "time_limit_sec": 120,
+      "answer": "I look at whether it could destabilize the kids’ lives or our financial situation. If it’s a “nice to have” that could make things chaotic, I usually hold off; if it’s something that could make life better long-term, I’ll at least consider it seriously."
+    },
+    {
+      "question": "Typical weekday?",
+      "time_limit_sec": 180,
+      "answer": "A typical weekday is wake up, get the kids ready, commute or start work, juggle calls and emails, then rush into the evening shift of homework, activities, dinner, baths, and bedtime. At some point in there, I’ll try to squeeze in a Duolingo lesson—often when I’m already tired and half lying down."
+    },
+    {
+      "question": "Which parts take the most energy?",
+      "time_limit_sec": 120,
+      "answer": "The back-to-back responsibilities are what wear me out—work mode straight into parent mode with very little buffer. By the end of the day, my brain is pretty fried."
+    },
+    {
+      "question": "What do you wish you had more time or energy for?",
+      "time_limit_sec": 120,
+      "answer": "I wish I had more energy for things that are purely for my own growth—language, reading, maybe a hobby that isn’t just “watching something on my phone.” I don’t need a lot, just more than scraps."
+    },
+    {
+      "question": "Biggest constraint last year?",
+      "time_limit_sec": 150,
+      "answer": "Time and mental energy. The schedule is packed, and even when I technically have a free 10 minutes, my brain isn’t always in the shape to do something challenging."
+    },
+    {
+      "question": "How do you deal with that constraint?",
+      "time_limit_sec": 120,
+      "answer": "I’ve leaned into tiny, low-friction habits—things I can do half-asleep with one eye on the kids. That’s why Duolingo appealed to me: quick, light, easy to open and close."
+    },
+    {
+      "question": "People you feel closest to?",
+      "time_limit_sec": 120,
+      "answer": "I’m closest to my kids, my partner, and a couple of friends who understand the “busy parent” life. We don’t see each other as much as we’d like, but we check in when we can."
+    },
+    {
+      "question": "Describe those relationships.",
+      "time_limit_sec": 90,
+      "answer": "Loving, tired, and honest. We care about each other, but we’re all stretched thin."
+    },
+    {
+      "question": "Where do you spend most of your time?",
+      "time_limit_sec": 90,
+      "answer": "Mostly at work and at home, plus a fair amount of time in the car shuttling kids around. My phone comes with me everywhere."
+    },
+    {
+      "question": "How do you feel in those spaces?",
+      "time_limit_sec": 120,
+      "answer": "A mix of safe and stressed. I’m surrounded by people I love, but there’s this constant background hum of “don’t drop any balls,” which is exhausting."
+    },
+    {
+      "question": "What makes you feel that way?",
+      "time_limit_sec": 90,
+      "answer": "There’s always something that needs doing—emails, permission slips, dishes, someone’s mood. Even when I sit down with Duolingo, I’m aware that it’s borrowed time from a long list of tasks."
+    },
+    {
+      "question": "Who do you turn to when problems arise?",
+      "time_limit_sec": 120,
+      "answer": "I usually talk to my partner or a close friend. Sometimes I just sit on the couch and scroll for a few minutes to reset before I deal with it."
+    },
+    {
+      "question": "One tough moment in the last year?",
+      "time_limit_sec": 150,
+      "answer": "A tough moment was when one of the kids was sick for a few weeks and everything else had to be rearranged—work, sleep, routines. Anything that was “optional,” like my own learning, pretty much disappeared."
+    },
+    {
+      "question": "How did it affect you?",
+      "time_limit_sec": 120,
+      "answer": "Day to day, I was running on fumes. Any hope of a consistent habit went out the window, and I felt like I was constantly choosing between rest and doing something “productive” in the tiny pockets of free time."
+    },
+    {
+      "question": "How did you cope?",
+      "time_limit_sec": 150,
+      "answer": "I lowered my expectations a lot. I told myself that keeping everyone fed, safe, and relatively calm was enough, and if I managed a Duolingo lesson now and then, that was a bonus."
+    },
+    {
+      "question": "What helps when you're overwhelmed?",
+      "time_limit_sec": 120,
+      "answer": "Taking a few deep breaths, stepping into another room for five minutes, or doing something small I can actually finish helps—folding a bit of laundry, a short lesson, anything that feels like “I completed a thing.”"
+    },
+    {
+      "question": "What do you want life to look like in a few years?",
+      "time_limit_sec": 150,
+      "answer": "A few years from now, I hope things feel a bit less frantic. I’d love for the kids to be more independent, my schedule to be a little more flexible, and my language skills to actually be at a level where I can use them for travel or conversations, not just app exercises."
+    },
+    {
+      "question": "What do you want to be different?",
+      "time_limit_sec": 120,
+      "answer": "I’d like to have more breathing room—mentally and time-wise—and to feel less guilty when I can’t keep up with everything. I want my attempts to learn, even in small ways, to feel supported, not punished."
+    },
+    {
+      "question": "Before PRODUCT, how did you handle the core job?",
+      "time_limit_sec": 180,
+      "answer": "Before Duolingo, I mostly didn’t handle it at all. I’d occasionally look up phrases before a trip or watch a video, but I didn’t have a regular way to keep a language in my life."
+    },
+    {
+      "question": "Most annoying part of old method?",
+      "time_limit_sec": 150,
+      "answer": "The annoying part was feeling like I had to choose between “do nothing” and “commit serious time that I don’t have.” There wasn’t a middle ground that felt manageable."
+    },
+    {
+      "question": "Time it really failed?",
+      "time_limit_sec": 150,
+      "answer": "On one trip, I realized I barely remembered anything I’d tried to cram beforehand. It wasn’t a disaster, but it did make me wish I had tiny, ongoing practice instead of one big, stressful cram session."
+    },
+    {
+      "question": "How did you first hear about PRODUCT?",
+      "time_limit_sec": 90,
+      "answer": "Through friends, social media, and just seeing the green owl everywhere. People talked about it as something easy and fun to do on your phone."
+    },
+    {
+      "question": "What convinced you to try it?",
+      "time_limit_sec": 120,
+      "answer": "The selling point for me was that it was quick and light. The idea that I could do a lesson in a few minutes while waiting in the car or before bed made it feel possible in my life."
+    },
+    {
+      "question": "Walk through a recent PRODUCT use.",
+      "time_limit_sec": 210,
+      "answer": "Sure—recently I lay down in bed after getting the kids to sleep, remembered I hadn’t done a lesson in a while, and opened Duolingo. I started a lesson, made a few mistakes because my brain was tired, burned through hearts faster than I expected, hit the hearts limit, and suddenly couldn’t keep practicing unless I watched ads or did specific things; at that point, I just felt punished for trying and closed the app."
+    },
+    {
+      "question": "Most helpful part?",
+      "time_limit_sec": 120,
+      "answer": "The helpful part is that it gave me a small, structured moment of “this is just for me,” and I did review some words I hadn’t seen in a bit. When it flows, Duolingo fits nicely into those tiny pockets of time."
+    },
+    {
+      "question": "Most frustrating part?",
+      "time_limit_sec": 150,
+      "answer": "The frustrating part was hitting the hearts limit when I was already tired and doing my best. After a long day, I finally sit down to try, make some mistakes because I’m human, and then the app basically tells me, “You’re done, come back later or jump through hoops.” It makes me feel punished for trying, so I often just close the app."
+    },
+    {
+      "question": "Most frustrating part of PRODUCT overall?",
+      "time_limit_sec": 150,
+      "answer": "The most frustrating part of Duolingo is that it sometimes feels like it’s designed for people who have energy to spare. I like that it’s quick and light, but the hearts make it feel like there’s a penalty for being tired or rusty, and as an overextended person, that hits me a lot."
+    },
+    {
+      "question": "One time that frustration showed up?",
+      "time_limit_sec": 180,
+      "answer": "One evening, after a really rough day, I opened Duolingo as a kind of “I’m doing something for myself” moment. I messed up a few questions, got the “heart” warnings, and then got locked out of normal practice; I literally thought, “Okay, I tried, and now I’m being punished for trying,” and I closed the app and didn’t open it again for a week."
+    },
+    {
+      "question": "Do you use workarounds?",
+      "time_limit_sec": 150,
+      "answer": "Not really in a formal way. My “hack” is just to pick easier lessons or review ones when I’m really tired, so I’m less likely to hit the hearts limit, but that also means I’m not always pushing myself."
+    },
+    {
+      "question": "What do workarounds give you that PRODUCT doesn’t?",
+      "time_limit_sec": 150,
+      "answer": "Choosing easy lessons lets me avoid the “you’re out of hearts” wall when I’m low on energy, but it also means I’m shaping my learning around avoiding punishment rather than what I actually need. I’d rather the app adjust to my situation than me working around its limits."
+    },
+    {
+      "question": "Worst-case scenario in this space?",
+      "time_limit_sec": 150,
+      "answer": "Worst case is I start associating language learning with feeling scolded or blocked instead of supported. If the few minutes I carve out for myself end in frustration, I’m much more likely to give up altogether, because I don’t have extra emotional bandwidth to push through."
+    },
+    {
+      "question": "When you open PRODUCT, what do you hope it does?",
+      "time_limit_sec": 150,
+      "answer": "I’m hoping Duolingo will give me a small, kind, low-friction way to keep a language alive in my life. I want it to meet me where I am—tired, overextended, but genuinely trying—without making me feel bad for not being perfect."
+    },
+    {
+      "question": "How do you know PRODUCT worked?",
+      "time_limit_sec": 120,
+      "answer": "If I finish a lesson, remember a couple of words or phrases, and close the app feeling even slightly better instead of worse, it “worked.” If I leave feeling punished or guilty, it didn’t."
+    },
+    {
+      "question": "One thing you'd change about PRODUCT?",
+      "time_limit_sec": 120,
+      "answer": "I’d change how hearts work for people like me. If I’m showing up at the end of a long day and making an honest effort, I don’t want to be blocked from practicing—I’d rather get gentle feedback and options to keep going at a lower intensity."
+    },
+    {
+      "question": "One thing you'd change about the whole problem space?",
+      "time_limit_sec": 120,
+      "answer": "I’d love if language-learning tools in general were more aware of busy, overextended adults who are doing their best in tiny pockets of time. Less punishment, more flexibility and encouragement would go a long way."
+    },
+    {
+      "question": "Anything important we didn’t cover?",
+      "time_limit_sec": 90,
+      "answer": "I actually like Duolingo a lot—it’s one of the few things I can fit into my life. I just hate that on the nights I need kindness the most, hitting the hearts limit makes me feel punished for trying, so I close the app instead of learning."
+    },
+    {
+      "question": "Permission to build a digital twin?",
+      "time_limit_sec": 60,
+      "answer": "Yes, that’s okay. If it leads to a version that’s more forgiving for tired parents, I’m all for it."
+    }
+  ]
+}

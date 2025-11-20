@@ -1,0 +1,267 @@
+{
+    "user_name": "Riley",
+    "summary": "Thoughtful habit-builder who struggles with stop-and-go patterns; sees every broken streak as confirmation of personal failure rather than normal life stress.",
+    "top_quotes": [
+      "When my streak dies, it feels like confirmation: 'You failed again,' rather than, 'Life happened, pick it back up.'",
+      "I had an 80-something-day streak and then missed a couple of days during a really rough week. When I finally opened the app and saw my streak at zero... I didn't touch Duolingo for almost a month.",
+      "I want habits to feel more like something I can step back into, not something where one break means I 'failed again'."
+    ],
+    "interview_script": [
+      {
+        "question": "Intro greeting",
+        "time_limit_sec": 0,
+        "answer": "That sounds good, thanks. I’m happy to share as long as it’s used anonymously and helps make the experience better."
+      },
+      {
+        "question": "Short version of your life story?",
+        "time_limit_sec": 180,
+        "answer": "I’m 29, I work in marketing, and I’ve always been the kind of person who’s reflective and thoughtful but a bit up and down with my routines. I’ve moved a couple of times, gone through some big life changes, and I tend to process everything by writing and overthinking, which is both a strength and a weakness."
+      },
+      {
+        "question": "Where did you grow up?",
+        "time_limit_sec": 60,
+        "answer": "I grew up in a small town in the Midwest. It was pretty quiet and predictable, very 'everyone knows everyone' vibes."
+      },
+      {
+        "question": "What was it like growing up there?",
+        "time_limit_sec": 90,
+        "answer": "It was safe and stable, but I often felt like I was living in a loop—same people, same days—so I turned inward a lot. I got really into reading, writing, and reflecting on how I felt about things, which is probably why I still journal today."
+      },
+      {
+        "question": "One turning point in your life?",
+        "time_limit_sec": 150,
+        "answer": "A big turning point was when I burned out at my first 'dream job' in a big city. I had pushed myself into this intense routine of work, side projects, exercise, and self-improvement, and then everything kind of collapsed at once and I had to move back home for a while."
+      },
+      {
+        "question": "Why was that a turning point?",
+        "time_limit_sec": 120,
+        "answer": "It forced me to admit that I can’t just add habits forever and expect myself to keep all of them going under stress. I had to rethink the story I tell myself about being someone who 'just needs to be more disciplined,' because in reality I was overloading myself and then beating myself up when things inevitably slipped."
+      },
+      {
+        "question": "How did you handle that situation?",
+        "time_limit_sec": 120,
+        "answer": "After a lot of crying and journaling, I decided to step back and simplify—fewer commitments, more therapy, more honesty about my limits. It wasn’t one dramatic decision, more like a series of small choices to stop pretending I could keep spinning plates indefinitely."
+      },
+      {
+        "question": "What do you care most about right now?",
+        "time_limit_sec": 150,
+        "answer": "I care most about having a life that feels aligned with my values: meaningful work, relationships that feel real, and a sense that I’m growing without destroying myself in the process. I like routines, but I want them to feel supportive, not like another way to judge myself."
+      },
+      {
+        "question": "Why is that important?",
+        "time_limit_sec": 120,
+        "answer": "I’ve seen what happens when I stack too many expectations on myself—something always gives, and I end up feeling like I 'failed' at everything at once. So I’m trying to build a life where I can keep showing up, even imperfectly, instead of burning hot and then disappearing for months."
+      },
+      {
+        "question": "What is a good day for you?",
+        "time_limit_sec": 120,
+        "answer": "On a really good day, I wake up at a decent time, do a bit of journaling, get through my work without feeling frantic, and end the day with something small for myself like reading or language practice. It’s not flashy—just a day where the routines fit around my life instead of crushing me."
+      },
+      {
+        "question": "What makes you say \"this was a good day\"?",
+        "time_limit_sec": 90,
+        "answer": "I feel that way when I’ve been present rather than just rushing from task to task. If I’ve checked in with myself, done one or two meaningful things, and didn’t completely abandon my habits, I go to bed feeling grounded."
+      },
+      {
+        "question": "How do you make big decisions?",
+        "time_limit_sec": 120,
+        "answer": "I usually grab my notebook and write everything out: what I’m afraid of, what I want, and the possible outcomes. Then I might talk it through with a close friend or my therapist to see what I’m not noticing."
+      },
+      {
+        "question": "Planner or go-with-the-flow?",
+        "time_limit_sec": 90,
+        "answer": "I’m a planner by intention and 'go with the flow' by reality. I love making plans and routines, but when stress hits, I tend to drop them and then feel guilty."
+      },
+      {
+        "question": "Example showing that?",
+        "time_limit_sec": 120,
+        "answer": "Recently I made this whole color-coded routine that included Duolingo, journaling, exercise, and cooking, and it worked beautifully for about three weeks. Then a work project got intense, the routine fell apart, and instead of adjusting it, I just avoided the whole thing for a while because it reminded me that I’d 'broken it.'"
+      },
+      {
+        "question": "How do you handle risk?",
+        "time_limit_sec": 120,
+        "answer": "I think about how it lines up with my values and how much regret I’d feel if I didn’t do it. If it feels like it could lead to growth and I can handle the worst-case outcome emotionally, I’ll usually try it, but I need some time to sit with it first."
+      },
+      {
+        "question": "Typical weekday?",
+        "time_limit_sec": 180,
+        "answer": "On a typical weekday, I wake up, scroll a bit, and then get into work—mostly remote but with some meetings that break up the day. In the evenings, I try to do a few 'anchor' habits like journaling, a walk, and, when I’m in a good phase, a Duolingo lesson, but on stressful weeks those things slide more than I want them to."
+      },
+      {
+        "question": "Which parts take the most energy?",
+        "time_limit_sec": 120,
+        "answer": "Mentally, switching between tasks and people at work drains me the most. By the end of the day, I’m often too tired for anything that feels like effort, even if it’s something I technically enjoy like learning a language."
+      },
+      {
+        "question": "What do you wish you had more energy for?",
+        "time_limit_sec": 120,
+        "answer": "I wish I had more energy for the habits that feel like long-term investments in myself—learning languages, deeper reading, creative projects. These are the first things to go when life gets hectic, so they end up living mostly in my journal and not in reality."
+      },
+      {
+        "question": "Biggest constraint last year?",
+        "time_limit_sec": 150,
+        "answer": "The biggest constraint has been emotional bandwidth. I’ve had some family stuff and work stress layered on top of each other, and even when I technically have the time, I don’t have the mental space to keep all my routines going."
+      },
+      {
+        "question": "How do you deal with that constraint?",
+        "time_limit_sec": 120,
+        "answer": "I’ve been trying to be kinder to myself when I inevitably drop things, but I’m still learning. Sometimes I scale back routines to 'bare minimum' versions, but other times I still fall into the pattern of letting everything go and then later feeling like I have to rebuild from scratch."
+      },
+      {
+        "question": "People you feel closest to?",
+        "time_limit_sec": 120,
+        "answer": "I feel closest to my partner, my sibling, and one close friend I talk to almost every week. They’re the people I can be honest with about the weird mix of wanting structure but also feeling crushed by it."
+      },
+      {
+        "question": "Describe those relationships.",
+        "time_limit_sec": 90,
+        "answer": "Honest, emotionally supportive, and full of long conversations. They’re all people who get that I overthink things and don’t judge me for needing time to process."
+      },
+      {
+        "question": "Where do you spend most of your time?",
+        "time_limit_sec": 90,
+        "answer": "I spend most of my time at home and online, since I work remotely. My world is kind of a blend between my apartment and whatever app or tab is open at the moment."
+      },
+      {
+        "question": "How do you feel in those spaces?",
+        "time_limit_sec": 120,
+        "answer": "I feel mostly safe and somewhat supported, but also a bit trapped sometimes. Because my work, social life, and habits all live on the same devices, it’s easy for everything to blur together, including the sense that I’m 'behind' on everything—from emails to Duolingo."
+      },
+      {
+        "question": "What makes you feel that way?",
+        "time_limit_sec": 90,
+        "answer": "The same phone that I use to check in with friends and relax is where I see notifications about tasks I’m neglecting. When Duolingo pops up like, 'It’s time to practice,' on a day I’m already overwhelmed, it feels less like encouragement and more like another reminder that I’ve dropped the ball."
+      },
+      {
+        "question": "Who do you turn to when problems arise?",
+        "time_limit_sec": 120,
+        "answer": "I usually turn to my journal first, just to get my thoughts out in a messy way. After that, if it’s still heavy, I might text a friend or bring it up in therapy to get another perspective."
+      },
+      {
+        "question": "One tough moment in the last year?",
+        "time_limit_sec": 150,
+        "answer": "One tough moment was when a family member had a health scare right as a big product launch was happening at work. I felt torn in two directions and, unsurprisingly, most of my routines—including Duolingo—just stopped overnight."
+      },
+      {
+        "question": "How did it affect you?",
+        "time_limit_sec": 120,
+        "answer": "Day to day, I was in survival mode: doing what had to be done and ignoring everything else. Habits that usually ground me, like journaling and language practice, felt like luxuries I didn’t have headspace for, so every notification from those apps felt like a reminder that I was 'failing again.'"
+      },
+      {
+        "question": "How did you cope?",
+        "time_limit_sec": 150,
+        "answer": "I leaned heavily on my partner and a couple of close friends, and I lowered my expectations of myself on purpose for a while. After things stabilized, I tried to slowly rebuild my routines, but it was hard not to look at the blank streaks and missed days and feel like I was starting from zero again."
+      },
+      {
+        "question": "What helps when you're overwhelmed?",
+        "time_limit_sec": 120,
+        "answer": "It helps to narrow my focus to just one or two small actions and write them down, like 'answer this email' or 'do five minutes of something.' Any sense of progress, even tiny, is better than staring at a long list of things I’m not doing."
+      },
+      {
+        "question": "What do you want life to look like in a few years?",
+        "time_limit_sec": 150,
+        "answer": "A few years from now, I hope my life feels less stop-and-go—more like a steady rhythm than a sprint-and-crash cycle. I’d love to be using the language I’m learning in real conversations and trips, and to have routines that bend with my life instead of snapping every time something stressful happens."
+      },
+      {
+        "question": "What do you want to be different?",
+        "time_limit_sec": 120,
+        "answer": "I’d like to be able to miss a day or a week without it turning into a full reset in my mind. I want habits to feel more like something I can step back into, not something where one break means I 'failed again' and have to disappear for weeks."
+      },
+      {
+        "question": "Before PRODUCT, how did you handle the core job?",
+        "time_limit_sec": 180,
+        "answer": "Before Duolingo, I tried apps, YouTube, and random websites, but I never stuck with any of them for long. I’d do a burst of study, feel good about it, then life would get busy and I’d stop, and by the time I came back I felt like I’d forgotten everything."
+      },
+      {
+        "question": "Most annoying part of old method?",
+        "time_limit_sec": 150,
+        "answer": "The most painful part was the constant sense of restarting from scratch. Every time I opened a book or video again, I felt like, 'Didn’t I already do this?' and it made me question whether I was ever actually making progress."
+      },
+      {
+        "question": "Time it really failed?",
+        "time_limit_sec": 150,
+        "answer": "I remember trying to review a bunch of material right before a trip and realizing I couldn’t recall basic phrases I’d supposedly learned months ago. It made me feel silly and frustrated, like all my previous efforts had just evaporated because I couldn’t keep a steady rhythm."
+      },
+      {
+        "question": "How did you first hear about PRODUCT?",
+        "time_limit_sec": 90,
+        "answer": "I heard about Duolingo from friends and online, and I saw people flexing their streaks and talking about how they’d finally stuck with something. That really appealed to the part of me that loves a good routine."
+      },
+      {
+        "question": "What convinced you to try it?",
+        "time_limit_sec": 120,
+        "answer": "The streak feature and the bite-sized lessons made it feel like, 'Okay, maybe this time I’ll actually stay consistent.' I thought if I could see a streak number grow, it would give me proof that I wasn’t just in another short-lived phase."
+      },
+      {
+        "question": "Walk through a recent PRODUCT use.",
+        "time_limit_sec": 210,
+        "answer": "Sure—recently I decided to 'come back' after a few weeks off. I opened Duolingo, saw that my streak was gone again, felt that familiar little sting of 'here we go, I failed again,' almost closed the app, then convinced myself to do a couple of easier review lessons; by the end I felt a bit better, but also annoyed that I was once again rebuilding from zero."
+      },
+      {
+        "question": "Most helpful part?",
+        "time_limit_sec": 120,
+        "answer": "The most helpful part was realizing that some of the material actually stuck—I wasn’t totally starting over, even though the streak said otherwise. Seeing some answers come back almost automatically reminded me that the time I’d put in before hadn’t completely disappeared."
+      },
+      {
+        "question": "Most frustrating part?",
+        "time_limit_sec": 150,
+        "answer": "The frustrating part was that the app treated me like I was back at day one just because the streak broke. There’s this emotional mismatch where Duolingo says, 'New streak, fresh start!' but inside I’m thinking, 'No, this is yet another thing I kept up for a while and then dropped, and now I’m starting over again.'"
+      },
+      {
+        "question": "Most frustrating part of PRODUCT overall?",
+        "time_limit_sec": 150,
+        "answer": "The most frustrating part of using Duolingo is how binary it makes consistency feel—either you’re 'on a streak' or you’ve 'broken it.' I already have a story in my head about not being able to keep routines under stress, so when my streak dies, it feels like confirmation: 'You failed again,' rather than, 'Life happened, pick it back up.'"
+      },
+      {
+        "question": "One time that frustration showed up?",
+        "time_limit_sec": 180,
+        "answer": "One time I had an 80-something-day streak and then missed a couple of days during a really rough week. When I finally opened the app and saw my streak at zero, it hit me hard; I literally said out loud, 'Of course, there it is, I dropped it again,' closed the app, and didn’t touch Duolingo for almost a month because every time I saw it, it reminded me of that sense of failing at consistency."
+      },
+      {
+        "question": "Do you use workarounds?",
+        "time_limit_sec": 150,
+        "answer": "I sometimes write down phrases I care about in my journal, and I’ve tried using a separate habit tracker that counts 'language time' even if it’s not in Duolingo. Occasionally I’ll listen to podcasts or watch short videos in the language so I feel like I’m still engaged, even if I’m not opening the app."
+      },
+      {
+        "question": "What do workarounds give you that PRODUCT doesn’t?",
+        "time_limit_sec": 150,
+        "answer": "The journal and habit tracker let me see a more forgiving picture of my effort—like, 'Okay, you weren’t totally checked out, you just shifted modes.' They help me feel like my relationship with the language is more than just a streak that lives or dies based on whether I tapped the green owl that day."
+      },
+      {
+        "question": "Worst-case scenario in this space?",
+        "time_limit_sec": 150,
+        "answer": "The worst-case scenario is feeling like I’ve wasted my time and proved myself right about not being able to stay consistent. Emotionally, it’s not just 'I missed a few days,' it’s, 'Here’s more evidence that I can’t stick with things, even things I care about,' and that’s a pretty heavy story to carry."
+      },
+      {
+        "question": "When you open PRODUCT, what do you hope it does?",
+        "time_limit_sec": 150,
+        "answer": "I’m hoping Duolingo will help me build a gentle, sustainable habit that keeps the language alive in my brain without turning into another pass/fail test. I want it to feel like a supportive nudge back into learning, especially after time away, instead of a scoreboard telling me how many times I’ve started over."
+      },
+      {
+        "question": "How do you know PRODUCT worked?",
+        "time_limit_sec": 120,
+        "answer": "If I finish a lesson and feel both a little bit more confident in the language and not ashamed of my effort, then it 'worked.' It doesn’t have to be perfect, but if I log out thinking, 'That was a small, real step,' instead of, 'You should have done more,' that’s a good day."
+      },
+      {
+        "question": "One thing you'd change about PRODUCT?",
+        "time_limit_sec": 120,
+        "answer": "I’d make the streak system more forgiving and less all-or-nothing—maybe a way to pause during stressful periods or a way to visually honor long-term commitment even if there are gaps. I want the app to acknowledge that life happens without erasing the story of all the days I did show up."
+      },
+      {
+        "question": "One thing you'd change about the whole problem space?",
+        "time_limit_sec": 120,
+        "answer": "I’d love language-learning tools to move away from this idea that 'perfect consistency' is the only path to success. Realistically, people have seasons where they can’t show up every day, and it would be nice if the tools were built around coming back, not just never leaving."
+      },
+      {
+        "question": "Anything important we didn’t cover?",
+        "time_limit_sec": 90,
+        "answer": "I think it matters that I actually like Duolingo and care about the language—I’m not lazy or uninterested. It’s just that the current structure makes every break feel like proof that I 'failed again,' and that feeling is what keeps me away for weeks at a time."
+      },
+      {
+        "question": "Permission to build a digital twin?",
+        "time_limit_sec": 60,
+        "answer": "Yes, that’s okay with me. If it helps build a version of the app that people can return to without shame after a rough patch, I’d be really happy about that."
+      }
+    ]
+  }
+  

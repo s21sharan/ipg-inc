@@ -1,0 +1,267 @@
+{
+    "user_name": "Jordan",
+    "summary": "High-achieving college student who crams before trips and exams; emotionally checks out when broken streaks and cracked skills make progress look 'ruined'.",
+    "top_quotes": [
+      "Once I fall behind or mess up a few lessons, I feel like the whole thing is ruined and I don't know how to re-engage without starting over.",
+      "I stared at the screen and thought, 'This whole thing looks ruined now,' closed the app, and didn't come back until I had another trip to prepare for.",
+      "I want a clearer path for re-engaging after a gap that doesn't make me feel like I ruined the app and have to start completely over."
+    ],
+    "interview_script": [
+      {
+        "question": "Intro greeting",
+        "time_limit_sec": 0,
+        "answer": "That sounds good, thanks. I’m happy to talk about it, I’ve definitely had a whole journey with language learning and Duolingo."
+      },
+      {
+        "question": "Short version of your life story?",
+        "time_limit_sec": 180,
+        "answer": "I’m 19, a college student, and I’ve always been a high-achiever: honors classes, APs, test prep, all of it. Most of my life so far has been built around goals and deadlines—do well on the next exam, get into the next program—so when I get interested in something, I tend to go all in right before a big milestone and then completely cool off afterward."
+      },
+      {
+        "question": "Where did you grow up?",
+        "time_limit_sec": 60,
+        "answer": "I grew up in a big city in the U.S. in a family that valued education and 'using your time wisely.' There were always activities, tutors, and some kind of performance metric in the background."
+      },
+      {
+        "question": "What was it like growing up there?",
+        "time_limit_sec": 90,
+        "answer": "It was exciting and competitive—lots of opportunities, but also lots of pressure to stand out. I learned early on that cramming before big events worked for me in school, so that mindset kind of spilled over into everything, including learning languages."
+      },
+      {
+        "question": "One turning point in your life?",
+        "time_limit_sec": 150,
+        "answer": "A turning point was when I prepped like crazy for a big standardized exam and hit the score I wanted, but then felt weirdly empty afterward. I realized I’m really good at sprinting for a goal, but not great at sustaining habits once there’s no exam or trip on the calendar."
+      },
+      {
+        "question": "Why was that a turning point?",
+        "time_limit_sec": 120,
+        "answer": "It made me notice that my whole identity was wrapped around 'the next big thing.' Once I hit a target, I didn’t really know how to engage with the subject just because I enjoyed it, and I started to see that pattern in how I used apps like Duolingo too."
+      },
+      {
+        "question": "How did you handle that situation?",
+        "time_limit_sec": 120,
+        "answer": "Initially I celebrated and then crashed, but after a while I started experimenting with smaller, maintenance-style goals. The truth is, I still slip back into cram mode whenever a big deadline shows up—it’s a hard pattern to break."
+      },
+      {
+        "question": "What do you care most about right now?",
+        "time_limit_sec": 150,
+        "answer": "Right now I care most about setting myself up for future opportunities—study abroad, internships, maybe working internationally. Language fits into that because it feels like this lever I can pull to unlock travel, grades, and career stuff."
+      },
+      {
+        "question": "Why is that important?",
+        "time_limit_sec": 120,
+        "answer": "I’m very outcome-driven; I like seeing tangible proof that my effort turned into something—scores, acceptance letters, achievements. Learning a language feels valuable, but I still subconsciously treat it like another thing I’m supposed to 'win' at instead of an ongoing process."
+      },
+      {
+        "question": "What is a good day for you?",
+        "time_limit_sec": 120,
+        "answer": "On a really good day, I’m on top of my assignments, I’ve knocked out my studying, and I’ve over-prepared for whatever’s coming up. I like that feeling of being ahead of the curve and seeing all my 'progress bars' filled—grades, to-do list, Duolingo tree, everything."
+      },
+      {
+        "question": "What makes you say \"this was a good day\"?",
+        "time_limit_sec": 90,
+        "answer": "If I can look back and see that I made measurable progress—finished chapters, checked off tasks, kept streaks, advanced in skills—that’s a good day. I like the visual satisfaction of things being complete or 'on track.'"
+      },
+      {
+        "question": "How do you make big decisions?",
+        "time_limit_sec": 120,
+        "answer": "I usually look at how it lines up with my long-term goals, like, 'Will this help my resume? Will this help my grades? Will this help me study abroad?' Then I weigh how much effort it will take and if I can fit it into my schedule without crashing."
+      },
+      {
+        "question": "Planner or go-with-the-flow?",
+        "time_limit_sec": 90,
+        "answer": "I’m definitely more of a planner, but with bursts of chaos. I’ll plan everything out and then end up doing most of the work in a concentrated push closer to the deadline."
+      },
+      {
+        "question": "Example showing that?",
+        "time_limit_sec": 120,
+        "answer": "For a recent midterm, I made this beautiful study schedule two weeks out, but I seriously started grinding three days before the exam. Same with Duolingo—before a trip, I’ll suddenly do tons of lessons a day to 'catch up' and fill out my skill tree, even if I’d been pretty inactive right before that."
+      },
+      {
+        "question": "How do you handle risk?",
+        "time_limit_sec": 120,
+        "answer": "I think about how much it could move the needle for me if it works versus the hit I’ll take if it doesn’t. If the upside is big—like a scholarship, opportunity, or unique experience—I’ll usually go for it, even if it means a short-term cram-fest."
+      },
+      {
+        "question": "Typical weekday?",
+        "time_limit_sec": 180,
+        "answer": "A typical weekday is classes during the day, a mix of lectures and labs, then studying and group work in the afternoon or evening. On calmer weeks, I sprinkle in Duolingo sessions, but on heavy weeks I basically switch into 'exam mode' and ignore anything that doesn’t feel urgent—until something like a trip or test brings the language back into the 'urgent' category."
+      },
+      {
+        "question": "Which parts take the most energy?",
+        "time_limit_sec": 120,
+        "answer": "Classes and coursework take the bulk of my time, but mentally, managing deadlines and planning what to cram for next is the most draining. I’m always triaging which subject or task gets my intense focus next."
+      },
+      {
+        "question": "What do you wish you had more time or energy for?",
+        "time_limit_sec": 120,
+        "answer": "I wish I had more steady energy for things that don’t have hard deadlines—like actually maintaining my language skills. I’d love to be someone who practices a little every day instead of someone who goes into hyperdrive before trips or exams and then drops it."
+      },
+      {
+        "question": "Biggest constraint last year?",
+        "time_limit_sec": 150,
+        "answer": "Time and mental bandwidth have been the biggest constraints. There’s always another assignment or project, so things like consistent language practice get pushed down the list until there’s a big reason to care again."
+      },
+      {
+        "question": "How do you deal with that constraint?",
+        "time_limit_sec": 120,
+        "answer": "Honestly, I’ve mostly been doubling down on prioritizing whatever’s closest on the calendar. That works short-term, but it means longer-term goals like 'maintain my Spanish' end up in this weird limbo where I only give them attention in bursts."
+      },
+      {
+        "question": "People you feel closest to?",
+        "time_limit_sec": 120,
+        "answer": "I’m closest to my roommate, a couple of friends from high school who are also in college, and my parents. They’re all used to me disappearing a bit when I’m in cram mode and then resurfacing after exams or trips."
+      },
+      {
+        "question": "Describe those relationships.",
+        "time_limit_sec": 90,
+        "answer": "Supportive, slightly chaotic, and very understanding of my student brain. They tease me about how I suddenly become obsessed with a topic and then go quiet once the big event passes."
+      },
+      {
+        "question": "Where do you spend most of your time?",
+        "time_limit_sec": 90,
+        "answer": "Most of my time is split between campus, my dorm, and my laptop. A lot of my world lives on screens—school portals, study tools, and apps like Duolingo."
+      },
+      {
+        "question": "How do you feel in those spaces?",
+        "time_limit_sec": 120,
+        "answer": "I’d say a mix of supported and stressed. Campus is a place where everyone’s pushing themselves hard, so it’s normal to be in grind mode, but it also means I constantly feel like I should be doing more."
+      },
+      {
+        "question": "What makes you feel that way?",
+        "time_limit_sec": 90,
+        "answer": "There’s this unspoken competition around who is the most productive, most involved, most prepared. Seeing other people post about their streaks or achievements, whether it’s Duolingo or grades, feeds into that feeling that I need to be 'maximizing' everything."
+      },
+      {
+        "question": "Who do you turn to when problems arise?",
+        "time_limit_sec": 120,
+        "answer": "I usually turn to Google or classmates first for practical solutions. If it’s more of a 'what am I doing with my life' kind of problem, I’ll talk to my parents or a close friend."
+      },
+      {
+        "question": "One tough moment in the last year?",
+        "time_limit_sec": 150,
+        "answer": "A tough moment was juggling finals with planning for a study-abroad application. I wanted to show strong language progress on my application but had barely touched Duolingo during the semester, so I suddenly tried to ramp up like crazy while also studying for exams."
+      },
+      {
+        "question": "How did it affect you?",
+        "time_limit_sec": 120,
+        "answer": "Day to day, it meant late nights and this constant feeling that I was behind on everything. I was blasting through Duolingo lessons to fill out my tree and rebuild a streak, but I knew it wasn’t the same as consistent practice, and that bothered me."
+      },
+      {
+        "question": "How did you cope?",
+        "time_limit_sec": 150,
+        "answer": "I powered through by creating a tight schedule and basically living by it for a few weeks. After it was over—after the exams and application—I crashed, took a break from anything that felt like studying, and, as usual, Duolingo was one of the first things to fall off."
+      },
+      {
+        "question": "What helps when you're overwhelmed?",
+        "time_limit_sec": 120,
+        "answer": "It helps to zoom out and ask, 'What actually matters this week?' and let myself drop some things temporarily. I’ll also try to do one or two tasks that give me quick wins, like a short assignment or a single Duolingo lesson, just to feel less stuck—though sometimes I avoid Duolingo if I feel too behind."
+      },
+      {
+        "question": "What do you want life to look like in a few years?",
+        "time_limit_sec": 150,
+        "answer": "A few years from now, I hope I’m living or working somewhere where I actually use the language I’ve been learning—not just telling stories about how I 'almost' studied abroad. I’d like to have a more sustainable rhythm, where I don’t rely on cramming and can treat learning as part of my life rather than a temporary project."
+      },
+      {
+        "question": "What do you want to be different?",
+        "time_limit_sec": 120,
+        "answer": "I’d like to break out of the all-or-nothing mindset. Right now, if I fall behind or mess up a few lessons, I feel like the whole thing is ruined and I don’t know how to re-engage without starting over, and that keeps me stuck."
+      },
+      {
+        "question": "Before PRODUCT, how did you handle the core job?",
+        "time_limit_sec": 180,
+        "answer": "Before Duolingo, I learned languages mainly through school classes, exam prep books, and some YouTube. I’d study intensely before a test or a trip, then drop it almost completely once the event was over."
+      },
+      {
+        "question": "Most annoying part of old method?",
+        "time_limit_sec": 150,
+        "answer": "The most painful part was realizing how much I forgot between those cram periods. It felt like I was constantly rebuilding the same foundation over and over instead of progressing, which is frustrating when you’ve put in so many hours."
+      },
+      {
+        "question": "Time it really failed?",
+        "time_limit_sec": 150,
+        "answer": "Before a trip, I crammed phrases for weeks, felt kind of confident, and then still froze in real conversations. I remember thinking, 'I studied so much, but without steady practice, it didn’t stick the way I expected.'"    
+      },
+      {
+        "question": "How did you first hear about PRODUCT?",
+        "time_limit_sec": 90,
+        "answer": "I heard about Duolingo from classmates and social media, especially people sharing screenshots of their streaks and completed trees. It looked like a way to turn language learning into a game with visible progress."
+      },
+      {
+        "question": "What convinced you to try it?",
+        "time_limit_sec": 120,
+        "answer": "The idea of building a long streak and filling out the skill tree really appealed to me. I liked the thought of seeing a complete tree and a big streak number as proof that I was 'on top of' my language, especially leading up to trips or exams."
+      },
+      {
+        "question": "Walk through a recent PRODUCT use.",
+        "time_limit_sec": 210,
+        "answer": "Recently, before a short trip, I opened Duolingo after being away for a while and saw my streak was gone and some skills were cracked. I felt a pang of regret, then decided to do multiple sessions in a row—reviewing cracked skills, unlocking new ones—until the tree looked more 'full' again; afterward, I felt oddly satisfied by the visuals but also aware that I’d basically done another cram session."
+      },
+      {
+        "question": "Most helpful part?",
+        "time_limit_sec": 120,
+        "answer": "The most helpful part was the structured review of older skills; it reminded me of things I hadn’t thought about in a while. It was nice to see that, under the rust, I still remembered a fair amount."
+      },
+      {
+        "question": "Most frustrating part?",
+        "time_limit_sec": 150,
+        "answer": "It was frustrating to see so many signs that I’d been inactive—broken streak, cracked skills, the tree not looking 'perfect' anymore. Once it looks messy, I start to feel like the app is ruined and I don’t know how to casually re-engage without feeling like I have to fix everything at once."
+      },
+      {
+        "question": "Most frustrating part of PRODUCT overall?",
+        "time_limit_sec": 150,
+        "answer": "The most frustrating part of using Duolingo is that it visually tracks every gap in my consistency—streaks, cracked skills, incomplete sections—so when I fall behind or mess up, it feels like I’ve broken the whole thing. I love seeing a long streak and a full skill tree, but once it’s not perfect, I kind of emotionally check out."
+      },
+      {
+        "question": "One time that frustration showed up?",
+        "time_limit_sec": 180,
+        "answer": "One specific time was after an exam period when I hadn’t opened Duolingo for a couple of weeks. When I finally did, my streak was gone, several skills were cracked, and new units were locked; I stared at the screen and thought, 'This whole thing looks ruined now,' closed the app, and didn’t come back until I had another trip to prepare for."
+      },
+      {
+        "question": "Do you use workarounds?",
+        "time_limit_sec": 150,
+        "answer": "I sometimes use separate vocab lists in Google Docs or Notion for words I care about, especially before exams or travel. I’ve also taken screenshots of a 'clean' tree and a high streak number because it feels good to look at, even if I know it’s not current."
+      },
+      {
+        "question": "What do workarounds give you that PRODUCT doesn’t?",
+        "time_limit_sec": 150,
+        "answer": "The vocab lists feel more targeted to what I need for specific situations, like trips or tests, while Duolingo can feel more general. The screenshots are almost like trophies—they let me remember that there was a time my tree was full and my streak was high, even if the app doesn’t show that anymore."
+      },
+      {
+        "question": "Worst-case scenario in this space?",
+        "time_limit_sec": 150,
+        "answer": "The worst-case scenario is feeling like all my effort only counts if the streak and tree look perfect—and the moment they don’t, it feels like I wasted my time. Emotionally, it’s like, 'I put in all this work, and now because I fell behind, it’s ruined and I have to start over or walk away.'"
+      },
+      {
+        "question": "When you open PRODUCT, what do you hope it does?",
+        "time_limit_sec": 150,
+        "answer": "I’m hoping Duolingo will help me get to a level where I can handle real interactions on trips and not feel lost, and maybe support me for exams. On a more emotional level, I’m also hoping it will give me a sense of visible progress—like a full tree and a strong streak—that makes me feel like my effort is paying off."
+      },
+      {
+        "question": "How do you know PRODUCT worked?",
+        "time_limit_sec": 120,
+        "answer": "If I finish a set of lessons, see skills get strengthened, and the tree looks more 'filled in,' I feel like it worked that day. I also feel good if I recognize phrases later in real life and can tie them back to what I practiced."
+      },
+      {
+        "question": "One thing you'd change about PRODUCT?",
+        "time_limit_sec": 120,
+        "answer": "I’d change how it handles falling behind—maybe a way to 'reset the visuals' or enter some kind of 'rebuild mode' without feeling like everything is broken. I want a clearer path for re-engaging after a gap that doesn’t make me feel like I ruined the app and have to start completely over."
+      },
+      {
+        "question": "One thing you'd change about the whole problem space?",
+        "time_limit_sec": 120,
+        "answer": "I’d love if language-learning tools were designed with realistic student patterns in mind—that people will cram, pause, and come back—and offered more structured ways to recover after intense periods instead of just punishing gaps. Right now it feels like you either stay perfectly consistent or accept that your progress will look messy and 'wrong.'"
+      },
+      {
+        "question": "Anything important we didn’t cover?",
+        "time_limit_sec": 90,
+        "answer": "I genuinely enjoy languages and I actually like Duolingo a lot when I’m 'on a roll.' The problem is that once I fall behind or mess up a few lessons, I look at the broken streak and cracked skills and feel like the whole thing is ruined, and I honestly don’t know how to re-engage without some kind of big dramatic reset."
+      },
+      {
+        "question": "Permission to build a digital twin?",
+        "time_limit_sec": 60,
+        "answer": "Yes, that’s fine with me. If my patterns can help design a better way to come back after gaps, that would make it a lot easier for people like me to stick with the language long-term."
+      }
+    ]
+  }
+  

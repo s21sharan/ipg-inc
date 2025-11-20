@@ -1,0 +1,267 @@
+{
+    "user_name": "Lena",
+    "summary": "Social butterfly who uses Duolingo primarily to compete with coworkers and brag in group chats; prioritizes XP over actual language mastery.",
+    "top_quotes": [
+      "For me, Duolingo is less about the language itself and more about the thrill of outscoring people I know and bragging in group chats.",
+      "I know I'm sometimes choosing easy wins instead of the harder stuff I probably need, just so I can brag in the chat sooner.",
+      "It would be embarrassing to have spent all this time flexing my streak and XP and then freeze in a real conversation."
+    ],
+    "interview_script": [
+      {
+        "question": "Intro greeting",
+        "time_limit_sec": 0,
+        "answer": "Sounds good! I’m happy to help—especially if I can talk about beating my friends on Duolingo."
+      },
+      {
+        "question": "Short version of your life story?",
+        "time_limit_sec": 180,
+        "answer": "I’m 27, I work in a pretty social office, and I’ve always been the kind of person who likes being around people, joking, and turning things into little competitions. I’m not the most serious academic in the room, but I’m usually the one stirring up some friendly rivalry to keep things fun."
+      },
+      {
+        "question": "Where did you grow up?",
+        "time_limit_sec": 60,
+        "answer": "I grew up in a big, loud family in the suburbs. There were always cousins, neighbors, and kids around."
+      },
+      {
+        "question": "What was it like growing up there?",
+        "time_limit_sec": 90,
+        "answer": "It was chaotic but in a good way—lots of noise, games, and teasing. Everything was a contest: who could eat fastest, who finished homework first, who won at board games. That kind of playful competition felt normal and fun to me."
+      },
+      {
+        "question": "One turning point in your life?",
+        "time_limit_sec": 150,
+        "answer": "A turning point was getting my first real job in an office after working retail. I suddenly had a team of people my age, a group chat, and all these chances to turn boring everyday stuff into fun inside jokes and challenges."
+      },
+      {
+        "question": "Why was that a turning point?",
+        "time_limit_sec": 120,
+        "answer": "It made me realize how much I thrive when there’s a social element to everything. I don’t just want to do tasks; I want to do them with people, talk about them, and, if possible, turn them into a game we can all laugh about."
+      },
+      {
+        "question": "How did you handle that situation?",
+        "time_limit_sec": 120,
+        "answer": "I leaned into it—joined group lunches, planned game nights, started little office contests. I noticed I stick with things way more when there’s someone to either compete with or cheer on."
+      },
+      {
+        "question": "What do you care most about right now?",
+        "time_limit_sec": 150,
+        "answer": "I care most about my relationships—friends, family, coworkers—and feeling connected to them. I like being the one who keeps the group energy up and gets people involved in things, whether it’s workouts, language apps, or fantasy leagues."
+      },
+      {
+        "question": "Why is that important?",
+        "time_limit_sec": 120,
+        "answer": "When I’m plugged into my people, everything else feels easier, even the boring parts of life. Shared jokes and shared goals make routines feel less like chores and more like a team sport."
+      },
+      {
+        "question": "What is a good day for you?",
+        "time_limit_sec": 120,
+        "answer": "On a really good day, I’m having fun at work, maybe grabbing dinner or drinks with friends, and dropping memes or screenshots into group chats. It’s a day where I got stuff done but also had plenty of laughs and a couple of I can’t believe you did that moments."
+      },
+      {
+        "question": "What makes you say \"this was a good day\"?",
+        "time_limit_sec": 90,
+        "answer": "If I’ve had a few good conversations, made someone laugh, and had something to brag about in a silly way—like beating a coworker’s Duolingo XP—that’s a good day."
+      },
+      {
+        "question": "How do you make big decisions?",
+        "time_limit_sec": 120,
+        "answer": "I usually talk it out with people—friends, family, coworkers. I like to get a feel for what others think, tell a few jokes to take the edge off, and then decide based on what seems right for my vibe and goals."
+      },
+      {
+        "question": "Planner or go-with-the-flow?",
+        "time_limit_sec": 90,
+        "answer": "I’m more go with the flow, as long as the flow includes people. I’ll plan a bit, but I’m mostly about seeing what happens and then making the most of it with whoever I’m with."
+      },
+      {
+        "question": "Example showing that?",
+        "time_limit_sec": 120,
+        "answer": "A coworker casually mentioned wanting to get back into Duolingo, and by the end of the day I’d started a group chat, added anyone who had the app, and turned it into a weekly XP challenge. I didn’t sit down and build a formal plan; I just threw it out there and watched it snowball."
+      },
+      {
+        "question": "How do you handle risk?",
+        "time_limit_sec": 120,
+        "answer": "I usually ask myself, Will this give me a good story later? If the answer is yes and it won’t wreck my life, I’m pretty likely to go for it, especially if others are involved too."
+      },
+      {
+        "question": "Typical weekday?",
+        "time_limit_sec": 180,
+        "answer": "A typical weekday is work during the day—meetings, chatting with coworkers, getting stuff done—and then some kind of social thing afterward, even if it’s just hanging out online. Somewhere in there, usually in the evening, I’ll check Duolingo, see who’s ahead of me, and decide if I need to do a few lessons to climb back on top before I report my victory in the group chat."
+      },
+      {
+        "question": "Which parts take the most energy?",
+        "time_limit_sec": 120,
+        "answer": "Work and social interactions take most of my energy, but they’re also what I enjoy. What drains me is long stretches of solo, quiet tasks with no one to talk to—that’s when I start reaching for my phone to see what everyone else is doing."
+      },
+      {
+        "question": "What do you wish you had more time or energy for?",
+        "time_limit_sec": 120,
+        "answer": "I wish I had more focused energy to actually sit and really learn the language, not just chase points. I know I sometimes treat Duolingo like a party game instead of a serious tool."
+      },
+      {
+        "question": "Biggest constraint last year?",
+        "time_limit_sec": 150,
+        "answer": "Time and scheduling have been the biggest constraints—between work, commuting, and trying to keep up with different friend groups. It’s hard to carve out solo study time when there’s always another event or chat going on."
+      },
+      {
+        "question": "How do you deal with that constraint?",
+        "time_limit_sec": 120,
+        "answer": "I’ve mostly just woven things into the social fabric of my life. Instead of trying to study alone, I start challenges and competitions so my friends and I can do things together, even if we’re not physically in the same place."
+      },
+      {
+        "question": "People you feel closest to?",
+        "time_limit_sec": 120,
+        "answer": "I’m closest to my sibling, a couple of coworkers I see every day, and my group of friends from college. They’re all very used to me tagging them in memes and starting random group challenges."
+      },
+      {
+        "question": "Describe those relationships.",
+        "time_limit_sec": 90,
+        "answer": "Playful, loyal, and loud. We roast each other, hype each other up, and send way too many screenshots."
+      },
+      {
+        "question": "Where do you spend most of your time?",
+        "time_limit_sec": 90,
+        "answer": "I spend a lot of time at work and commuting, and then a mix of being out with people and hanging out online. Group chats are kind of the glue between all those spaces."
+      },
+      {
+        "question": "How do you feel in those spaces?",
+        "time_limit_sec": 120,
+        "answer": "Mostly supported and entertained, with some stress in the mix. Even when work is hectic, having people around to joke with makes it feel less heavy."
+      },
+      {
+        "question": "What makes you feel that way?",
+        "time_limit_sec": 90,
+        "answer": "I’m rarely really alone—there’s almost always someone to message or talk to. Knowing I can send a quick, Look how much XP I got compared to you message and get a reaction makes my day more fun."
+      },
+      {
+        "question": "Who do you turn to when problems arise?",
+        "time_limit_sec": 120,
+        "answer": "I’ll text someone—my sibling or a friend—and talk it through. Even if they don’t have a solution, just laughing about it with someone makes it feel manageable."
+      },
+      {
+        "question": "One tough moment in the last year?",
+        "time_limit_sec": 150,
+        "answer": "One tough moment was when a close friend moved away unexpectedly. Our hangouts went from in-person all the time to long-distance overnight."
+      },
+      {
+        "question": "How did it affect you?",
+        "time_limit_sec": 120,
+        "answer": "Day to day, it made things feel a bit emptier—less spontaneous coffee or dinner. I started leaning more on apps and group chats to keep that sense of being together, including doing shared things like Duolingo where we could still compete and talk trash."
+      },
+      {
+        "question": "How did you cope?",
+        "time_limit_sec": 150,
+        "answer": "We set up regular video calls and started a couple of ongoing games we could do from anywhere—step challenges, Duolingo streak comparisons, that kind of thing. It helped to have these shared little rituals where we could still interact, even if we were in different cities."
+      },
+      {
+        "question": "What helps when you're overwhelmed?",
+        "time_limit_sec": 120,
+        "answer": "Talking to someone and turning the problem into something we can joke about helps a lot. Doing something small and silly but winnable, like beating a coworker’s XP for the day, also gives me a quick hit of okay, I can still do stuff."
+      },
+      {
+        "question": "What do you want life to look like in a few years?",
+        "time_limit_sec": 150,
+        "answer": "A few years from now, I hope I’m still surrounded by people I like, maybe in a role where I get to work with teams and clients from different countries. I’d love to be able to use my language skills in real conversations, not just in screenshots."
+      },
+      {
+        "question": "What do you want to be different?",
+        "time_limit_sec": 120,
+        "answer": "I’d like to be a bit more intentional about the language side of things—not just the competition. Right now, Duolingo is less about the language itself and more about the thrill of outscoring people I know and bragging in group chats."
+      },
+      {
+        "question": "Before PRODUCT, how did you handle the core job?",
+        "time_limit_sec": 180,
+        "answer": "Before Duolingo, I basically didn’t handle language learning at all unless I had to for school. I might learn a few phrases before a trip, but it was very one-off and I didn’t stick with anything."
+      },
+      {
+        "question": "Most annoying part of old method?",
+        "time_limit_sec": 150,
+        "answer": "The annoying part was that it didn’t feel fun or connected to anything. Studying from a phrase book by myself felt like homework with no social element, so I’d lose interest fast."
+      },
+      {
+        "question": "Time it really failed?",
+        "time_limit_sec": 150,
+        "answer": "On one trip, I realized very quickly that my three or four memorized phrases weren’t going to get me very far. It wasn’t a disaster, but it did make me wish I’d kept up with the language in a more consistent way."
+      },
+      {
+        "question": "How did you first hear about PRODUCT?",
+        "time_limit_sec": 90,
+        "answer": "I saw Duolingo floating around online, but it really clicked when a coworker started bragging about their streak in our team chat and dropping screenshots."
+      },
+      {
+        "question": "What convinced you to try it?",
+        "time_limit_sec": 120,
+        "answer": "What convinced me was when a few coworkers and I all downloaded it and started comparing XP and streaks. The idea that I could learn a language and also roast my friends for being behind on their lessons was irresistible."
+      },
+      {
+        "question": "Walk through a recent PRODUCT use.",
+        "time_limit_sec": 210,
+        "answer": "Recently, I checked our group chat and saw that a coworker had posted their weekly XP summary and was ahead of me. I opened Duolingo right away, did a string of lessons—some new, some easy review—until my XP for the week pulled ahead of theirs; then I took a screenshot of my higher total and sent it back into the chat with a little Nice try, but not today caption."
+      },
+      {
+        "question": "Most helpful part?",
+        "time_limit_sec": 120,
+        "answer": "The most helpful part was the social energy it created. The lessons themselves were fine, but what really motivated me was seeing that I could flip the leaderboard between people I actually know and then joke about it."
+      },
+      {
+        "question": "Most frustrating part?",
+        "time_limit_sec": 150,
+        "answer": "The frustrating part is that I don’t always pick lessons based on what would help my language skills the most; I pick them based on speed and XP. I know I’m sometimes choosing easy wins instead of the harder stuff I probably need, just so I can brag in the chat sooner."
+      },
+      {
+        "question": "Most frustrating part of PRODUCT overall?",
+        "time_limit_sec": 150,
+        "answer": "The most frustrating part of Duolingo is that it doesn’t make much distinction between learning mode and bragging rights mode. I lean heavily into the bragging side, and sometimes I wish the app nudged me a bit more toward actually improving instead of just outscoring my coworkers."
+      },
+      {
+        "question": "One time that frustration showed up?",
+        "time_limit_sec": 180,
+        "answer": "There was a week where my family started a Duolingo challenge, and I went all out to crush them—tons of easy lessons, lots of XP. At the end of the week I was way ahead, which felt great in the group text, but when I tried to actually use the language in a conversation, I realized I’d been on autopilot and hadn’t absorbed as much as I thought."
+      },
+      {
+        "question": "Do you use workarounds?",
+        "time_limit_sec": 150,
+        "answer": "My main hack is using screenshots as social fuel—I’ll send my streak or XP totals into chats to stir people up. Sometimes we’ll also set our own rules, like first to 1,000 XP this week buys drinks, to make it more interesting."
+      },
+      {
+        "question": "What do workarounds give you that PRODUCT doesn’t?",
+        "time_limit_sec": 150,
+        "answer": "The screenshots and side bets add a layer of social stakes that the app itself doesn’t fully provide. Duolingo has leaderboards, but when the competition is people I actually know and we’re talking about it live, it hits way harder."
+      },
+      {
+        "question": "Worst-case scenario in this space?",
+        "time_limit_sec": 150,
+        "answer": "Worst case for me is realizing I’ve been treating it purely like a game and I can’t actually use the language when I need it. It would be embarrassing to have spent all this time flexing my streak and XP and then freeze in a real conversation."
+      },
+      {
+        "question": "When you open PRODUCT, what do you hope it does?",
+        "time_limit_sec": 150,
+        "answer": "Honestly, on most days I open Duolingo hoping it will give me something to compete over with my friends and coworkers—XP, streaks, little wins I can share. Underneath that, I do hope that slowly, all this game time turns into real language ability."
+      },
+      {
+        "question": "How do you know PRODUCT worked?",
+        "time_limit_sec": 120,
+        "answer": "If I’ve moved ahead of at least one person I know in XP or streaks and I remember a couple of new words or phrases, I feel like it worked. It’s the combo of I can brag about this and I actually learned something that feels best."
+      },
+      {
+        "question": "One thing you'd change about PRODUCT?",
+        "time_limit_sec": 120,
+        "answer": "I’d add more social features that are specifically about competing with people you know—team challenges, custom leaderboards, maybe head-to-head matches. I’d also love if it sometimes rewarded doing harder lessons, not just more lessons, so the competition lines up more with real learning."
+      },
+      {
+        "question": "One thing you'd change about the whole problem space?",
+        "time_limit_sec": 120,
+        "answer": "I’d love if language-learning tools embraced the social side more—make it normal to learn with friends, coworkers, or family as a shared activity. A lot of people like me are more likely to show up if it means we get to compete and laugh together."
+      },
+      {
+        "question": "Anything important we didn’t cover?",
+        "time_limit_sec": 90,
+        "answer": "I think it’s important to know that if my friends and coworkers stopped using Duolingo tomorrow, my own usage would probably drop a lot. For me, Duolingo is less about the language itself and more about the thrill of outscoring people I know and bragging in group chats."
+      },
+      {
+        "question": "Permission to build a digital twin?",
+        "time_limit_sec": 60,
+        "answer": "Yeah, that’s fine by me. If you can build a version that leans even more into fun social rivalry while still helping us actually learn, I’m all for it."
+      }
+    ]
+  }
+  

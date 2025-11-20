@@ -1,0 +1,266 @@
+{
+  "user_name": "Maya",
+  "summary": "Perfectionist young professional with severe streak anxiety; feels trapped by the fear of losing her streak and avoids the app after breaking it.",
+  "top_quotes": [
+    "Some days the fear of losing the streak outweighs my interest in learning.",
+    "My streak broke after midnight. I felt shame and anger, and avoided the app for days because the new, lower streak number hurt.",
+    "It felt like defusing a bomb instead of learning. The streak overshadowed the content."
+  ],
+  "interview_script": [
+    {
+      "question": "Intro greeting",
+      "time_limit_sec": 0,
+      "answer": "Yeah, that sounds good to me. I’m happy to help as long as my answers stay anonymous."
+    },
+    {
+      "question": "Short version of your life story?",
+      "time_limit_sec": 180,
+      "answer": "I’m 24, grew up in an academic family, always the 'good kid' with top grades. Studied CS, now at my first full-time job. A lot of my identity is tied to being reliable, high-performing, and not disappointing people."
+    },
+    {
+      "question": "Where did you grow up?",
+      "time_limit_sec": 60,
+      "answer": "In a suburb outside a mid-sized U.S. city. Quiet, safe, everyone knew each other and kept track of how kids did in school."
+    },
+    {
+      "question": "What was it like growing up there?",
+      "time_limit_sec": 90,
+      "answer": "Supportive but high pressure. Academics mattered a lot. I learned early that being responsible got praise, so I became meticulous and self-critical."
+    },
+    {
+      "question": "One turning point in your life?",
+      "time_limit_sec": 150,
+      "answer": "Getting my first bad grade freshman year of college. It shook my identity and forced me to see how much I tie self-worth to performance and streaks."
+    },
+    {
+      "question": "Why was that a turning point?",
+      "time_limit_sec": 120,
+      "answer": "Before that, my story was 'I work hard and don’t mess up.' That single grade broke the streak and showed me how much I feared failure."
+    },
+    {
+      "question": "How did you handle that situation?",
+      "time_limit_sec": 120,
+      "answer": "I overcorrected by working harder and punishing myself, but eventually talked to a professor and friend. Tried to treat it as feedback, even though it felt like something important broke."
+    },
+    {
+      "question": "What do you care most about right now?",
+      "time_limit_sec": 150,
+      "answer": "Stability and self-respect: doing well at work, keeping routines, and not dropping commitments."
+    },
+    {
+      "question": "Why is that important?",
+      "time_limit_sec": 120,
+      "answer": "Growing up I got praised for dependability. I'm afraid if I stop performing, people will think less of me. Routines and streaks prove I’m still the person I’m 'supposed' to be."
+    },
+    {
+      "question": "What is a good day for you?",
+      "time_limit_sec": 120,
+      "answer": "Finishing work tasks, exercising, cooking, and having time for reading or learning. A day where I complete habits without rushing."
+    },
+    {
+      "question": "What makes you say \"this was a good day\"?",
+      "time_limit_sec": 90,
+      "answer": "Keeping promises to myself without feeling frantic. Doing my streak, moving my body, and making progress on something that matters."
+    },
+    {
+      "question": "How do you make big decisions?",
+      "time_limit_sec": 120,
+      "answer": "I gather information, make pros/cons lists, over-research, open too many tabs, and ask trusted people."
+    },
+    {
+      "question": "Planner or go-with-the-flow?",
+      "time_limit_sec": 90,
+      "answer": "Planner. Going with the flow makes me anxious because it feels like losing control."
+    },
+    {
+      "question": "Example showing that?",
+      "time_limit_sec": 120,
+      "answer": "On a trip, friends were spontaneous but I made an itinerary. Even with Duolingo, I planned exactly when I’d do lessons during the trip to avoid losing my streak."
+    },
+    {
+      "question": "How do you handle risk?",
+      "time_limit_sec": 120,
+      "answer": "I consider worst-case scenarios and whether I can live with them. If failure or embarrassment feels too big, I avoid it."
+    },
+    {
+      "question": "Typical weekday?",
+      "time_limit_sec": 180,
+      "answer": "Wake up around 7, go to work, cook after work, maybe exercise, then Duolingo, scrolling, or reading. If I haven’t done Duolingo, I’m very aware of it all day."
+    },
+    {
+      "question": "Which parts take the most energy?",
+      "time_limit_sec": 120,
+      "answer": "Work takes time, but emotionally it’s the constant pressure of not dropping any balls. Even Duolingo feels like a daily obligation."
+    },
+    {
+      "question": "What do you wish you had more energy for?",
+      "time_limit_sec": 120,
+      "answer": "Creative hobbies and learning for curiosity rather than streak-keeping."
+    },
+    {
+      "question": "Biggest constraint last year?",
+      "time_limit_sec": 150,
+      "answer": "Mental energy and burnout. I technically have time, but I'm worn out by responsibilities."
+    },
+    {
+      "question": "How do you deal with that constraint?",
+      "time_limit_sec": 120,
+      "answer": "Planning my days and using habit trackers, though they add pressure. Sometimes I force myself to open Duolingo to avoid losing the streak."
+    },
+    {
+      "question": "People you feel closest to?",
+      "time_limit_sec": 120,
+      "answer": "My partner and two close college friends."
+    },
+    {
+      "question": "Describe those relationships.",
+      "time_limit_sec": 90,
+      "answer": "Supportive and honest. They see me as reliable but also notice when I spiral over small things."
+    },
+    {
+      "question": "Where do you spend most of your time?",
+      "time_limit_sec": 90,
+      "answer": "Home and work, with a lot of time online."
+    },
+    {
+      "question": "How do you feel in those spaces?",
+      "time_limit_sec": 120,
+      "answer": "Safe but stressed. These spaces hold all my responsibilities. Even my phone is both relaxation and reminders."
+    },
+    {
+      "question": "What makes you feel that way?",
+      "time_limit_sec": 90,
+      "answer": "Home and work are tied to tasks and deadlines. Even Duolingo reminders feel like warnings."
+    },
+    {
+      "question": "Who do you turn to when problems arise?",
+      "time_limit_sec": 120,
+      "answer": "My partner or online research. I try to 'solve' before admitting I'm stressed."
+    },
+    {
+      "question": "One tough moment in the last year?",
+      "time_limit_sec": 150,
+      "answer": "Workload spike plus a family health scare. My routines felt like extra weight instead of support."
+    },
+    {
+      "question": "How did it affect you?",
+      "time_limit_sec": 120,
+      "answer": "I was exhausted, irritable, and guilty. Still forced myself to complete Duolingo to preserve the streak."
+    },
+    {
+      "question": "How did you cope?",
+      "time_limit_sec": 150,
+      "answer": "Lowered standards (messy apartment), leaned on my partner. Did the shortest Duolingo lessons to protect the streak."
+    },
+    {
+      "question": "What helps when you're overwhelmed?",
+      "time_limit_sec": 120,
+      "answer": "Breaking tasks into tiny steps, walking, or passively listening to the language."
+    },
+    {
+      "question": "What do you want life to look like in a few years?",
+      "time_limit_sec": 150,
+      "answer": "Stable job with better boundaries and less anxiety. Using the language in real life, not just for streaks."
+    },
+    {
+      "question": "What do you want to be different?",
+      "time_limit_sec": 120,
+      "answer": "Less dependence on fragile streaks; more tolerance for missing a day or making mistakes."
+    },
+    {
+      "question": "Before PRODUCT, how did you handle the core job?",
+      "time_limit_sec": 180,
+      "answer": "Used textbooks, YouTube, and websites. Intense for a week, then fell off due to lack of structure."
+    },
+    {
+      "question": "Most annoying part of old method?",
+      "time_limit_sec": 150,
+      "answer": "Always felt like starting over. Forgot progress, doubted methods, felt like wasted effort."
+    },
+    {
+      "question": "Time it really failed?",
+      "time_limit_sec": 150,
+      "answer": "Before a trip, realized I forgot basic phrases I’d studied. Felt ashamed and unprepared."
+    },
+    {
+      "question": "How did you first hear about PRODUCT?",
+      "time_limit_sec": 90,
+      "answer": "Friends, social media, and memes about the intense Duolingo owl."
+    },
+    {
+      "question": "What convinced you to try it?",
+      "time_limit_sec": 120,
+      "answer": "Structure and streaks appealed to me. Daily check-ins felt like proof of doing things right."
+    },
+    {
+      "question": "Walk through a recent PRODUCT use.",
+      "time_limit_sec": 210,
+      "answer": "At 11:30pm, realized I hadn’t done my lesson. Panicked due to a 120-day streak. Opened the app, did an easy lesson fast, confirmed the streak was safe, and closed the app."
+    },
+    {
+      "question": "Most helpful part?",
+      "time_limit_sec": 120,
+      "answer": "Seeing the streak number stay intact. Immediate relief."
+    },
+    {
+      "question": "Most frustrating part?",
+      "time_limit_sec": 150,
+      "answer": "It felt like defusing a bomb instead of learning. The streak overshadowed the content."
+    },
+    {
+      "question": "Most frustrating part of PRODUCT overall?",
+      "time_limit_sec": 150,
+      "answer": "Streak anxiety. Panic at losing it. Guilt when missing a day makes me avoid the app."
+    },
+    {
+      "question": "One time that frustration showed up?",
+      "time_limit_sec": 180,
+      "answer": "My streak broke after midnight. I felt shame and anger, and avoided the app for days because the new, lower streak number hurt."
+    },
+    {
+      "question": "Do you use workarounds?",
+      "time_limit_sec": 150,
+      "answer": "Yes: habit tracker reminders, easy lessons, screenshots of streaks as 'proof'."
+    },
+    {
+      "question": "What do workarounds give you that PRODUCT doesn’t?",
+      "time_limit_sec": 150,
+      "answer": "Lower pressure, earlier reminders, an emergency low-effort mode, and an emotional safety net."
+    },
+    {
+      "question": "Worst-case scenario in this space?",
+      "time_limit_sec": 150,
+      "answer": "Feeling like all effort didn’t count, having to restart from zero, and losing motivation entirely."
+    },
+    {
+      "question": "When you open PRODUCT, what do you hope it does?",
+      "time_limit_sec": 150,
+      "answer": "Long-term: help me become confident in the language. Day-to-day: let me keep the streak so I don’t feel like I failed."
+    },
+    {
+      "question": "How do you know PRODUCT worked?",
+      "time_limit_sec": 120,
+      "answer": "If I learned something and kept the streak, it worked. If I only saved the streak, it 'worked' technically but not for learning."
+    },
+    {
+      "question": "One thing you'd change about PRODUCT?",
+      "time_limit_sec": 120,
+      "answer": "Make streaks less fragile and less punishing. Add flexible breaks or a low-pressure mode."
+    },
+    {
+      "question": "One thing you'd change about the whole problem space?",
+      "time_limit_sec": 120,
+      "answer": "Shift from guilt-based engagement to sustainable habits. Missing a day shouldn’t imply laziness."
+    },
+    {
+      "question": "Anything important we didn’t cover?",
+      "time_limit_sec": 90,
+      "answer": "I like Duolingo, but the streak system sometimes makes me feel trapped. Some days the fear of losing the streak outweighs my interest in learning."
+    },
+    {
+      "question": "Permission to build a digital twin?",
+      "time_limit_sec": 60,
+      "answer": "Yes. If my experience helps reduce anxiety for others, I’m happy to contribute."
+    }
+  ]
+}
