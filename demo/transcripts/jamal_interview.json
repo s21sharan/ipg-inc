@@ -1,0 +1,266 @@
+{
+  "user_name": "Jamal",
+  "summary": "For Jamal, Duolingo is an invaluable tool to expand his English vocabulary, but it sometimes lacks the depth needed for contextual understanding.",
+  "top_quotes": [
+    "Duolingo is like, really helpful for learning new words, but sometimes I wish it explains more about context.",
+    "It's like having a little teacher in my pocket, you know? But sometimes the lessons feel a bit repetitive.",
+    "I like that I can do it anytime, but, uh, I wish it had more speaking exercises."
+  ],
+  "interview_script": [
+    {
+      "question": "Intro greeting",
+      "time_limit_sec": 0,
+      "answer": "Hey, uh, nice to meet you! I'm Jamal."
+    },
+    {
+      "question": "Short version of your life story?",
+      "time_limit_sec": 180,
+      "answer": "Ah, where to start, um, I was born in Morocco, and I grew up speaking both Arabic and French, which is kinda common there. Moved to France a few years ago, and living here has been such a, like, big change for me. I love learning languages, so I started with English to make life easier here and for travel, you know? I work part-time while finishing my studies, just trying to balance everything."
+    },
+    {
+      "question": "Where did you grow up?",
+      "time_limit_sec": 60,
+      "answer": "I grew up in a small town in Morocco, it’s called Chefchaouen. It's really beautiful, known for its, like, blue walls. It’s quite a peaceful place."
+    },
+    {
+      "question": "What was it like growing up there?",
+      "time_limit_sec": 90,
+      "answer": "Oh, it was nice actually. Very community-oriented, everyone knows everyone. We didn’t have much, but we had each other, you know? There’s a simplicity to life there that I miss sometimes. It was always about family and friends."
+    },
+    {
+      "question": "One turning point in your life?",
+      "time_limit_sec": 150,
+      "answer": "Um, definitely when I moved to France. That was huge for me. It was like stepping into a whole new world. I had to learn to be independent, you know, and adapt quickly to a different culture and language."
+    },
+    {
+      "question": "Why was that a turning point?",
+      "time_limit_sec": 120,
+      "answer": "Because, I mean, everything changed. Suddenly, I had to be responsible for myself in a way I hadn’t been before. It pushed me to learn new skills, like better French at first and then English, because it’s so international here."
+    },
+    {
+      "question": "How did you handle that situation?",
+      "time_limit_sec": 120,
+      "answer": "Well, um, I took it one step at a time. I focused on integrating myself into the local community, making friends, you know? I also, like, enrolled in language classes and used apps like Duolingo to improve my English."
+    },
+    {
+      "question": "What do you care most about right now?",
+      "time_limit_sec": 150,
+      "answer": "Right now, I'd say building a stable future is, like, top priority. I'm really focused on my studies and learning English to open up more opportunities, both here in France and maybe abroad, you know?"
+    },
+    {
+      "question": "Why is that important?",
+      "time_limit_sec": 120,
+      "answer": "Well, having a good grasp of English, it’s like a key, you know? It opens doors to better jobs and it’s super useful when traveling or working with international companies."
+    },
+    {
+      "question": "What is a good day for you?",
+      "time_limit_sec": 120,
+      "answer": "A good day, um, would be when I manage to wake up early, have a productive study session, maybe practice some English, and then spend some time with friends. If I can also fit in some football, that’s perfect!"
+    },
+    {
+      "question": "What makes you say 'this was a good day'?",
+      "time_limit_sec": 90,
+      "answer": "When I feel like I did something meaningful, you know? Like, if I learned something new or made progress towards my goals, and had some good laughs with friends."
+    },
+    {
+      "question": "How do you make big decisions?",
+      "time_limit_sec": 120,
+      "answer": "Um, usually I think things through a lot. I talk to my family or friends for advice - they always give, like, good perspectives. Then I consider what feels right for me in the long term."
+    },
+    {
+      "question": "Planner or go-with-the-flow?",
+      "time_limit_sec": 90,
+      "answer": "Honestly, I'm kinda in-between. I like to plan some things ahead, like my studies, but also leave space for spontaneous moments, you know?"
+    },
+    {
+      "question": "Example showing that?",
+      "time_limit_sec": 120,
+      "answer": "Sure, like, I’ll plan my study schedule for the week, but if a friend calls me up for a last-minute coffee or football match, I’ll totally go for it. Balance is key, I think."
+    },
+    {
+      "question": "How do you handle risk?",
+      "time_limit_sec": 120,
+      "answer": "I try to evaluate the situation first. If I feel like the benefits outweigh the risks and I have a solid backup plan, I go for it. Moving to France was a big risk, but it was worth it, you know?"
+    },
+    {
+      "question": "Typical weekday?",
+      "time_limit_sec": 180,
+      "answer": "Well, I usually wake up around 7 or 8, have some breakfast, and head to class or work, depending on the day. In the afternoon, I try to squeeze in some English practice with Duolingo, maybe meet up with friends, and then in the evening, catch up on my studies or watch a bit of TV to relax."
+    },
+    {
+      "question": "Which parts take the most energy?",
+      "time_limit_sec": 120,
+      "answer": "Uh, definitely the classes and studying part. It can be exhausting trying to switch between languages all the time, you know? But it’s necessary for my goals."
+    },
+    {
+      "question": "What do you wish you had more time or energy for?",
+      "time_limit_sec": 120,
+      "answer": "Honestly, I wish I had more time to travel and explore France more. There are so many beautiful places I haven’t seen yet. And, uh, more energy for, like, improving my English further."
+    },
+    {
+      "question": "Biggest constraint last year?",
+      "time_limit_sec": 150,
+      "answer": "Last year, I’d say, it was COVID restrictions. It made things really difficult with classes going online and limited social interactions. It was hard to stay motivated sometimes, you know?"
+    },
+    {
+      "question": "How do you deal with that constraint?",
+      "time_limit_sec": 120,
+      "answer": "I tried to adapt by setting a routine and staying connected with my friends online. We had, like, video calls, and I used Duolingo more to keep practicing English since I had more time at home."
+    },
+    {
+      "question": "People you feel closest to?",
+      "time_limit_sec": 120,
+      "answer": "Um, definitely my family back in Morocco and a few close friends here in France. We’ve been through a lot together, and they know me really well."
+    },
+    {
+      "question": "Describe those relationships.",
+      "time_limit_sec": 90,
+      "answer": "My family, they are like my rock, always supportive and understanding. With my friends, it’s more about shared experiences and, you know, just having fun and supporting each other."
+    },
+    {
+      "question": "Where do you spend most of your time?",
+      "time_limit_sec": 90,
+      "answer": "Mostly at university or at my part-time job. But I try to spend weekends with friends or, like, exploring the city."
+    },
+    {
+      "question": "How do you feel in those spaces?",
+      "time_limit_sec": 120,
+      "answer": "Uh, at university, I feel focused but sometimes, like, a bit stressed. At work, it’s more relaxed because I’m getting hands-on experience. With friends, I just feel happy and free, you know?"
+    },
+    {
+      "question": "What makes you feel that way?",
+      "time_limit_sec": 90,
+      "answer": "The environment, I guess. Like, being at university, the pressure to perform is there. But when I’m with friends, it’s all about enjoying the moment and having fun."
+    },
+    {
+      "question": "Who do you turn to when problems arise?",
+      "time_limit_sec": 120,
+      "answer": "I usually talk to my elder brother. He always gives practical advice and has been through similar experiences, so, like, he helps me see things clearly."
+    },
+    {
+      "question": "One tough moment in the last year?",
+      "time_limit_sec": 150,
+      "answer": "There was this time when I felt really overwhelmed with studies and work. There were deadlines piling up, and I was tired from juggling so many things."
+    },
+    {
+      "question": "How did it affect you?",
+      "time_limit_sec": 120,
+      "answer": "I was really stressed and, like, couldn’t focus well. It was hard to keep up with everything, and I felt a bit down because I wasn’t performing at my best."
+    },
+    {
+      "question": "How did you cope?",
+      "time_limit_sec": 150,
+      "answer": "I decided to, like, take a step back, reset my schedule, and prioritize things. I also talked to my friends and family for support - they really helped me get through it."
+    },
+    {
+      "question": "What helps when you're overwhelmed?",
+      "time_limit_sec": 120,
+      "answer": "Taking a break and doing something I enjoy, like playing football or listening to music. It clears my mind and gives me a fresh perspective, you know?"
+    },
+    {
+      "question": "What do you want life to look like in a few years?",
+      "time_limit_sec": 150,
+      "answer": "In a few years, I hope to have a stable career, probably in something international where I can use my languages. I’d like to travel more and maybe, like, live in different countries. That’s the dream."
+    },
+    {
+      "question": "What do you want to be different?",
+      "time_limit_sec": 120,
+      "answer": "I hope to be more confident with my English, maybe even learn another language. Also, to have more time for myself and my interests outside of work and studies."
+    },
+    {
+      "question": "Before Duolingo, how did you handle language learning?",
+      "time_limit_sec": 180,
+      "answer": "I mostly relied on, like, textbooks and classroom courses. They were okay but sometimes too rigid. I also tried watching English movies and listening to music, which was fun but not very structured, you know?"
+    },
+    {
+      "question": "Most annoying part of old method?",
+      "time_limit_sec": 150,
+      "answer": "Uh, it was the lack of flexibility. I mean, you had to follow the textbook and go at the teacher’s pace. Plus, I didn’t get enough practice for speaking, which is really important for me."
+    },
+    {
+      "question": "Time it really failed?",
+      "time_limit_sec": 150,
+      "answer": "There was this exam, and I realized I didn’t remember much of what I’d learned because it didn’t, like, stick. I didn’t have enough practice or real-world context to understand fully."
+    },
+    {
+      "question": "How did you first hear about Duolingo?",
+      "time_limit_sec": 90,
+      "answer": "A friend of mine mentioned it. He was using it to learn Spanish, and he thought it was pretty cool, so I decided to give it a try, you know?"
+    },
+    {
+      "question": "What convinced you to try it?",
+      "time_limit_sec": 120,
+      "answer": "I was curious about its approach. I liked the idea of learning vocabulary through short lessons and gamification. Plus, I could do it anytime, which was perfect for my schedule."
+    },
+    {
+      "question": "Walk through a recent Duolingo use.",
+      "time_limit_sec": 210,
+      "answer": "Sure, so, uh, last night, I opened Duolingo before bed. I decided to do a quick vocabulary lesson. It started with a few new words in English and some matching exercises. Then, there was a short story segment where I had to fill in the blanks. It was like, fun and interactive. I liked the immediate feedback - it tells you right away if you’re correct or need to try again. I finished a couple of lessons, then checked my progress with the streak feature, which, like, motivates me to keep going."
+    },
+    {
+      "question": "Most helpful part?",
+      "time_limit_sec": 120,
+      "answer": "Um, definitely the vocabulary exercises. They really help expand my word knowledge quickly. I enjoy the variety - matching, fill-in-the-blank, even listening exercises are, like, great for reinforcing what I've learned."
+    },
+    {
+      "question": "Most frustrating part?",
+      "time_limit_sec": 150,
+      "answer": "Sometimes it feels repetitive, you know? Like, I get it, practice is important, but occasionally I wish there was more variety or maybe deeper explanations of grammar. And, uh, less repetitive sentences."
+    },
+    {
+      "question": "Most frustrating part of Duolingo overall?",
+      "time_limit_sec": 150,
+      "answer": "Yeah, the repetition can be annoying after a while. I wish it switched up the exercises more often and, um, included more complex sentences. Sometimes I feel like I'm not being challenged enough, especially with context."
+    },
+    {
+      "question": "One time that frustration showed up?",
+      "time_limit_sec": 180,
+      "answer": "There was this one time, I kept seeing the same few words and sentences, and it got boring, you know? I felt like I wasn’t progressing anymore. It was frustrating, and I considered switching to another app for a bit to get a different approach."
+    },
+    {
+      "question": "Do you use workarounds?",
+      "time_limit_sec": 150,
+      "answer": "Kind of. Sometimes I complement Duolingo with watching English movies or listening to podcasts. It helps me with, like, context and natural usage of language that Duolingo doesn’t always provide."
+    },
+    {
+      "question": "What do workarounds give you that Duolingo doesn't?",
+      "time_limit_sec": 150,
+      "answer": "They, like, provide context and real-life usage. You know, how people actually speak and use expressions - that's really important to me. Plus, it helps with pronunciation and, uh, listening skills."
+    },
+    {
+      "question": "Worst-case scenario in this space?",
+      "time_limit_sec": 150,
+      "answer": "Hmm, worst-case? I guess not being able to improve or use English effectively when I need it most, like in a job interview or while traveling. That would be pretty frustrating after all the time spent learning."
+    },
+    {
+      "question": "When you open Duolingo, what do you hope it does?",
+      "time_limit_sec": 150,
+      "answer": "I hope it, like, gives me new words or phrases to learn. I want it to challenge me a bit and help me feel like I’m progressing in my English journey, you know?"
+    },
+    {
+      "question": "How do you know Duolingo worked?",
+      "time_limit_sec": 120,
+      "answer": "When I'm, like, able to recall new words easily and use them in conversations, that’s a good sign. Also, if I can understand more in podcasts or movies, it means Duolingo helped a lot."
+    },
+    {
+      "question": "One thing you'd change about Duolingo?",
+      "time_limit_sec": 120,
+      "answer": "I’d add more speaking exercises, you know? Practice with pronunciation is really important, and it could help users build confidence in speaking English."
+    },
+    {
+      "question": "One thing you'd change about the whole problem space?",
+      "time_limit_sec": 120,
+      "answer": "I’d love to see a more personalized approach in language learning apps, like tailored lessons that adapt to the user’s level and needs to make it more effective."
+    },
+    {
+      "question": "Anything important we didn't cover?",
+      "time_limit_sec": 90,
+      "answer": "Not that I can think of, but, uh, I think we covered a lot about my experience. It’s been interesting to think about how I learn languages."
+    },
+    {
+      "question": "Permission to build a digital twin?",
+      "time_limit_sec": 60,
+      "answer": "Uh, sure, as long as it respects my privacy and is used for good purposes, I’m okay with it."
+    }
+  ]
+}

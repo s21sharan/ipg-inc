@@ -1,0 +1,266 @@
+{
+  "user_name": "Kofi",
+  "summary": "Duolingo helps me connect with my Spanish-speaking passengers in NYC, but it could use improvement in practical conversation skills.",
+  "top_quotes": [
+    "Sometimes Duolingo feels like a game more than learning, but it keeps me practicing.",
+    "I need more real-life conversations, not just vocabulary and phrases.",
+    "If Duolingo could simulate an Uber ride conversation, that would be perfect."
+  ],
+  "interview_script": [
+    {
+      "question": "Intro greeting",
+      "time_limit_sec": 0,
+      "answer": "Oh, hello there! I'm Kofi, nice to meet you. How are you doing today?"
+    },
+    {
+      "question": "Short version of your life story?",
+      "time_limit_sec": 180,
+      "answer": "Well, I was born and raised in Ghana, you know. Grew up there until my late twenties, then moved to the US. First, I was in the Bronx for a while, now I'm here in New York City. I drive an Uber, trying to make a living for my family. It's been quite a journey, very different from back home, but I like the challenge. When I'm not driving, I'm trying to learn Spanish to better connect with my passengers."
+    },
+    {
+      "question": "Where did you grow up?",
+      "time_limit_sec": 60,
+      "answer": "I grew up in Accra, the capital of Ghana. It's a vibrant city, you know, always alive and buzzing with energy."
+    },
+    {
+      "question": "What was it like growing up there?",
+      "time_limit_sec": 90,
+      "answer": "Growing up there was... hmm, it was lively. We had a close-knit community. Everyone knew everyone, and there was always this sense of togetherness. The culture and the people, they really shape who you are. Plus, the food and music back home, can't beat that!"
+    },
+    {
+      "question": "One turning point in your life?",
+      "time_limit_sec": 150,
+      "answer": "Moving to the US was definitely a big turning point for me. You see, leaving behind everything familiar to start anew in a place like New York was daunting but exciting. It's a land of opportunities but also challenges, especially when you don't know anyone at first and you're grappling with how things work here."
+    },
+    {
+      "question": "Why was that a turning point?",
+      "time_limit_sec": 120,
+      "answer": "It's a turning point because it opened my eyes to a new way of living, a new perspective. I had to learn quickly how to adapt, you know. Here, you've got to hustle differently. It's not just about hard work but smart work too. It taught me resilience."
+    },
+    {
+      "question": "How did you handle that situation?",
+      "time_limit_sec": 120,
+      "answer": "I took it one day at a time. Found odd jobs at first, then landed on driving. I looked at it as a learning experience, you know. Meet people, learn from them. I tried to keep an open mind and adapt to each situation."
+    },
+    {
+      "question": "What do you care most about right now?",
+      "time_limit_sec": 150,
+      "answer": "Right now, I'm really focusing on my family and improving my Spanish. My son is finishing high school, and I want the best for him. Also, learning Spanish helps me connect better with my passengers, which is important for my job."
+    },
+    {
+      "question": "Why is that important?",
+      "time_limit_sec": 120,
+      "answer": "Well, family is everything. They're my support system. And as for Spanish, it's practical. Most of my passengers speak Spanish, so it makes things smoother and helps me build rapport—tips are better when they feel connected!"
+    },
+    {
+      "question": "What is a good day for you?",
+      "time_limit_sec": 120,
+      "answer": "A good day? Hmm, I guess it's when I can drop my passengers where they need to go smoothly, maybe have a nice conversation or two, and get back home to spend time with my son, maybe try cooking something new together."
+    },
+    {
+      "question": "What makes you say \"this was a good day\"?",
+      "time_limit_sec": 90,
+      "answer": "When I feel fulfilled at the end, you know? Like I've been productive, learned something new, or just shared a good moment with someone. It’s simple, but it makes me happy."
+    },
+    {
+      "question": "How do you make big decisions?",
+      "time_limit_sec": 120,
+      "answer": "I usually weigh my options carefully. I ask myself what's most important at the moment. I might talk to my wife or a close friend to get their opinion too. It's not easy, but I try to think long-term rather than just the immediate benefit."
+    },
+    {
+      "question": "Planner or go-with-the-flow?",
+      "time_limit_sec": 90,
+      "answer": "Oh, I'm more of a go-with-the-flow type. Life throws curveballs; you gotta be ready to pivot. But when it comes to big things, I do plan a bit, like saving for my son's college."
+    },
+    {
+      "question": "Example showing that?",
+      "time_limit_sec": 120,
+      "answer": "So, there was this time a passenger needed to catch a flight but their original route was blocked. Instead of stressing, I quickly mapped out an alternative route. We chatted along the way, and they made it on time. That’s an everyday example of going with the flow."
+    },
+    {
+      "question": "How do you handle risk?",
+      "time_limit_sec": 120,
+      "answer": "I take calculated risks, you know. I look at the pros and cons. Moving to the US was a huge risk, but I considered the opportunities it offered. I guess I balance optimism with caution. Life is risky, but you can't let fear hold you back."
+    },
+    {
+      "question": "Typical weekday?",
+      "time_limit_sec": 180,
+      "answer": "Well, I start early, around 5 AM. I have some breakfast, usually something simple like oats or toast. Then I hit the road, picking up morning commuters. The day is filled with rides, each with its own little story. I try to take a break around lunchtime, maybe catch a quick nap if I can. In the evening, I cut back, trying to avoid the late-night drama. I head home for dinner with the family, maybe squeeze in some Spanish practice on Duolingo before bed."
+    },
+    {
+      "question": "Which parts take the most energy?",
+      "time_limit_sec": 120,
+      "answer": "Definitely the busy traffic and the long hours. You know, navigating New York traffic can be exhausting. Plus, dealing with different people every day, it’s rewarding but sometimes draining, especially when some passengers are in a rush or frustrated."
+    },
+    {
+      "question": "What do you wish you had more time or energy for?",
+      "time_limit_sec": 120,
+      "answer": "I wish I had more time for my family and personal learning. Sometimes I want to explore more of New York, like the museums and cultural spots, but I'm just too tired. And learning Spanish deeply, beyond just Duolingo—like interacting with Spanish speakers more—to make it stick better."
+    },
+    {
+      "question": "Biggest constraint last year?",
+      "time_limit_sec": 150,
+      "answer": "I'd say the pandemic was a big constraint. Business was slow, and health concerns were always looming. I had to be cautious yet still find ways to make ends meet without risking our safety. It also affected my motivation to learn Spanish since I wasn’t interacting with as many passengers."
+    },
+    {
+      "question": "How do you deal with that constraint?",
+      "time_limit_sec": 120,
+      "answer": "I adjusted my schedule to less crowded times and relied more on delivery services too. I also took it as a chance to spend more quality time with my family, which was a silver lining. I tried to stay positive and keep learning whenever I could."
+    },
+    {
+      "question": "People you feel closest to?",
+      "time_limit_sec": 120,
+      "answer": "I'm closest to my wife and son. They’re everything to me. My wife has been my rock through all the ups and downs since coming here. And my son, he's growing so fast, turning into a fine young man. Family back in Ghana, I’m close to them too, but that’s mostly over the phone."
+    },
+    {
+      "question": "Describe those relationships.",
+      "time_limit_sec": 90,
+      "answer": "We rely on each other a lot. With my wife, it’s about partnership and understanding. We share our burdens and joys, you know. With my son, it's guiding him through life, helping with school stuff, but also being a friend to him."
+    },
+    {
+      "question": "Where do you spend most of your time?",
+      "time_limit_sec": 90,
+      "answer": "I spend a lot of time in my car. That’s my office, you know. Besides that, at home with my family. Those are my main spots these days."
+    },
+    {
+      "question": "How do you feel in those spaces?",
+      "time_limit_sec": 120,
+      "answer": "In my car, I feel a mix of focused and sometimes stressed, especially during rush hours. But it's also where I meet interesting people. At home, it’s relaxing and comforting. That’s my safe haven, where I can just be myself and unwind."
+    },
+    {
+      "question": "What makes you feel that way?",
+      "time_limit_sec": 90,
+      "answer": "The car is like an extension of me; it’s my workspace, so it can get intense. But home, it’s where my family is, you know. It’s filled with love and the little things that bring peace after a hectic day."
+    },
+    {
+      "question": "Who do you turn to when problems arise?",
+      "time_limit_sec": 120,
+      "answer": "Mostly my wife. We talk through things, figure out plans together. I might also call my brother back in Ghana if it’s something big and I need his perspective. He’s always been a good sounding board for me."
+    },
+    {
+      "question": "One tough moment in the last year?",
+      "time_limit_sec": 150,
+      "answer": "There was this moment when I got into a minor accident. It wasn’t serious, but it shook me. You know, the car is my livelihood. I had to deal with the repairs and insurance process, plus the worry it caused my family."
+    },
+    {
+      "question": "How did it affect you?",
+      "time_limit_sec": 120,
+      "answer": "It left me worried for a while—about finances, safety, all that. I had to take a few days off to deal with everything, which was financially tough. It also reminded me how unpredictable life can be and how important it is to have a backup plan."
+    },
+    {
+      "question": "How did you cope?",
+      "time_limit_sec": 150,
+      "answer": "I leaned on my family a lot. My wife was very supportive, as always. I also made sure to follow up with the insurance and repair shops quickly to get back on the road. Took it as a lesson to be more cautious and prepared, you know?"
+    },
+    {
+      "question": "What helps when you're overwhelmed?",
+      "time_limit_sec": 120,
+      "answer": "Just taking some time to breathe and relax, you know. I try to do some deep breathing exercises, maybe listen to some music or a podcast. It helps to shift my mind away from the stress for a bit. And talking to my wife helps me see things clearer."
+    },
+    {
+      "question": "What do you want life to look like in a few years?",
+      "time_limit_sec": 150,
+      "answer": "In a few years, I’d like to have more stability, you know. Maybe move into a better neighborhood, closer to my son's college if he stays in the city. I’d love to visit Ghana more often, and hopefully become fluent enough in Spanish to have deep conversations. It’s about balance—work, family, and personal happiness."
+    },
+    {
+      "question": "What do you want to be different?",
+      "time_limit_sec": 120,
+      "answer": "I’d like to work less and earn more, if that makes sense. To have time to pursue other interests, like cooking or learning new things. I want to have a bit more financial freedom so we can travel and experience different cultures together."
+    },
+    {
+      "question": "Before Duolingo, how did you handle language learning?",
+      "time_limit_sec": 180,
+      "answer": "I tried books and tapes, back when I was new here. I'd borrow them from the library. But honestly, it was too slow, and I didn't have any Spanish-speaking friends to practice with, so it didn’t stick well. I even tried some free online resources, but they weren’t structured enough for me to follow through consistently."
+    },
+    {
+      "question": "Most annoying part of old method?",
+      "time_limit_sec": 150,
+      "answer": "The hardest part was the boredom and lack of real-life application, you know. These methods felt so rigid. Reading from a book or listening to tapes didn’t prepare me for the dynamic and fast-paced conversations I have with passengers. It wasn’t interactive at all."
+    },
+    {
+      "question": "Time it really failed?",
+      "time_limit_sec": 150,
+      "answer": "Once, a Spanish-speaking passenger asked me something about directions, and I was completely lost. I knew the route, but I couldn’t understand his question beyond the basics. That’s when I realized those methods weren’t helping me for real-life interactions."
+    },
+    {
+      "question": "How did you first hear about Duolingo?",
+      "time_limit_sec": 90,
+      "answer": "I actually heard about Duolingo from a passenger. We were talking about language learning, and they mentioned it. I was curious, so I decided to give it a try. It sounded more engaging than what I’d been doing."
+    },
+    {
+      "question": "What convinced you to try it?",
+      "time_limit_sec": 120,
+      "answer": "What convinced me was how the passenger described it—like a game you can play on your phone anytime. That’s perfect for me, because I have bits of time here and there between rides. Plus, it was free, so I thought why not?"
+    },
+    {
+      "question": "Walk through a recent Duolingo use.",
+      "time_limit_sec": 210,
+      "answer": "Sure, so just yesterday, I had a short break. I opened the app, and there was this new skill about food and dining. The interface is easy to use. It started with vocabulary matching, you know, showing pictures of food and words. Then there were sentences to arrange. The audio helps a lot with pronunciation. At the end, there was a short conversation practice. I even got to test myself with a speaking exercise, which was fun."
+    },
+    {
+      "question": "Most helpful part?",
+      "time_limit_sec": 120,
+      "answer": "The audio and speaking exercises, definitely. Hearing and repeating phrases helps me a lot. It’s closer to what I need when talking to passengers. It’s like I’m getting a feel for the language, not just the textbook stuff."
+    },
+    {
+      "question": "Most frustrating part?",
+      "time_limit_sec": 150,
+      "answer": "Sometimes, I feel it's too repetitive or game-like without enough real conversation practice. I mean, the sentences can be random and not always something I’d use. It misses the chaotic flow of a real chat. I need more context, you know."
+    },
+    {
+      "question": "Most frustrating part of Duolingo overall?",
+      "time_limit_sec": 150,
+      "answer": "I'd say the lack of deep conversational practice is the biggest issue. It’s good for starting out, but when I want more complex dialogues or real-life scenarios, it falls short. I’m looking for more spontaneity in what I learn."
+    },
+    {
+      "question": "One time that frustration showed up?",
+      "time_limit_sec": 180,
+      "answer": "There was this one time, I had a passenger who was speaking really fast in Spanish. I wanted to keep up and continue the conversation but realized I could only pick up common words. In that moment, I felt all my Duolingo efforts weren’t enough for dynamic conversation."
+    },
+    {
+      "question": "Do you use workarounds?",
+      "time_limit_sec": 150,
+      "answer": "Yeah, sometimes I use language exchange apps where I can chat with native speakers. I also try to watch Spanish shows, you know, with subtitles to catch the gist. It helps, especially with listening skills and understanding context better."
+    },
+    {
+      "question": "What do workarounds give you that Duolingo doesn't?",
+      "time_limit_sec": 150,
+      "answer": "They give me real-time conversations and cultural context. I learn slang and expressions that aren’t in Duolingo. Plus, it’s more exciting to interact with real people; it tests my speaking skills in a way Duolingo can’t fully do yet."
+    },
+    {
+      "question": "Worst-case scenario in this space?",
+      "time_limit_sec": 150,
+      "answer": "The worst-case would be that I don’t improve enough to really talk with passengers or potentially miss out on opportunities, like connecting with someone important. In a city like New York, being bilingual is so beneficial."
+    },
+    {
+      "question": "When you open Duolingo, what do you hope it does?",
+      "time_limit_sec": 150,
+      "answer": "I hope it keeps pushing me closer to being fluent, you know. I want it to teach me things I can immediately use, like how to handle more complex conversations or respond quickly in Spanish."
+    },
+    {
+      "question": "How do you know Duolingo worked?",
+      "time_limit_sec": 120,
+      "answer": "I know it worked when I recognize words or phrases in conversations and can respond without thinking too hard. Or when I see progression on my Duolingo streak; it feels good to see tangible evidence of my effort."
+    },
+    {
+      "question": "One thing you'd change about Duolingo?",
+      "time_limit_sec": 120,
+      "answer": "I’d add more interactive conversation modules—maybe role-play scenarios that mimic real-life situations, like an Uber ride or ordering food. That would make it much more practical for me."
+    },
+    {
+      "question": "One thing you'd change about the whole problem space?",
+      "time_limit_sec": 120,
+      "answer": "I'd integrate language learning more with cultural experiences. Like pairing up learners with native speakers for cultural exchanges. It makes learning more engaging and realistic, you know."
+    },
+    {
+      "question": "Anything important we didn't cover?",
+      "time_limit_sec": 90,
+      "answer": "I think we covered a lot. Just to add, language learning is a journey. It takes patience and practice. Duolingo is a good start, but combining it with real interactions is key, especially in a diverse place like NYC."
+    },
+    {
+      "question": "Permission to build a digital twin?",
+      "time_limit_sec": 60,
+      "answer": "Um, what exactly is a digital twin? If it's for improving Duolingo or similar, then sure, sounds interesting. I'm open to it!"
+    }
+  ]
+}

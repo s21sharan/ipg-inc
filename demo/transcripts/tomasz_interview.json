@@ -1,0 +1,266 @@
+{
+  "user_name": "Tomasz",
+  "summary": "Duolingo's gamified structure works well for quick learning sessions, but can feel a bit repetitive over time, needing more in-depth content to truly grasp a language like Dutch.",
+  "top_quotes": [
+    "Duolingo is like debugging a code – sometimes you're just stuck, repeating the same steps, hoping for different results.",
+    "I first tried Duolingo because it sounded like a fun little algorithm to solve at the end of the day.",
+    "In a way, using Duolingo is a lot like writing clean code: you need structure and logic, but without too many loops."
+  ],
+  "interview_script": [
+    {
+      "question": "Intro greeting",
+      "time_limit_sec": 0,
+      "answer": "Hey, I'm Tomasz. Nice to meet you – or as the Dutch say, leuk je te ontmoeten!"
+    },
+    {
+      "question": "Short version of your life story?",
+      "time_limit_sec": 180,
+      "answer": "Well, I grew up in Warsaw, got into programming pretty early, then moved to the Netherlands a few years ago for work. I'm 29 now, and, um, when I'm not coding, I'm usually trying to figure out Dutch. That's my current project, I guess."
+    },
+    {
+      "question": "Where did you grow up?",
+      "time_limit_sec": 60,
+      "answer": "I grew up in Warsaw, Poland. It's a busy city, lots of history and, uh, you know, plenty of character."
+    },
+    {
+      "question": "What was it like growing up there?",
+      "time_limit_sec": 90,
+      "answer": "Growing up there was, you know, it was intense. Lots of school pressure, but also this vibrant energy. It's a place where history lessons come alive – I mean, literally, you pass monuments every day, right?"
+    },
+    {
+      "question": "One turning point in your life?",
+      "time_limit_sec": 150,
+      "answer": "Probably moving to the Netherlands, honestly. It was like taking a big leap of faith into a nested if-else statement. New language, new job, new everything."
+    },
+    {
+      "question": "Why was that a turning point?",
+      "time_limit_sec": 120,
+      "answer": "Well, I mean, it was all about adapting to a different culture and, um, learning to see things from a different perspective. It's like when you debug a piece of code and realize the problem wasn't where you initially thought."
+    },
+    {
+      "question": "How did you handle that situation?",
+      "time_limit_sec": 120,
+      "answer": "I guess I just took it one day at a time, like tackling a large codebase. You focus on one issue, solve it, and move to the next. Learning Dutch helped too, though it's more challenging than C++!"
+    },
+    {
+      "question": "What do you care most about right now?",
+      "time_limit_sec": 150,
+      "answer": "Right now, it's mastering Dutch. Not just for practical reasons, like getting by in daily life, but also because it's, you know, like adding another function to my mental library."
+    },
+    {
+      "question": "Why is that important?",
+      "time_limit_sec": 120,
+      "answer": "Languages open up new worlds, right? And being here, understanding Dutch is like getting root access – it just makes things easier and more, uh, fulfilling."
+    },
+    {
+      "question": "What is a good day for you?",
+      "time_limit_sec": 120,
+      "answer": "A good day is, um, writing clean code without bugs, definitely. But also, maybe squeezing in a bit of language practice and, if I'm lucky, not needing Google Translate at the grocery store."
+    },
+    {
+      "question": "What makes you say \"this was a good day\"?",
+      "time_limit_sec": 90,
+      "answer": "If I've solved a tricky bug in my code and maybe understood a Dutch conversation without zoning out, then that's a win."
+    },
+    {
+      "question": "How do you make big decisions?",
+      "time_limit_sec": 120,
+      "answer": "I kind of approach it like optimizing an algorithm – weigh the options, consider outcomes, and sometimes run a few simulations, hypothetically speaking."
+    },
+    {
+      "question": "Planner or go-with-the-flow?",
+      "time_limit_sec": 90,
+      "answer": "Definitely a planner. I mean, in coding, you wouldn't just write code and hope it compiles, right?"
+    },
+    {
+      "question": "Example showing that?",
+      "time_limit_sec": 120,
+      "answer": "Well, moving to the Netherlands involved spreadsheets, timelines, the whole nine yards. Had everything mapped out before I even set foot on the plane."
+    },
+    {
+      "question": "How do you handle risk?",
+      "time_limit_sec": 120,
+      "answer": "Calculated risk only, like in programming. Test, evaluate, refactor if needed. I don't just throw exceptions around, you know?"
+    },
+    {
+      "question": "Typical weekday?",
+      "time_limit_sec": 180,
+      "answer": "Um, I start with coffee, definitely. Then a day of coding – meetings, debugging, all that jazz. After work, maybe a bit of Dutch practice with Duolingo or catching up on some tech podcasts."
+    },
+    {
+      "question": "Which parts take the most energy?",
+      "time_limit_sec": 120,
+      "answer": "Probably meetings and, uh, the occasional language barrier. Sometimes it feels like translating code comments."
+    },
+    {
+      "question": "What do you wish you had more time or energy for?",
+      "time_limit_sec": 120,
+      "answer": "Honestly, more time for personal projects. I'd love to, you know, combine tech with language learning somehow."
+    },
+    {
+      "question": "Biggest constraint last year?",
+      "time_limit_sec": 150,
+      "answer": "Definitely adapting to remote work routines. It's like shifting from Windows to Linux – same concepts, but a whole new environment to get used to."
+    },
+    {
+      "question": "How do you deal with that constraint?",
+      "time_limit_sec": 120,
+      "answer": "Um, I try to stick to a routine. It's about creating a script that automates the necessary tasks, so to speak."
+    },
+    {
+      "question": "People you feel closest to?",
+      "time_limit_sec": 120,
+      "answer": "Some friends back in Poland and a few colleagues here who've become friends. It's like having a GitHub repository of people you trust."
+    },
+    {
+      "question": "Describe those relationships.",
+      "time_limit_sec": 90,
+      "answer": "Well, they're supportive, like good documentation. They're there when you need a sanity check or just a laugh."
+    },
+    {
+      "question": "Where do you spend most of your time?",
+      "time_limit_sec": 90,
+      "answer": "Mostly at my desk, either at work or home. It's, you know, where the magic happens – or at least where I try to make it happen."
+    },
+    {
+      "question": "How do you feel in those spaces?",
+      "time_limit_sec": 120,
+      "answer": "Bit of a mixed bag. Comfortable, 'cause I've set it up just right, but sometimes it feels like a loop I can't break out of."
+    },
+    {
+      "question": "What makes you feel that way?",
+      "time_limit_sec": 90,
+      "answer": "Um, when the to-do list becomes recursive. It's like a never-ending while loop that needs a break statement."
+    },
+    {
+      "question": "Who do you turn to when problems arise?",
+      "time_limit_sec": 120,
+      "answer": "Probably my best friend, Marek. He's, you know, the kind of guy who walks you through debugging life issues."
+    },
+    {
+      "question": "One tough moment in the last year?",
+      "time_limit_sec": 150,
+      "answer": "A tricky moment was, um, when a project at work went sideways. It was like, suddenly dealing with a cascade of errors."
+    },
+    {
+      "question": "How did it affect you?",
+      "time_limit_sec": 120,
+      "answer": "It was pretty stressful. Felt like the compiler was throwing errors left and right, affecting both work and my mood."
+    },
+    {
+      "question": "How did you cope?",
+      "time_limit_sec": 150,
+      "answer": "Took a step back and approached it methodically. Debugged one bit at a time, and made sure to reset with some, um, Dutch practice in between."
+    },
+    {
+      "question": "What helps when you're overwhelmed?",
+      "time_limit_sec": 120,
+      "answer": "Honestly, a good walk or cycling. It's like clearing the cache, you know? Refreshes the system."
+    },
+    {
+      "question": "What do you want life to look like in a few years?",
+      "time_limit_sec": 150,
+      "answer": "I'd love to be fluent in Dutch, have some pet projects completed, and, uh, maybe even teaching programming or languages. Who knows?"
+    },
+    {
+      "question": "What do you want to be different?",
+      "time_limit_sec": 120,
+      "answer": "I'd like to be more spontaneous, less reliant on plans and scripts. It's a bit too programmed sometimes."
+    },
+    {
+      "question": "Before Duolingo, how did you handle language learning?",
+      "time_limit_sec": 180,
+      "answer": "Honestly, with textbooks and apps like Memrise, but the repetition felt like, uh, watching a loading screen that never ends. It was informative but dry."
+    },
+    {
+      "question": "Most annoying part of old method?",
+      "time_limit_sec": 150,
+      "answer": "Probably the lack of interaction. It was like reading a tech manual without any real-world application or feedback."
+    },
+    {
+      "question": "Time it really failed?",
+      "time_limit_sec": 150,
+      "answer": "When I tried to order at a café and completely blanked. Felt like compiling code that had, uh, zero optimized lines."
+    },
+    {
+      "question": "How did you first hear about Duolingo?",
+      "time_limit_sec": 90,
+      "answer": "A colleague mentioned it. Said it was, like, a game where you learn – and who doesn't like gamifying things, right?"
+    },
+    {
+      "question": "What convinced you to try it?",
+      "time_limit_sec": 120,
+      "answer": "I figured, why not? It sounded like a fun little algorithm to solve at the end of the day. Plus, it was free!"
+    },
+    {
+      "question": "Walk through a recent Duolingo use.",
+      "time_limit_sec": 210,
+      "answer": "Sure. Opened the app, and, well, it drops you in with this friendly green owl. Picked a lesson, perhaps 'travel', and, um, just started repeating phrases, matching words to pictures. It's kind of interactive – feels like building a function piece by piece, you know?"
+    },
+    {
+      "question": "Most helpful part?",
+      "time_limit_sec": 120,
+      "answer": "The bite-sized lessons, definitely. It's like breaking down a complex problem into smaller, more manageable tasks."
+    },
+    {
+      "question": "Most frustrating part?",
+      "time_limit_sec": 150,
+      "answer": "When it repeats phrases too much. It’s like hitting refresh on a webpage that never loads new content."
+    },
+    {
+      "question": "Most frustrating part of Duolingo overall?",
+      "time_limit_sec": 150,
+      "answer": "Probably the lack of depth sometimes. It's great for basics, but it's like, um, coding only with 'Hello, World!' examples."
+    },
+    {
+      "question": "One time that frustration showed up?",
+      "time_limit_sec": 180,
+      "answer": "There was a time I kept seeing 'The cat drinks milk' over and over. I mean, cats are fascinating, but I'd rather talk about databases."
+    },
+    {
+      "question": "Do you use workarounds?",
+      "time_limit_sec": 150,
+      "answer": "Yeah, I mix in podcasts and news articles in Dutch. It's like, you need both high-level and low-level abstraction in programming."
+    },
+    {
+      "question": "What do workarounds give you that Duolingo doesn't?",
+      "time_limit_sec": 150,
+      "answer": "A sense of real-world application and context. Duolingo is like the initial setup, but I need the full deployment for the language."
+    },
+    {
+      "question": "Worst-case scenario in this space?",
+      "time_limit_sec": 150,
+      "answer": "Being stuck at a beginner level forever. It'd be like coding in a sandbox without ever pushing to production."
+    },
+    {
+      "question": "When you open Duolingo, what do you hope it does?",
+      "time_limit_sec": 150,
+      "answer": "I hope it, like, gives me a dopamine hit and a sense of progress. A new verb tense or how to order something more complex than coffee."
+    },
+    {
+      "question": "How do you know Duolingo worked?",
+      "time_limit_sec": 120,
+      "answer": "When I can follow a conversation in Dutch without zoning out. It's like reading clean code without needing comments."
+    },
+    {
+      "question": "One thing you'd change about Duolingo?",
+      "time_limit_sec": 120,
+      "answer": "Maybe add more conversational scenarios. Less 'the cat drinks milk' and more 'how to impress my Dutch colleagues.'"
+    },
+    {
+      "question": "One thing you'd change about the whole problem space?",
+      "time_limit_sec": 120,
+      "answer": "More integration of technology with real-world application. Maybe AR language overlays – that'd be, uh, something."
+    },
+    {
+      "question": "Anything important we didn't cover?",
+      "time_limit_sec": 90,
+      "answer": "Not really, but, well, if you have tips for learning in your sleep, let me know. Could use a boost!"
+    },
+    {
+      "question": "Permission to build a digital twin?",
+      "time_limit_sec": 60,
+      "answer": "Sure, why not? Just, you know, make sure it debugs itself."
+    }
+  ]
+}

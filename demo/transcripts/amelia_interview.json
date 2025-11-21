@@ -1,0 +1,266 @@
+{
+  "user_name": "Amelia",
+  "summary": "Amelia sees Duolingo as an invaluable tool that revolutionized her language learning by making it engaging and accessible, though sometimes limited in depth for advanced learners.",
+  "top_quotes": [
+    "Duolingo is like my go-to app for turning language learning into a game—it's ridiculously engaging!",
+    "You know, I wish Duolingo had more in-depth cultural tips, 'cause understanding context is just as crucial as vocab.",
+    "Honestly, nothing beats that satisfying chime when I hit a new level—it's like a small victory that keeps me going."
+  ],
+  "interview_script": [
+    {
+      "question": "Intro greeting",
+      "time_limit_sec": 0,
+      "answer": "Hey there! I'm Amelia, super excited to chat about languages and Duolingo today!"
+    },
+    {
+      "question": "Short version of your life story?",
+      "time_limit_sec": 180,
+      "answer": "Okay, so my life has been a bit of a whirlwind. I grew up hopping around the world 'cause my dad's a diplomat. I've lived in like, seven different countries by now. Each place kinda shaped me differently. I got to learn French in France, a bit of Mandarin in China, and picked up some Spanish when we were in Argentina. I'm 17 now, and languages are just a huge part of my life thanks to that."
+    },
+    {
+      "question": "Where did you grow up?",
+      "time_limit_sec": 60,
+      "answer": "Mostly all over the place, but I spent a big chunk of time in Paris and Beijing. Those felt like 'growing up' spots for me, you know?"
+    },
+    {
+      "question": "What was it like growing up there?",
+      "time_limit_sec": 90,
+      "answer": "Oh man, it was incredible but also kinda intense at times. Paris was, like, the dream for a kid who loves art and croissants. But Beijing was just a different vibe—so vibrant and full of contrast. You had to learn to adapt super fast, which was a huge life skill."
+    },
+    {
+      "question": "One turning point in your life?",
+      "time_limit_sec": 150,
+      "answer": "I think a big turning point was moving to Beijing when I was like 12. It was such a culture shock. I was thrown into an international school and had to learn Mandarin pretty fast. It was tough at first, but it really opened my eyes to how cool and interconnected the world is."
+    },
+    {
+      "question": "Why was that a turning point?",
+      "time_limit_sec": 120,
+      "answer": "Because it taught me resilience and adaptation. I mean, imagine going from speaking French to suddenly needing to communicate in Mandarin! It made me realize how much I love languages and connecting with people from different backgrounds."
+    },
+    {
+      "question": "How did you handle that situation?",
+      "time_limit_sec": 120,
+      "answer": "Honestly, a lot of trial and error. I threw myself into learning by watching Chinese TV shows, practicing with locals, and of course, using apps like Duolingo. It was kinda like being on a constant language learning rollercoaster."
+    },
+    {
+      "question": "What do you care most about right now?",
+      "time_limit_sec": 150,
+      "answer": "Right now, it's definitely about finishing high school strong while also prepping for college. I wanna study international relations. It's like my dream to one day make a difference through diplomacy or something similar."
+    },
+    {
+      "question": "Why is that important?",
+      "time_limit_sec": 120,
+      "answer": "Because living in so many places just showed me how much work there is to do in bridging cultures and understanding each other. It feels like this calling to use what I learned growing up to, hopefully, make the world a bit more connected."
+    },
+    {
+      "question": "What is a good day for you?",
+      "time_limit_sec": 120,
+      "answer": "Hmm, a good day starts with a solid breakfast, maybe some crepes. Then, doing well on a language challenge on Duolingo or having an insightful conversation with friends about global issues. Ending with a good book or some journaling just makes it perfect."
+    },
+    {
+      "question": "What makes you say \"this was a good day\"?",
+      "time_limit_sec": 90,
+      "answer": "I guess when I feel like I've learned something new or made progress, whether in language skills or connecting with people, you know?"
+    },
+    {
+      "question": "How do you make big decisions?",
+      "time_limit_sec": 120,
+      "answer": "Usually, I weigh the pros and cons. I talk to my family since they've got the global perspective thing down pat. But ultimately, I trust my gut a lot—I think it comes from having to make decisions quickly while moving around."
+    },
+    {
+      "question": "Planner or go-with-the-flow?",
+      "time_limit_sec": 90,
+      "answer": "I think I'm more of a planner. It's probably from needing some control in the chaos of moving places. But I like to think I can roll with the punches too."
+    },
+    {
+      "question": "Example showing that?",
+      "time_limit_sec": 120,
+      "answer": "Okay, so when we moved to Argentina, I made this detailed journal of places I wanted to visit and foods to try. But when plans changed, I just dove into whatever new spot we found that day. It was like balancing structure with spontaneity."
+    },
+    {
+      "question": "How do you handle risk?",
+      "time_limit_sec": 120,
+      "answer": "Calculated risks are kinda my jam. I think living all over means you're always assessing situations for risks, right? Like, you can't control everything, but I try to mitigate the crazy stuff by being prepared."
+    },
+    {
+      "question": "Typical weekday?",
+      "time_limit_sec": 180,
+      "answer": "School pretty much consumes my weekdays! I wake up, do some yoga to get focused, then it's off to classes. I squeeze in Duolingo practice during lunch—keeps me sharp. After school, there's usually club meetings and homework. I end my day with some language podcast, just to wind down and maybe learn something new before bed."
+    },
+    {
+      "question": "Which parts take the most energy?",
+      "time_limit_sec": 120,
+      "answer": "Definitely school and all the academic pressure. It can be intense juggling everything, especially when deadlines pile up. Keeping up with my language practice is also energy-consuming but in a good, productive way."
+    },
+    {
+      "question": "What do you wish you had more time or energy for?",
+      "time_limit_sec": 120,
+      "answer": "I wish I could dive deeper into cultural aspects of the languages I'm learning. It's so fascinating but time-consuming to really understand the context and history behind the words, you know?"
+    },
+    {
+      "question": "Biggest constraint last year?",
+      "time_limit_sec": 150,
+      "answer": "Last year, it was definitely the pandemic. It was hard not being able to travel or even see folks in person as much. It felt like everything was on pause, but I had to keep moving academically and socially, which was tricky."
+    },
+    {
+      "question": "How do you deal with that constraint?",
+      "time_limit_sec": 120,
+      "answer": "Zoom and social media were lifesavers. Connecting with friends all over the world reminded me I wasn't alone in it. I also doubled down on language learning—I mean, if you can’t travel physically, at least your mind can, right?"
+    },
+    {
+      "question": "People you feel closest to?",
+      "time_limit_sec": 120,
+      "answer": "My family, for sure, and a couple of friends from different parts of the world. It's funny, I feel like my closest relationships aren't always the people I see every day but those who understand the growing-up-everywhere experience."
+    },
+    {
+      "question": "Describe those relationships.",
+      "time_limit_sec": 90,
+      "answer": "They're like anchors, you know? They're the ones who really get the complexities of my life and keep me grounded. We talk a lot about languages, culture, dreams—it's all very supportive and inspiring."
+    },
+    {
+      "question": "Where do you spend most of your time?",
+      "time_limit_sec": 90,
+      "answer": "Probably between school and at home. I love my room 'cause it's this little haven full of books and artifacts from places I've been."
+    },
+    {
+      "question": "How do you feel in those spaces?",
+      "time_limit_sec": 120,
+      "answer": "Comfortable and inspired. My room's like a mini-museum of memories and goals. School can be overwhelming, but it's also where I engage with peers who challenge and motivate me."
+    },
+    {
+      "question": "What makes you feel that way?",
+      "time_limit_sec": 90,
+      "answer": "Just having pieces of my journey around, like travel photos or language books, keeps me connected to my experiences and aspirations."
+    },
+    {
+      "question": "Who do you turn to when problems arise?",
+      "time_limit_sec": 120,
+      "answer": "My mom is usually my first go-to. She's just so wise and has been through a lot of changes herself. Plus, my international friends because they often see things from a different perspective that helps me a ton."
+    },
+    {
+      "question": "One tough moment in the last year?",
+      "time_limit_sec": 150,
+      "answer": "Adjusting to online learning was really tough initially. It was like, overnight everything changed, and just keeping up with schoolwork without the usual in-person support was hard."
+    },
+    {
+      "question": "How did it affect you?",
+      "time_limit_sec": 120,
+      "answer": "It was super stressful. I started to feel isolated and overworked with everything happening in the same space. There was a real fear of falling behind without the structure I was used to."
+    },
+    {
+      "question": "How did you cope?",
+      "time_limit_sec": 150,
+      "answer": "I created a strict schedule to simulate a school day. And leaned a lot on technology—like, I used Duolingo more to keep my brain occupied and language skills sharp. Also, virtual chats with friends helped keep the loneliness away."
+    },
+    {
+      "question": "What helps when you're overwhelmed?",
+      "time_limit_sec": 120,
+      "answer": "Taking a breather—literally stepping outside, doing some deep breathing, or listening to music. Journaling helps me organize thoughts, and sometimes I just need to chat it out with friends or family."
+    },
+    {
+      "question": "What do you want life to look like in a few years?",
+      "time_limit_sec": 150,
+      "answer": "I hope to be in college, maybe studying abroad, immersing myself in new cultures. I'd love to work towards a career in diplomacy, really using my language skills to make a difference."
+    },
+    {
+      "question": "What do you want to be different?",
+      "time_limit_sec": 120,
+      "answer": "I want to be more confident in my skills and decisions. Right now, it's easy to second-guess a lot, but I'm hoping with more experience, that'll change."
+    },
+    {
+      "question": "Before Duolingo, how did you handle language learning?",
+      "time_limit_sec": 180,
+      "answer": "Before Duolingo, it was mostly textbooks and language classes, which were fine but honestly kinda dull. I tried some other apps like Rosetta Stone, but they felt more textbook-y than interactive. Duolingo definitely brought that game-like vibe that makes it so much more fun to learn."
+    },
+    {
+      "question": "Most annoying part of old method?",
+      "time_limit_sec": 150,
+      "answer": "I'd say the monotony. Textbooks can be really dry, and they don't really adapt if you're struggling with something. Plus, language classes were so rigid—you couldn't just explore what interested you the most."
+    },
+    {
+      "question": "Time it really failed?",
+      "time_limit_sec": 150,
+      "answer": "Oh, that would be my first year in Beijing. I was using this thick Mandarin textbook that just didn't click with me. It felt like trying to learn a whole new alphabet with no context or engaging content. I barely improved until I switched to apps like Duolingo."
+    },
+    {
+      "question": "How did you first hear about Duolingo?",
+      "time_limit_sec": 90,
+      "answer": "I think one of my friends recommended it during a summer break. They knew I was trying to get a head start on Spanish before moving to Argentina, and they were like, 'You’ve got to try this app, it’s addicting!'"
+    },
+    {
+      "question": "What convinced you to try it?",
+      "time_limit_sec": 120,
+      "answer": "The gamification aspect, for sure. The idea of learning through a game format was appealing—like, earning points and leveling up sounded way more exciting than yet another language book."
+    },
+    {
+      "question": "Walk through a recent Duolingo use.",
+      "time_limit_sec": 210,
+      "answer": "Okay, so just this morning I did a Spanish session. I opened the app, and it's so colorful and inviting. I started with a 'Practice' session to refresh some vocab. There’s this cool little owl, Duo, who pops up with encouraging words, which makes it feel personal. Then, I took on a new lesson about Spanish idioms. It was a mix of matching phrases, fill-in-the-blank, and speaking exercises, which are my favorite 'cause it’s like real-world practice. At the end, the app played this cheerful tune to celebrate my progress. Love that."
+    },
+    {
+      "question": "Most helpful part?",
+      "time_limit_sec": 120,
+      "answer": "Honestly, the speaking exercises. They really push me to improve pronunciation and gain confidence. Plus, those timed challenges are great for keeping my reflexes sharp with vocab recall."
+    },
+    {
+      "question": "Most frustrating part?",
+      "time_limit_sec": 150,
+      "answer": "Sometimes the translations feel kinda off, like they're too literal. There are moments when I think, 'This isn't how a native speaker would say it,' which can be frustrating if you're aiming for fluency."
+    },
+    {
+      "question": "Most frustrating part of Duolingo overall?",
+      "time_limit_sec": 150,
+      "answer": "I think it’s the lack of deeper cultural context. The lessons are fantastic for vocabulary and structure, but they miss out on the 'why' behind certain phrases or habits, which is super important for real-world use."
+    },
+    {
+      "question": "One time that frustration showed up?",
+      "time_limit_sec": 180,
+      "answer": "There was this time I was learning about food terms in Italian. The translation for a dish name was just bizarre—not something you’d actually find on a menu. I ended up doing separate research to understand the cultural significance of the dish. That was a bit of a pain 'cause I wish it was integrated into the lesson."
+    },
+    {
+      "question": "Do you use workarounds?",
+      "time_limit_sec": 150,
+      "answer": "Yeah, sometimes I pair Duolingo with YouTube videos or podcasts about the language culture. It fills that gap where the app kinda leaves things out, especially with slang or idioms."
+    },
+    {
+      "question": "What do workarounds give you that Duolingo doesn't?",
+      "time_limit_sec": 150,
+      "answer": "They provide richness and depth. Watching native speakers in context or diving into cultural discussions helps cement what I've learned in Duolingo and makes it feel more practical and alive."
+    },
+    {
+      "question": "Worst-case scenario in this space?",
+      "time_limit_sec": 150,
+      "answer": "Honestly, worst-case would be relying too much on Duolingo and ending up with a pretty superficial understanding of a language—like, great vocabulary but no idea how to use it naturally in conversation."
+    },
+    {
+      "question": "When you open Duolingo, what do you hope it does?",
+      "time_limit_sec": 150,
+      "answer": "I really hope it keeps me motivated and engaged while teaching me something new. I open it expecting to be challenged but also to have a little fun with it."
+    },
+    {
+      "question": "How do you know Duolingo worked?",
+      "time_limit_sec": 120,
+      "answer": "When I can follow a conversation more easily in a language or when I recall phrases without thinking too much—that's when I know the app has made a real impact."
+    },
+    {
+      "question": "One thing you'd change about Duolingo?",
+      "time_limit_sec": 120,
+      "answer": "I’d love it if Duolingo incorporated more real-life dialogue scenarios where you have to make choices based on cultural contexts. It would make the learning much more applicable."
+    },
+    {
+      "question": "One thing you'd change about the whole problem space?",
+      "time_limit_sec": 120,
+      "answer": "I’d change the emphasis on grammar drills over communicative competence in language learning systems. More focus needs to be on speaking and understanding nuances rather than just textbook rules."
+    },
+    {
+      "question": "Anything important we didn't cover?",
+      "time_limit_sec": 90,
+      "answer": "Not really, but I just wanna say how grateful I am for tools like Duolingo. They’ve really made language learning accessible to so many people, and that's huge."
+    },
+    {
+      "question": "Permission to build a digital twin?",
+      "time_limit_sec": 60,
+      "answer": "Sure, just make sure it knows all my favorite languages!"
+    }
+  ]
+}

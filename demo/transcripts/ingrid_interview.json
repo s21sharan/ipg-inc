@@ -1,0 +1,266 @@
+{
+  "user_name": "Ingrid",
+  "summary": "Ingrid finds Duolingo exciting and effective due to its gamified approach, but she wishes there was more focus on real-world language application.",
+  "top_quotes": [
+    "I love how Duolingo turns learning into a game with the leagues; it's like competing with friends to see who can learn the most!",
+    "The most frustrating part is when I'm stuck on a simple phrase, and the app won't give me a hint unless I use a heart.",
+    "I wish Duolingo had more speaking exercises to help with pronunciation—sometimes I feel like I'm just a translator and not a speaker."
+  ],
+  "interview_script": [
+    {
+      "question": "Intro greeting",
+      "time_limit_sec": 0,
+      "answer": "Hej! I'm Ingrid, nice to chat with you today!"
+    },
+    {
+      "question": "Short version of your life story?",
+      "time_limit_sec": 180,
+      "answer": "Ah, well, I grew up in Sweden, in a small town near Stockholm. I moved to the U.S. a few years ago for work, and now I’m living in NYC. I've always loved languages and anime was a big hobby of mine back home, so I decided to start learning Japanese. It's been quite a journey—mixing work, adapting to New York, and squeezing in language learning."
+    },
+    {
+      "question": "Where did you grow up?",
+      "time_limit_sec": 60,
+      "answer": "I grew up in this quaint little town near Stockholm, you know, with lots of nature and beautiful lakes. It’s quite different from the hustle and bustle of NYC, that’s for sure!"
+    },
+    {
+      "question": "What was it like growing up there?",
+      "time_limit_sec": 90,
+      "answer": "Oh, it was lovely, really! Lots of freedom to run around, explore forests, and ski in the winters. It was a tight-knit community, where everyone knew each other, which had its perks and quirks. I guess it was a bit idyllic, in a way."
+    },
+    {
+      "question": "One turning point in your life?",
+      "time_limit_sec": 150,
+      "answer": "Moving to the U.S. was definitely a huge turning point. It felt like starting over, you know? New culture, new people, everything was different. I had to adapt quickly, but it was exciting and a bit scary at the same time."
+    },
+    {
+      "question": "Why was that a turning point?",
+      "time_limit_sec": 120,
+      "answer": "Well, it pushed me out of my comfort zone. I learned a lot about myself and what I can handle. It also made me realize how much I love my Swedish roots, which can be easy to forget when you're caught up in a new place."
+    },
+    {
+      "question": "How did you handle that situation?",
+      "time_limit_sec": 120,
+      "answer": "I tried to stay open-minded and curious. I joined groups with other expats, which helped create a sense of community here. Plus, I focused on my hobbies, like anime and learning Japanese, to keep a piece of home with me."
+    },
+    {
+      "question": "What do you care most about right now?",
+      "time_limit_sec": 150,
+      "answer": "I’d say balancing my career and personal interests, like learning Japanese and exploring NYC. It’s important for me to keep growing both professionally and personally—finding that harmony is what I'm really passionate about."
+    },
+    {
+      "question": "Why is that important?",
+      "time_limit_sec": 120,
+      "answer": "Because it keeps life interesting and fulfilling! I don’t want to feel like I’m just working all the time. Being able to pursue my hobbies and passions makes every day more vibrant, you know?"
+    },
+    {
+      "question": "What is a good day for you?",
+      "time_limit_sec": 120,
+      "answer": "A good day is when I manage to strike that balance. I’d work efficiently, maybe discover a new part of the city, and then spend the evening unwinding with an episode of anime, practicing Japanese on Duolingo, and a nice dinner with friends."
+    },
+    {
+      "question": "What makes you say \"this was a good day\"?",
+      "time_limit_sec": 90,
+      "answer": "When I feel both productive and relaxed by the end of it. Like, having accomplished what I needed to without feeling rushed or stressed, and still having time to enjoy myself."
+    },
+    {
+      "question": "How do you make big decisions?",
+      "time_limit_sec": 120,
+      "answer": "I usually weigh the pros and cons pretty thoroughly, probably more than necessary. I tend to write things down, talk to friends and family back in Sweden, and then just, like, trust my gut feeling. It’s a mix of analysis and intuition."
+    },
+    {
+      "question": "Planner or go-with-the-flow?",
+      "time_limit_sec": 90,
+      "answer": "Oh, I’m definitely more of a planner. I like knowing what to expect, especially with work and travel. But I leave some room for spontaneity—it’s important to have a bit of both, I think."
+    },
+    {
+      "question": "Example showing that?",
+      "time_limit_sec": 120,
+      "answer": "When I moved to NYC, I planned every little step—where to live, what neighborhood suited me best, all that. But once I settled in, I left my weekends open to explore, which led to some of the best adventures and friendships I've made here."
+    },
+    {
+      "question": "How do you handle risk?",
+      "time_limit_sec": 120,
+      "answer": "I’m cautious, but not afraid of taking calculated risks. I like to have a backup plan, just in case, but I won't shy away from an opportunity if it feels right, you know? Like moving here, it was a risk, but one I was prepared to take."
+    },
+    {
+      "question": "Typical weekday?",
+      "time_limit_sec": 180,
+      "answer": "I start the day with a quick run or some yoga—it helps wake me up and clears my mind. Then it’s off to work in midtown, which is quite lively. After work, I either meet friends for dinner or head to a language exchange meetup, then wind down with some Japanese practice before bed."
+    },
+    {
+      "question": "Which parts take the most energy?",
+      "time_limit_sec": 120,
+      "answer": "Getting through the workday can be pretty draining, especially if there are back-to-back meetings. Also, commuting in NYC can be a bit of a rollercoaster—not always the smoothest ride!"
+    },
+    {
+      "question": "What do you wish you had more time or energy for?",
+      "time_limit_sec": 120,
+      "answer": "I wish I had more time to focus on creative projects, like sketching and writing. Sometimes, I feel guilty spending too much time on them because they’re not directly productive, but they’re so fulfilling."
+    },
+    {
+      "question": "Biggest constraint last year?",
+      "time_limit_sec": 150,
+      "answer": "Definitely finding time for everything. Between work, social life, and personal interests, there’s just not enough hours in the day. Sometimes I feel like I’m juggling too many balls in the air."
+    },
+    {
+      "question": "How do you deal with that constraint?",
+      "time_limit_sec": 120,
+      "answer": "I try to prioritize and set boundaries. I plan my week, ensuring I carve out time for work, friends, and personal projects. Also, I remind myself that it’s okay to say no sometimes."
+    },
+    {
+      "question": "People you feel closest to?",
+      "time_limit_sec": 120,
+      "answer": "I’m very close to my family back in Sweden—we talk a lot, and they visit when they can. Here, I have a few good friends I met through work and hobbies. They’re like my chosen family in NYC."
+    },
+    {
+      "question": "Describe those relationships.",
+      "time_limit_sec": 90,
+      "answer": "They’re supportive and honest. We’re there for each other, whether it's celebrating successes or getting through tough times. It’s important to have people you can rely on, especially when you live far from home."
+    },
+    {
+      "question": "Where do you spend most of your time?",
+      "time_limit_sec": 90,
+      "answer": "Probably in my apartment and at work. My apartment is like my little sanctuary—it’s where I can unwind and be myself."
+    },
+    {
+      "question": "How do you feel in those spaces?",
+      "time_limit_sec": 120,
+      "answer": "At home, I feel relaxed and at ease. I’ve decorated it with things that remind me of Sweden and my travels. At work, it’s more focused and a bit intense, but I try to keep it positive."
+    },
+    {
+      "question": "What makes you feel that way?",
+      "time_limit_sec": 90,
+      "answer": "The atmosphere, I suppose. At home, it’s cozy and filled with personal touches. At work, it’s more about the energy—fast-paced and driven, but I appreciate the challenge."
+    },
+    {
+      "question": "Who do you turn to when problems arise?",
+      "time_limit_sec": 120,
+      "answer": "Usually, my family or close friends. They offer different perspectives, which can be really helpful. Sometimes just talking things out with someone you trust makes a world of difference."
+    },
+    {
+      "question": "One tough moment in the last year?",
+      "time_limit_sec": 150,
+      "answer": "I had a challenging time when a big project at work was almost derailed. It was stressful and made me question my capabilities. Balancing that with everything else was really tough."
+    },
+    {
+      "question": "How did it affect you?",
+      "time_limit_sec": 120,
+      "answer": "It was a bit of a blow to my confidence at first. I felt overwhelmed and worried about failing, but it also pushed me to prove myself and learn from the experience."
+    },
+    {
+      "question": "How did you cope?",
+      "time_limit_sec": 150,
+      "answer": "I leaned on my support system for advice and encouragement. I also tried to break the problem into smaller, more manageable parts, which helped me tackle it more effectively."
+    },
+    {
+      "question": "What helps when you're overwhelmed?",
+      "time_limit_sec": 120,
+      "answer": "Taking a step back and doing something relaxing, like going for a walk or reading, helps clear my head. Sometimes a little distance from the problem makes it easier to find a solution."
+    },
+    {
+      "question": "What do you want life to look like in a few years?",
+      "time_limit_sec": 150,
+      "answer": "I hope to have advanced in my career and maybe explore new opportunities in different countries. Personally, I’d love to be fluent in Japanese and continue exploring my creative interests."
+    },
+    {
+      "question": "What do you want to be different?",
+      "time_limit_sec": 120,
+      "answer": "I’d like to feel more secure in my language skills, both professionally and personally. Also, perhaps a better work-life balance where I can dedicate more time to my passions."
+    },
+    {
+      "question": "Before Duolingo, how did you handle language learning?",
+      "time_limit_sec": 180,
+      "answer": "Before, I tried textbooks and CDs, you know, the old-school methods. They were okay, but a bit dull and hard to stick with. It felt more like a chore than a hobby, honestly."
+    },
+    {
+      "question": "Most annoying part of old method?",
+      "time_limit_sec": 150,
+      "answer": "It was definitely the lack of interaction. I felt like I was memorizing phrases without really understanding or being able to use them in real conversations. Plus, it got pretty monotonous."
+    },
+    {
+      "question": "Time it really failed?",
+      "time_limit_sec": 150,
+      "answer": "Oh, there was this time I tried to have a simple conversation in Japanese at a local meetup, and I just blanked. I realized then that my methods weren't preparing me for real-life situations."
+    },
+    {
+      "question": "How did you first hear about Duolingo?",
+      "time_limit_sec": 90,
+      "answer": "A friend of mine mentioned it in passing, saying it was like a game where you learn languages. That got my attention because I love games, so I decided to give it a shot."
+    },
+    {
+      "question": "What convinced you to try it?",
+      "time_limit_sec": 120,
+      "answer": "The gamification aspect, really. I’m very competitive, so the idea of climbing leaderboards and earning points was super appealing. Plus, it’s free, so I figured, why not?"
+    },
+    {
+      "question": "Walk through a recent Duolingo use.",
+      "time_limit_sec": 210,
+      "answer": "Sure! So, the other day, I opened the app during my lunch break. I went straight to the Japanese course, where I did a few reviews first. Then, I tackled a new lesson on food vocabulary. I love how the app uses pictures and sounds, making it easier to remember words. After finishing the lesson, I checked my position in the league and realized I was just a few points behind another user, which motivated me to do a few more exercises to climb higher. I ended my session feeling accomplished and ready to practice speaking with some friends later."
+    },
+    {
+      "question": "Most helpful part?",
+      "time_limit_sec": 120,
+      "answer": "Definitely the leagues and streaks. They keep me motivated to practice consistently. And I love the little reminders to keep my streak going—it’s like having a language coach nudging me gently."
+    },
+    {
+      "question": "Most frustrating part?",
+      "time_limit_sec": 150,
+      "answer": "When you make a simple mistake and lose a heart—that's pretty annoying, especially if you're on a roll. Also, some translations feel a bit too rigid, like there should be more flexibility in accepting correct answers."
+    },
+    {
+      "question": "Most frustrating part of Duolingo overall?",
+      "time_limit_sec": 150,
+      "answer": "The lack of speaking and conversation practice is the most frustrating. Sometimes I feel like I'm just memorizing and not actually learning how to communicate. It’d be great if there were more interactive speaking exercises."
+    },
+    {
+      "question": "One time that frustration showed up?",
+      "time_limit_sec": 180,
+      "answer": "Once, I was trying to translate a sentence and I knew my answer was correct, but because I didn't use the exact phrasing Duolingo wanted, it marked me wrong. It felt a bit demotivating, because in real life, language isn’t that rigid—there's more than one way to say something."
+    },
+    {
+      "question": "Do you use workarounds?",
+      "time_limit_sec": 150,
+      "answer": "Yes, sometimes I use other apps to get more speaking practice, or I watch Japanese shows and try to repeat dialogues. It helps fill in the gaps Duolingo doesn’t cover, especially for listening and speaking."
+    },
+    {
+      "question": "What do workarounds give you that Duolingo doesn't?",
+      "time_limit_sec": 150,
+      "answer": "They provide more context and real-world usage. Hearing native speakers and trying to mimic them helps with pronunciation and understanding nuances that you don’t always get with Duolingo exercises."
+    },
+    {
+      "question": "Worst-case scenario in this space?",
+      "time_limit_sec": 150,
+      "answer": "Worst-case? Losing motivation entirely and stopping my language learning journey. That’s always a fear because staying consistent is key, and without that drive, it’s easy to fall behind."
+    },
+    {
+      "question": "When you open Duolingo, what do you hope it does?",
+      "time_limit_sec": 150,
+      "answer": "I hope it makes learning fun and engaging, while also being educational. I want it to challenge me just enough that I feel like I'm progressing, but also keep it light and fun so I keep coming back."
+    },
+    {
+      "question": "How do you know Duolingo worked?",
+      "time_limit_sec": 120,
+      "answer": "When I can apply what I’ve learned in real-life situations or when I notice I’m understanding more in the anime shows I watch. It’s that moment when something clicks, and I feel I’ve truly learned something."
+    },
+    {
+      "question": "One thing you'd change about Duolingo?",
+      "time_limit_sec": 120,
+      "answer": "I’d add more interactive speaking features, maybe some sort of AI conversation partner. It would be great to have more practice with pronunciation and forming spontaneous sentences."
+    },
+    {
+      "question": "One thing you'd change about the whole problem space?",
+      "time_limit_sec": 120,
+      "answer": "I’d love to see more integrative approaches that combine gamified learning with real-world application, maybe through community interactions or live conversations with native speakers."
+    },
+    {
+      "question": "Anything important we didn't cover?",
+      "time_limit_sec": 90,
+      "answer": "I think we covered a lot! Maybe just to emphasize how crucial consistency is—it’s the key to success in language learning. Keeping it engaging is important to maintain that consistency."
+    },
+    {
+      "question": "Permission to build a digital twin?",
+      "time_limit_sec": 60,
+      "answer": "Sure, as long as it’s aimed to improve the learning experience and respects privacy, I’m all for it!"
+    }
+  ]
+}

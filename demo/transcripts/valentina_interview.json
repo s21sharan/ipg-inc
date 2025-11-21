@@ -1,0 +1,266 @@
+{
+  "user_name": "Valentina",
+  "summary": "Valentina finds Duolingo incredibly engaging for learning Catalan, though she wishes it focused more on conversational skills.",
+  "top_quotes": [
+    "I really love how Duolingo makes learning feel like a game; it keeps me coming back every day.",
+    "Sometimes it's frustrating when it doesn't teach you how to have real-life conversations, you know?",
+    "I just hope it includes more speaking exercises so I don't freeze up when I talk to locals in Barcelona!"
+  ],
+  "interview_script": [
+    {
+      "question": "Intro greeting",
+      "time_limit_sec": 0,
+      "answer": "¡Hola! Qué tal, soy Valentina. Encantada de estar aquí con ustedes. Ready when you are!"
+    },
+    {
+      "question": "Short version of your life story?",
+      "time_limit_sec": 180,
+      "answer": "Well, I was born and raised in Colombia, in a lovely town close to Medellín. Growing up, I was always interested in languages and different cultures. I moved to Spain a couple of years ago for work opportunities and decided to make Barcelona my home. It’s been a rollercoaster, but I love the Mediterranean vibe and the lifestyle here. Recently, I've been learning Catalan because I'm working at a company where it's really useful."
+    },
+    {
+      "question": "Where did you grow up?",
+      "time_limit_sec": 60,
+      "answer": "I grew up in a town called Envigado, near Medellín in Colombia. It’s a place with lots of nature and super friendly people."
+    },
+    {
+      "question": "What was it like growing up there?",
+      "time_limit_sec": 90,
+      "answer": "Oh, it was wonderful! It's really green and the community is so tight-knit. You know, everyone knows everyone. The culture is vibrant and there’s always music, like salsa and cumbia, in the background. Family gatherings are big, and we love our bandeja paisa!"
+    },
+    {
+      "question": "One turning point in your life?",
+      "time_limit_sec": 150,
+      "answer": "Moving to Spain was definitely a big turning point for me. I mean, leaving everything behind to start fresh in another country isn't easy, but I felt it was necessary for my career and personal growth. It opened up so many doors and changed my perspective about what I want in life."
+    },
+    {
+      "question": "Why was that a turning point?",
+      "time_limit_sec": 120,
+      "answer": "Because it challenged me in ways I never expected. It made me more independent and adaptable. Plus, learning to navigate a new culture and language, like Catalan, has been both difficult and rewarding. It really pushed me to step out of my comfort zone."
+    },
+    {
+      "question": "How did you handle that situation?",
+      "time_limit_sec": 120,
+      "answer": "At first, it was overwhelming. But I took it one day at a time. I made sure to connect with other Colombians in Spain and also dove into learning both the Spanish culture and Catalan. Having a supportive community around me and using language tools like Duolingo helped ease the transition."
+    },
+    {
+      "question": "What do you care most about right now?",
+      "time_limit_sec": 150,
+      "answer": "Right now, I'm most focused on mastering Catalan. It's important for my job and integrating into the local community in Barcelona. I really want to understand the culture better and feel a part of it. Plus, being multilingual opens up so many opportunities, both personally and professionally."
+    },
+    {
+      "question": "Why is that important?",
+      "time_limit_sec": 120,
+      "answer": "Because language is such a vital part of culture. Knowing Catalan helps me connect more deeply with my colleagues and friends here. It shows respect and effort, which I believe is essential when living in a new place. Plus, it’s a beautiful language!"
+    },
+    {
+      "question": "What is a good day for you?",
+      "time_limit_sec": 120,
+      "answer": "A good day starts with a nice breakfast, maybe arepas if I'm feeling nostalgic. A productive day at work where I learn something new, and then spending the evening at a café with friends. Perhaps fitting in a Duolingo session or a language exchange makes it even better!"
+    },
+    {
+      "question": "What makes you say \"this was a good day\"?",
+      "time_limit_sec": 90,
+      "answer": "You know it's been a good day when I feel fulfilled and connected to the people around me. If I’ve had meaningful interactions and a bit of personal growth, it's a win."
+    },
+    {
+      "question": "How do you make big decisions?",
+      "time_limit_sec": 120,
+      "answer": "I usually weigh the pros and cons pretty thoroughly and talk to people I trust for advice. My family is a big part of my decision-making process. It's important to consider both logic and intuition, I think. It's like balancing between what my heart and head say."
+    },
+    {
+      "question": "Planner or go-with-the-flow?",
+      "time_limit_sec": 90,
+      "answer": "I'm a little bit of both. I like having a plan, but I'm also open to change and spontaneous decisions. Life can be unpredictable, so it’s good to be flexible."
+    },
+    {
+      "question": "Example showing that?",
+      "time_limit_sec": 120,
+      "answer": "Like when I moved here, I had a plan to work in digital marketing. But when the opportunity to learn Catalan and work in a different field came up, I took it. It wasn’t what I initially planned, but I went with it, and it’s been great for my career."
+    },
+    {
+      "question": "How do you handle risk?",
+      "time_limit_sec": 120,
+      "answer": "I try to assess the situation as best as I can, and then I just trust myself. I've learned that taking risks often leads to growth, even if it's scary at first. It’s all about finding that balance between being careful and being courageous."
+    },
+    {
+      "question": "Typical weekday?",
+      "time_limit_sec": 180,
+      "answer": "I usually wake up around 7, have a quick breakfast, and head to work. My job keeps me busy until about 6 PM. After work, I often meet friends or head to a language exchange event. I try to squeeze in a Duolingo session before bed to practice Catalan. That's my way of unwinding."
+    },
+    {
+      "question": "Which parts take the most energy?",
+      "time_limit_sec": 120,
+      "answer": "Definitely the workday. It’s intense and requires a lot of focus and energy. By the end of the day, I sometimes feel mentally drained, but it's rewarding. Language learning also takes energy, but it’s more of a fun challenge."
+    },
+    {
+      "question": "What do you wish you had more time or energy for?",
+      "time_limit_sec": 120,
+      "answer": "I wish I could dedicate more time to learning Catalan and maybe even pick up another language like French. I'd also love to travel more around Europe, but between work and language studies, there’s not always enough time."
+    },
+    {
+      "question": "Biggest constraint last year?",
+      "time_limit_sec": 150,
+      "answer": "The pandemic was a big constraint, for sure. It limited travel opportunities and made it hard to network and meet new people in Barcelona, which is crucial when you're new in a city. It was a challenge to feel truly connected."
+    },
+    {
+      "question": "How do you deal with that constraint?",
+      "time_limit_sec": 120,
+      "answer": "I focused on virtual meetups and online networking. I also spent more time learning Catalan on Duolingo, using it as a way to still feel productive and connected to my surroundings, even when physical movement was restricted."
+    },
+    {
+      "question": "People you feel closest to?",
+      "time_limit_sec": 120,
+      "answer": "My family back in Colombia, definitely. We talk almost every day. And here in Spain, I have a close group of friends who have become like family to me. We've been through a lot together, especially during the pandemic."
+    },
+    {
+      "question": "Describe those relationships.",
+      "time_limit_sec": 90,
+      "answer": "With my family, it’s unconditional love and support, no matter how far apart we are. My friends here are my support system and my adventure buddies. We share experiences and learn from each other constantly."
+    },
+    {
+      "question": "Where do you spend most of your time?",
+      "time_limit_sec": 90,
+      "answer": "Besides work, I spend a lot of my time at cafés or doing language exchanges. I love being in lively, social environments, so that's where you'll often find me if I'm not at home."
+    },
+    {
+      "question": "How do you feel in those spaces?",
+      "time_limit_sec": 120,
+      "answer": "I feel energized and connected. It's where I can practice my languages and meet new people. A good café feels like an extension of my home, a place where I can relax and also be productive."
+    },
+    {
+      "question": "What makes you feel that way?",
+      "time_limit_sec": 90,
+      "answer": "The atmosphere, the sounds of people chatting and laughing, and the smell of coffee. It’s comforting and stimulating at the same time. Plus, it's a great place to practice Catalan by listening to conversations around me."
+    },
+    {
+      "question": "Who do you turn to when problems arise?",
+      "time_limit_sec": 120,
+      "answer": "I usually talk to my mom first. She's been my sounding board for everything since I was little. For practical advice, I turn to my closest friends, especially those who've experienced similar things."
+    },
+    {
+      "question": "One tough moment in the last year?",
+      "time_limit_sec": 150,
+      "answer": "I remember when I was really struggling with Catalan at work. I was getting frustrated because I couldn't keep up with conversations. There were days I felt like I wasn't making any progress, and it affected my confidence."
+    },
+    {
+      "question": "How did it affect you?",
+      "time_limit_sec": 120,
+      "answer": "It was demoralizing, and I even thought about giving up on learning the language. I felt isolated, like I was missing out on connections with my coworkers. It really made me doubt myself for a while."
+    },
+    {
+      "question": "How did you cope?",
+      "time_limit_sec": 150,
+      "answer": "I talked to a colleague who had learned Catalan as well, and they gave me some great tips. I doubled down on using Duolingo, setting small daily goals instead of overwhelming myself. I also started attending more language exchanges to practice speaking."
+    },
+    {
+      "question": "What helps when you're overwhelmed?",
+      "time_limit_sec": 120,
+      "answer": "Honestly, a long walk or run by the beach helps clear my head. Also, talking things through with a friend or family member. Mentally, it’s about reminding myself of how far I’ve come and being patient with myself."
+    },
+    {
+      "question": "What do you want life to look like in a few years?",
+      "time_limit_sec": 150,
+      "answer": "I'd love to be fluent in Catalan and maybe another language or two. I hope to advance in my career and perhaps have a more international role. Personally, I’d love to have my own place in Barcelona and keep traveling and discovering new cultures."
+    },
+    {
+      "question": "What do you want to be different?",
+      "time_limit_sec": 120,
+      "answer": "I’d like to feel more settled and confident in my language skills. Right now, I sometimes feel like an outsider, so it would be great to feel fully integrated into the local community."
+    },
+    {
+      "question": "Before Duolingo, how did you handle language learning?",
+      "time_limit_sec": 180,
+      "answer": "I tried a bit of everything: textbooks, podcasts, and even some private lessons. It was quite scattered and none of it really stuck. Plus, textbooks can be pretty dull, especially when you’re trying to learn everyday conversational skills."
+    },
+    {
+      "question": "Most annoying part of old method?",
+      "time_limit_sec": 150,
+      "answer": "Textbooks are so rigid and slow. They don't adapt to your pace and don’t make learning fun. I mean, who wants to sit with a grammar book after a long day at work? It was just too theoretical and not practical enough."
+    },
+    {
+      "question": "Time it really failed?",
+      "time_limit_sec": 150,
+      "answer": "Oh, definitely when I tried to have a conversation with a store clerk and realized the textbook phrases weren’t helping. I needed something more interactive and adaptable, something that mimics real-life conversations."
+    },
+    {
+      "question": "How did you first hear about Duolingo?",
+      "time_limit_sec": 90,
+      "answer": "A friend recommended it to me. She was using Duolingo for French and said it was engaging and fun, so I decided to give it a try for Catalan."
+    },
+    {
+      "question": "What convinced you to try it?",
+      "time_limit_sec": 120,
+      "answer": "Honestly, it was the gamified approach. I liked the idea of learning through games with points and levels. It sounded much more appealing than staring at a textbook. Plus, the app is super accessible."
+    },
+    {
+      "question": "Walk through a recent Duolingo use.",
+      "time_limit_sec": 210,
+      "answer": "So, usually I open the app in the evening. I start with a review lesson to reinforce what I’ve already learned, then move on to new vocabulary. I love the mini-games, like the match the word to the image exercises. It tests my memory in a fun way. If I have time, I do the tiny stories feature; it's like reading a Catalan children's book with questions. It helps with context and it's quite entertaining!"
+    },
+    {
+      "question": "Most helpful part?",
+      "time_limit_sec": 120,
+      "answer": "Definitely the repetition and the variety of exercises. It keeps things interesting and ensures that I'm not just memorizing but actually understanding. Plus, the way it builds sentences is really useful for real-life conversation prep."
+    },
+    {
+      "question": "Most frustrating part?",
+      "time_limit_sec": 150,
+      "answer": "Sometimes the lack of real conversational practice. I mean, it’s great for vocab and grammar, but I still feel a bit unprepared when I try to have a conversation in Catalan. Also, the pronunciation tips aren't as thorough as I'd like them to be."
+    },
+    {
+      "question": "Most frustrating part of Duolingo overall?",
+      "time_limit_sec": 150,
+      "answer": "It's definitely when exercises repeat too often without introducing new material, making it feel a bit monotonous. Also, it occasionally focuses on phrases that aren’t very practical in daily conversations, which can be a bit annoying."
+    },
+    {
+      "question": "One time that frustration showed up?",
+      "time_limit_sec": 180,
+      "answer": "There was a time when I felt stuck repeating the same basic phrases while I really wanted to learn how to say more advanced sentences for work meetings. I ended up having to look elsewhere for specific phrases because I just wasn’t getting what I needed from the app."
+    },
+    {
+      "question": "Do you use workarounds?",
+      "time_limit_sec": 150,
+      "answer": "Yes, I attend language exchange meetups to practice speaking. Also, I sometimes use YouTube for pronunciation tutorials and podcasts in Catalan. These are great to complement what Duolingo offers."
+    },
+    {
+      "question": "What do workarounds give you that Duolingo doesn't?",
+      "time_limit_sec": 150,
+      "answer": "They provide real conversational experience and context. Listening to native speakers on podcasts or speaking in exchanges helps me learn the nuances and slang that an app can't always provide. It’s about making the language come alive."
+    },
+    {
+      "question": "Worst-case scenario in this space?",
+      "time_limit_sec": 150,
+      "answer": "I think the worst would be not being able to communicate effectively in Catalan when it really counts, like in a professional setting. It’s essential to have confidence in language skills, and without it, you can feel out of place and miss opportunities."
+    },
+    {
+      "question": "When you open Duolingo, what do you hope it does?",
+      "time_limit_sec": 150,
+      "answer": "I hope it reinforces what I've already learned and challenges me with something new. It's about feeling a little more confident in Catalan each time I use it. I want it to be a productive break in my day that also keeps me motivated."
+    },
+    {
+      "question": "How do you know Duolingo worked?",
+      "time_limit_sec": 120,
+      "answer": "When I can actually apply what I learn to real conversations or when I understand a Catalan TV show better than before. Seeing improvement in understanding and being able to respond more quickly are key indicators for me."
+    },
+    {
+      "question": "One thing you'd change about Duolingo?",
+      "time_limit_sec": 120,
+      "answer": "I’d add more interactive speaking exercises. Something that simulates real conversations with voice recognition feedback would be amazing. That way, I can practice pronunciation and get corrected in real time."
+    },
+    {
+      "question": "One thing you'd change about the whole problem space?",
+      "time_limit_sec": 120,
+      "answer": "I’d love for language learning tools to integrate more cultural context, like understanding idioms or cultural references that native speakers use. It’s these little details that make a language truly functional and relatable."
+    },
+    {
+      "question": "Anything important we didn't cover?",
+      "time_limit_sec": 90,
+      "answer": "Hmm, I think we've covered it all! Just to add that it's been interesting to compare my language learning experiences between back home and here in Spain. The culture of learning is different, and that's been eye-opening."
+    },
+    {
+      "question": "Permission to build a digital twin?",
+      "time_limit_sec": 60,
+      "answer": "Sure, why not! As long as it helps improve language learning experiences, I’m all for it. ¡Adelante!"
+    }
+  ]
+}

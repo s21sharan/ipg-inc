@@ -1,0 +1,266 @@
+{
+  "user_name": "Mei Lin",
+  "summary": "For Mei Lin, Duolingo is an essential tool for learning French, appreciated mostly for its ad-free experience and structured lessons, though sometimes it can feel repetitive.",
+  "top_quotes": [
+    "I really love that Duolingo Plus doesn't have ads because I can focus on my lessons without interruptions.",
+    "Sometimes, uh, the practice feels a bit repetitive, like answering the same type of question too many times.",
+    "The thing about Duolingo is I can see my progress, you know, like when I nail a tough sentence construction in French."
+  ],
+  "interview_script": [
+    {
+      "question": "Intro greeting",
+      "time_limit_sec": 0,
+      "answer": "Hi there, I'm Mei Lin. It's nice to be a part of this conversation today."
+    },
+    {
+      "question": "Short version of your life story?",
+      "time_limit_sec": 180,
+      "answer": "Sure, um, I was born in Taipei, Taiwan, and grew up there until I was about 22. I then moved to Canada for graduate school, which was quite an adventure for me. After finishing my studies, I decided to stay because I found a job I love in Montreal, and, well, now I'm learning French to fit in better and improve my career opportunities."
+    },
+    {
+      "question": "Where did you grow up?",
+      "time_limit_sec": 60,
+      "answer": "I grew up in Taipei, it's a really vibrant city with lots of interesting things going on all the time. I miss the night markets and the street food."
+    },
+    {
+      "question": "What was it like growing up there?",
+      "time_limit_sec": 90,
+      "answer": "Growing up in Taipei was, um, really dynamic. There's this mix of traditional and modern that I always found exciting. It was also pretty fast-paced, but I liked how there was always something to do or discover, you know?"
+    },
+    {
+      "question": "One turning point in your life?",
+      "time_limit_sec": 150,
+      "answer": "Moving to Canada was definitely a big turning point for me. It was probably the first time I left home for such a long period, and the cultural differences were both challenging and enriching. It pushed me to grow in ways I hadn't expected."
+    },
+    {
+      "question": "Why was that a turning point?",
+      "time_limit_sec": 120,
+      "answer": "Well, moving to a new country, um, really opened my eyes to different perspectives and ways of living. It forced me to become more independent and, like, adapt to a whole new environment and language. Those experiences have shaped who I am today."
+    },
+    {
+      "question": "How did you handle that situation?",
+      "time_limit_sec": 120,
+      "answer": "At first, it was tough—everything felt unfamiliar. But I tried to embrace it by meeting new people, trying local activities, and, of course, learning the language. I think, um, being open-minded and staying curious helped me settle in faster."
+    },
+    {
+      "question": "What do you care most about right now?",
+      "time_limit_sec": 150,
+      "answer": "Right now, I really care about, um, improving my French. It's important for my job in Montreal and also, you know, helps me connect with more people here. I think it's, uh, also about embracing the culture and feeling truly a part of the community."
+    },
+    {
+      "question": "Why is that important?",
+      "time_limit_sec": 120,
+      "answer": "It's important because, well, language is such a big part of daily communication and connecting with others. Without it, I feel like I'm missing out on a lot. Plus, in my workplace, being fluent in French is a definite advantage."
+    },
+    {
+      "question": "What is a good day for you?",
+      "time_limit_sec": 120,
+      "answer": "A good day, um, usually involves having a productive morning at work and, you know, feeling like I've accomplished something. Then maybe an hour of French practice with Duolingo or chatting with a friend in French. Ending the day with a nice meal or a walk feels perfect."
+    },
+    {
+      "question": "What makes you say \"this was a good day\"?",
+      "time_limit_sec": 90,
+      "answer": "I guess, um, when I look back and feel like I've made progress, whether in work or my language skills. Also, if I've had some quality time with friends or even just enjoyed a quiet moment with a book."
+    },
+    {
+      "question": "How do you make big decisions?",
+      "time_limit_sec": 120,
+      "answer": "Usually, I take my time to gather all the information and weigh the pros and cons. I like to, um, talk it over with close friends or family, you know, and get their perspectives. Ultimately, I try to listen to my gut feeling."
+    },
+    {
+      "question": "Planner or go-with-the-flow?",
+      "time_limit_sec": 90,
+      "answer": "I would say I'm more of a planner. I like to know what's coming next and, um, be prepared for it. It makes me feel more in control, you know?"
+    },
+    {
+      "question": "Example showing that?",
+      "time_limit_sec": 120,
+      "answer": "Well, before moving to Canada, I made a detailed plan of what I needed to do—from packing to arranging my accommodation here. Even now, with language learning, I have a schedule with small goals, like completing certain units on Duolingo each week."
+    },
+    {
+      "question": "How do you handle risk?",
+      "time_limit_sec": 120,
+      "answer": "I usually try to minimize risks by, um, being as informed as possible. But if it's something I really want or need, I'm willing to take the leap. I do consider how it'll affect my long-term goals before acting."
+    },
+    {
+      "question": "Typical weekday?",
+      "time_limit_sec": 180,
+      "answer": "A typical weekday for me starts with a bit of exercise and breakfast. Then off to work, where I spend most of my time. I try to, you know, squeeze in a quick Duolingo session during lunch. After work, I might meet a friend or head home for some downtime. I often end the day with a bit of French practice or reading."
+    },
+    {
+      "question": "Which parts take the most energy?",
+      "time_limit_sec": 120,
+      "answer": "Work is definitely the most draining, especially on days with back-to-back meetings. Also, when I'm trying to balance improving my French with everything else, it can, um, feel a bit exhausting."
+    },
+    {
+      "question": "What do you wish you had more time or energy for?",
+      "time_limit_sec": 120,
+      "answer": "I wish I had more time for, um, really immersing myself in the French language. Not just through apps but also by being able to attend more events or, you know, take more trips within Quebec to practice in real-life situations."
+    },
+    {
+      "question": "Biggest constraint last year?",
+      "time_limit_sec": 150,
+      "answer": "The biggest constraint was definitely time. Between work and adjusting to living in a new city, it felt like there was never quite enough time to do everything I wanted, especially in learning French more thoroughly."
+    },
+    {
+      "question": "How do you deal with that constraint?",
+      "time_limit_sec": 120,
+      "answer": "I tried to be strategic, like setting specific goals for each week. I also prioritized what was most important, splitting my time between essentials and language practice. Using Duolingo on my phone helped me make the most of small pockets of downtime."
+    },
+    {
+      "question": "People you feel closest to?",
+      "time_limit_sec": 120,
+      "answer": "I'm really close to my family back in Taiwan and a few friends I've made here in Canada. My family and I, uh, keep in touch regularly through video calls, and I've been fortunate to find a supportive circle in Montreal."
+    },
+    {
+      "question": "Describe those relationships.",
+      "time_limit_sec": 90,
+      "answer": "They're really important to me. With my family, there's always this deep bond and understanding. My friends here, especially those also learning new languages, are supportive and encouraging, which really helps."
+    },
+    {
+      "question": "Where do you spend most of your time?",
+      "time_limit_sec": 90,
+      "answer": "I spend most of my time, um, at work or at home. Home is sort of my sanctuary, where I can relax and focus on my interests like reading or language practice."
+    },
+    {
+      "question": "How do you feel in those spaces?",
+      "time_limit_sec": 120,
+      "answer": "At work, I feel engaged and, uh, sometimes challenged, which is good. At home, I feel comfortable and at ease. It's where I can recharge and be myself, you know?"
+    },
+    {
+      "question": "What makes you feel that way?",
+      "time_limit_sec": 90,
+      "answer": "I think it's because, um, work gives me a sense of purpose. Home, on the other hand, is filled with things I love and familiar routines that make me feel centered."
+    },
+    {
+      "question": "Who do you turn to when problems arise?",
+      "time_limit_sec": 120,
+      "answer": "I tend to reach out to my mom, she's always been a good listener and offers wise advice. Sometimes, I'll talk to my close friends here, especially if it's something they can relate to."
+    },
+    {
+      "question": "One tough moment in the last year?",
+      "time_limit_sec": 150,
+      "answer": "One tough moment was probably adjusting to a new role at work. It involved, um, more responsibility and dealing with French-speaking clients more regularly, which was intimidating at first."
+    },
+    {
+      "question": "How did it affect you?",
+      "time_limit_sec": 120,
+      "answer": "It was stressful at the beginning, um, kind of made me question if I was ready for it. But it also pushed me to improve and, you know, helped boost my confidence over time as I got better."
+    },
+    {
+      "question": "How did you cope?",
+      "time_limit_sec": 150,
+      "answer": "I coped by, well, dividing tasks into manageable parts and seeking feedback from colleagues. I focused more on practicing my French, often using Duolingo to brush up before important meetings. That made a big difference."
+    },
+    {
+      "question": "What helps when you're overwhelmed?",
+      "time_limit_sec": 120,
+      "answer": "Taking a step back to breathe and, um, using meditation techniques I learned from an app. I also find that a short walk outside really helps clear my mind."
+    },
+    {
+      "question": "What do you want life to look like in a few years?",
+      "time_limit_sec": 150,
+      "answer": "In a few years, I'd love to be fluent in French and maybe even consider learning another language. Career-wise, I hope to, um, advance further in my field. Personally, I'd like to explore more of Canada and feel more at home here."
+    },
+    {
+      "question": "What do you want to be different?",
+      "time_limit_sec": 120,
+      "answer": "I hope to feel more settled and integrated into the community. I also, um, want to have more time to pursue personal goals, like traveling or, uh, maybe even taking up a new hobby."
+    },
+    {
+      "question": "Before Duolingo, how did you handle language learning?",
+      "time_limit_sec": 180,
+      "answer": "Before Duolingo, I was using a mix of textbooks and online resources. It was okay, but I often felt like it lacked structure and, um, the consistency I needed. The materials were also kind of dry and not very interactive."
+    },
+    {
+      "question": "Most annoying part of old method?",
+      "time_limit_sec": 150,
+      "answer": "The most annoying part was probably how, uh, disconnected everything felt. I'd have to hunt for information across different sites or books, which was time-consuming and not always effective."
+    },
+    {
+      "question": "Time it really failed?",
+      "time_limit_sec": 150,
+      "answer": "One time it failed was, um, when I was trying to practice speaking. I had all this vocabulary but no real way to use it in conversation, and I couldn't tell if I was pronouncing things correctly."
+    },
+    {
+      "question": "How did you first hear about Duolingo?",
+      "time_limit_sec": 90,
+      "answer": "I first heard about Duolingo from a friend who was using it to learn Spanish. They mentioned how fun and effective it was, so I decided to give it a try for French."
+    },
+    {
+      "question": "What convinced you to try it?",
+      "time_limit_sec": 120,
+      "answer": "I think, um, what convinced me was the ease of use and the gamified approach. Plus, the fact that Duolingo Plus comes without ads was a big selling point. I wanted something that felt engaging and accessible."
+    },
+    {
+      "question": "Walk through a recent Duolingo use.",
+      "time_limit_sec": 210,
+      "answer": "Sure, so yesterday, I opened Duolingo during my lunch break. I worked on a couple of units focusing on food vocabulary. The interactive exercises, like matching words with images, really helped solidify my learning. Uh, as I progressed, I earned some XP points, which made me feel accomplished. I also liked the speaking exercise where I had to repeat sentences, it helped me with pronunciation."
+    },
+    {
+      "question": "Most helpful part?",
+      "time_limit_sec": 120,
+      "answer": "The most helpful part for me is, um, definitely the variety of exercises. They keep me engaged and help reinforce different skills like writing, speaking, and listening, which I think is really beneficial."
+    },
+    {
+      "question": "Most frustrating part?",
+      "time_limit_sec": 150,
+      "answer": "Sometimes, uh, the practice feels a bit repetitive, like answering the same type of question too many times. It can feel like I'm not learning anything new, which can be frustrating."
+    },
+    {
+      "question": "Most frustrating part of Duolingo overall?",
+      "time_limit_sec": 150,
+      "answer": "Overall, I'd say the most frustrating part is, um, probably when the app doesn't explain grammar rules very clearly. Sometimes I get an answer wrong but don't fully understand why, which kind of, you know, limits learning."
+    },
+    {
+      "question": "One time that frustration showed up?",
+      "time_limit_sec": 180,
+      "answer": "There was this one time I kept getting a sentence structure wrong. Every time I tried, it was marked incorrect, but, uh, there wasn't a detailed explanation. I ended up looking it up elsewhere, which took extra time."
+    },
+    {
+      "question": "Do you use workarounds?",
+      "time_limit_sec": 150,
+      "answer": "Yeah, sometimes I'll use other resources like grammar books or language forums to supplement what I'm learning on Duolingo. I also, um, watch French movies with subtitles to get a sense of how things are used contextually."
+    },
+    {
+      "question": "What do workarounds give you that Duolingo doesn't?",
+      "time_limit_sec": 150,
+      "answer": "They give me a deeper understanding of grammar nuances and contextual usage. You know, sometimes seeing how native speakers actually use phrases helps make it stick better than just, like, repeating exercises."
+    },
+    {
+      "question": "Worst-case scenario in this space?",
+      "time_limit_sec": 150,
+      "answer": "The worst-case scenario would be, um, not being able to communicate effectively in French despite all the effort. It would be frustrating to have a language barrier at work or in social settings in Montreal."
+    },
+    {
+      "question": "When you open Duolingo, what do you hope it does?",
+      "time_limit_sec": 150,
+      "answer": "I hope it helps me, um, build and reinforce my vocabulary while giving me the chance to practice speaking and listening. I look for a sense of progress, like mastering a tricky topic or nailing a speaking exercise."
+    },
+    {
+      "question": "How do you know Duolingo worked?",
+      "time_limit_sec": 120,
+      "answer": "I know it worked when I can, uh, understand and use new phrases in a conversation. Also, when I notice I'm recalling vocabulary more easily or getting through exercises without mistakes."
+    },
+    {
+      "question": "One thing you'd change about Duolingo?",
+      "time_limit_sec": 120,
+      "answer": "I would add more in-depth grammar explanations or, um, maybe a feature where you can ask questions about why an answer was wrong and get instant feedback."
+    },
+    {
+      "question": "One thing you'd change about the whole problem space?",
+      "time_limit_sec": 120,
+      "answer": "I'd love to see more integration of cultural context and real-life usage in language learning tools, you know, to prepare learners better for actual conversations beyond textbook scenarios."
+    },
+    {
+      "question": "Anything important we didn't cover?",
+      "time_limit_sec": 90,
+      "answer": "I think we've covered quite a lot. I just want to, uh, emphasize how much little wins, like completing a level or understanding a tricky phrase, really motivate me to keep going."
+    },
+    {
+      "question": "Permission to build a digital twin?",
+      "time_limit_sec": 60,
+      "answer": "Uh, sure, I'm okay with that. As long as it's helpful and respects my privacy, I think it's fine."
+    }
+  ]
+}

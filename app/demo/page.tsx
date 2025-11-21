@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 
-// Import interview data
+// Import all interview data
 import adrianData from '../../demo/transcripts/adrian_interview.json';
 import aidenData from '../../demo/transcripts/aiden_interview.json';
 import ethanData from '../../demo/transcripts/ethan_interview.json';
@@ -13,80 +13,76 @@ import leoData from '../../demo/transcripts/leo_interview.json';
 import mayaData from '../../demo/transcripts/maya_interview.json';
 import rileyData from '../../demo/transcripts/riley_interview.json';
 import riyaData from '../../demo/transcripts/riya_interview.json';
+import marcusData from '../../demo/transcripts/marcus_interview.json';
+import sofiaData from '../../demo/transcripts/sofia_interview.json';
+import kenjiData from '../../demo/transcripts/kenji_interview.json';
+import priyaData from '../../demo/transcripts/priya_interview.json';
+import dmitriData from '../../demo/transcripts/dmitri_interview.json';
+import aaliyahData from '../../demo/transcripts/aaliyah_interview.json';
+import chenWeiData from '../../demo/transcripts/chen wei_interview.json';
+import mariaData from '../../demo/transcripts/maria_interview.json';
+import tyroneData from '../../demo/transcripts/tyrone_interview.json';
+import ingridData from '../../demo/transcripts/ingrid_interview.json';
+import carlosData from '../../demo/transcripts/carlos_interview.json';
+import fatimaData from '../../demo/transcripts/fatima_interview.json';
+import trevorData from '../../demo/transcripts/trevor_interview.json';
+import yukiData from '../../demo/transcripts/yuki_interview.json';
+import deshawnData from '../../demo/transcripts/deshawn_interview.json';
+import anyaData from '../../demo/transcripts/anya_interview.json';
+import mohammedData from '../../demo/transcripts/mohammed_interview.json';
+import luciaData from '../../demo/transcripts/lucia_interview.json';
+import brandonData from '../../demo/transcripts/brandon_interview.json';
+import amaraData from '../../demo/transcripts/amara_interview.json';
+import viktorData from '../../demo/transcripts/viktor_interview.json';
+import jasmineData from '../../demo/transcripts/jasmine_interview.json';
+import omarData from '../../demo/transcripts/omar_interview.json';
+import siennaData from '../../demo/transcripts/sienna_interview.json';
+import kwameData from '../../demo/transcripts/kwame_interview.json';
+import elenaData from '../../demo/transcripts/elena_interview.json';
+import rashidData from '../../demo/transcripts/rashid_interview.json';
+import destinyData from '../../demo/transcripts/destiny_interview.json';
+import hansData from '../../demo/transcripts/hans_interview.json';
+import meiLinData from '../../demo/transcripts/mei lin_interview.json';
+import jamalData from '../../demo/transcripts/jamal_interview.json';
+import katyaData from '../../demo/transcripts/katya_interview.json';
+import obinnaData from '../../demo/transcripts/obinna_interview.json';
+import guadalupeData from '../../demo/transcripts/guadalupe_interview.json';
+import finnData from '../../demo/transcripts/finn_interview.json';
+import aishaData from '../../demo/transcripts/aisha_interview.json';
+import darnellData from '../../demo/transcripts/darnell_interview.json';
+import nadiaData from '../../demo/transcripts/nadia_interview.json';
+import tomaszData from '../../demo/transcripts/tomasz_interview.json';
+import blessingData from '../../demo/transcripts/blessing_interview.json';
+import svenData from '../../demo/transcripts/sven_interview.json';
+import laylaData from '../../demo/transcripts/layla_interview.json';
+import kofiData from '../../demo/transcripts/kofi_interview.json';
+import valentinaData from '../../demo/transcripts/valentina_interview.json';
+import rajeshData from '../../demo/transcripts/rajesh_interview.json';
+import zaraData from '../../demo/transcripts/zara_interview.json';
+import emmanuelData from '../../demo/transcripts/emmanuel_interview.json';
+import olgaData from '../../demo/transcripts/olga_interview.json';
+import danteData from '../../demo/transcripts/dante_interview.json';
+import ameliaData from '../../demo/transcripts/amelia_interview.json';
+import tariqData from '../../demo/transcripts/tariq_interview.json';
 
-// Agent data with summaries and quotes from interview files
-const agentData = [
-  {
-    id: 0,
-    name: adrianData.user_name,
-    summary: adrianData.summary,
-    top_quotes: adrianData.top_quotes,
-    interview_script: adrianData.interview_script,
-  },
-  {
-    id: 1,
-    name: aidenData.user_name,
-    summary: aidenData.summary,
-    top_quotes: aidenData.top_quotes,
-    interview_script: aidenData.interview_script,
-  },
-  {
-    id: 2,
-    name: ethanData.user_name,
-    summary: ethanData.summary,
-    top_quotes: ethanData.top_quotes,
-    interview_script: ethanData.interview_script,
-  },
-  {
-    id: 3,
-    name: jasonData.user_name,
-    summary: jasonData.summary,
-    top_quotes: jasonData.top_quotes,
-    interview_script: jasonData.interview_script,
-  },
-  {
-    id: 4,
-    name: jordanData.user_name,
-    summary: jordanData.summary,
-    top_quotes: jordanData.top_quotes,
-    interview_script: jordanData.interview_script,
-  },
-  {
-    id: 5,
-    name: lenaData.user_name,
-    summary: lenaData.summary,
-    top_quotes: lenaData.top_quotes,
-    interview_script: lenaData.interview_script,
-  },
-  {
-    id: 6,
-    name: leoData.user_name,
-    summary: leoData.summary,
-    top_quotes: leoData.top_quotes,
-    interview_script: leoData.interview_script,
-  },
-  {
-    id: 7,
-    name: mayaData.user_name,
-    summary: mayaData.summary,
-    top_quotes: mayaData.top_quotes,
-    interview_script: mayaData.interview_script,
-  },
-  {
-    id: 8,
-    name: rileyData.user_name,
-    summary: rileyData.summary,
-    top_quotes: rileyData.top_quotes,
-    interview_script: rileyData.interview_script,
-  },
-  {
-    id: 9,
-    name: riyaData.user_name,
-    summary: riyaData.summary,
-    top_quotes: riyaData.top_quotes,
-    interview_script: riyaData.interview_script,
-  },
+// All interview data
+const allInterviewData = [
+  adrianData, aidenData, ethanData, jasonData, jordanData, lenaData, leoData, mayaData, rileyData, riyaData,
+  marcusData, sofiaData, kenjiData, priyaData, dmitriData, aaliyahData, chenWeiData, mariaData, tyroneData, ingridData,
+  carlosData, fatimaData, trevorData, yukiData, deshawnData, anyaData, mohammedData, luciaData, brandonData, amaraData,
+  viktorData, jasmineData, omarData, siennaData, kwameData, elenaData, rashidData, destinyData, hansData, meiLinData,
+  jamalData, katyaData, obinnaData, guadalupeData, finnData, aishaData, darnellData, nadiaData, tomaszData, blessingData,
+  svenData, laylaData, kofiData, valentinaData, rajeshData, zaraData, emmanuelData, olgaData, danteData, ameliaData, tariqData,
 ];
+
+// Create agent data from all interviews
+const agentData = allInterviewData.map((data, i) => ({
+  id: i,
+  name: data.user_name,
+  summary: data.summary,
+  top_quotes: data.top_quotes,
+  interview_script: data.interview_script,
+}));
 
 // Hexagon shape component with tooltip
 function Hexagon({
@@ -155,8 +151,8 @@ function Hexagon({
       onMouseLeave={() => setShowTooltip(false)}
     >
       <svg
-        width="80"
-        height="80"
+        width="48"
+        height="48"
         viewBox="0 0 48 48"
         className={`cursor-pointer transition-all duration-300 hover:scale-110 ${
           selected ? 'drop-shadow-[0_4px_12px_rgba(249,115,22,0.4)]' : 'hover:drop-shadow-md'
@@ -294,7 +290,7 @@ export default function DemoPage() {
 
   // Filter chat state
   const [filterMessages, setFilterMessages] = useState<Array<{ text: string; isUser: boolean }>>([
-    { text: 'How can I help you filter the agents?', isUser: false },
+    { text: 'What type of customers do you want to talk to? I\'ll automatically filter the agents for you.', isUser: false },
   ]);
   const [filterInput, setFilterInput] = useState('');
 
@@ -336,22 +332,35 @@ export default function DemoPage() {
     setMemoryInput('');
   };
 
-  // Agent positions in a cluster formation
-  const agentPositions = [
-    { id: 0, row: 0, col: 1 },
-    { id: 1, row: 0, col: 2 },
-    { id: 2, row: 0, col: 3 },
-    { id: 3, row: 1, col: 0.5 },
-    { id: 4, row: 1, col: 1.5 },
-    { id: 5, row: 1, col: 2.5 },
-    { id: 6, row: 1, col: 3.5 },
-    { id: 7, row: 2, col: 1 },
-    { id: 8, row: 2, col: 2 },
-    { id: 9, row: 2, col: 3 },
+  // Agent positions in a symmetrical hexagon shape (61 hexagons)
+  const agentPositions: { id: number; row: number; col: number }[] = [];
+  let id = 0;
+
+  // Hexagonal shape pattern
+  const rowConfigs = [
+    { count: 5, startCol: 2 },     // Row 0
+    { count: 6, startCol: 1.5 },   // Row 1
+    { count: 7, startCol: 1 },     // Row 2
+    { count: 8, startCol: 0.5 },   // Row 3
+    { count: 9, startCol: 0 },     // Row 4 (center)
+    { count: 8, startCol: 0.5 },   // Row 5
+    { count: 7, startCol: 1 },     // Row 6
+    { count: 6, startCol: 1.5 },   // Row 7
+    { count: 5, startCol: 2 },     // Row 8
   ];
 
-  const hexSpacingX = 82;
-  const hexSpacingY = 70;
+  rowConfigs.forEach((config, row) => {
+    for (let i = 0; i < config.count; i++) {
+      agentPositions.push({
+        id: id++,
+        row,
+        col: config.startCol + i,
+      });
+    }
+  });
+
+  const hexSpacingX = 50;
+  const hexSpacingY = 42;
 
   return (
     <div className="h-screen bg-gray-50 text-gray-900 p-4 md:p-6 flex flex-col overflow-hidden">
@@ -394,7 +403,7 @@ export default function DemoPage() {
               );
             })}
             {/* Spacer to maintain container size */}
-            <div style={{ width: '400px', height: '290px' }} />
+            <div style={{ width: '500px', height: '430px' }} />
           </div>
         </div>
 
@@ -410,14 +419,24 @@ export default function DemoPage() {
           </div>
 
           {/* Chat input */}
-          <div className="flex gap-2">
-            <input
-              type="text"
+          <div className="flex gap-2 items-end">
+            <textarea
               value={filterInput}
-              onChange={(e) => setFilterInput(e.target.value)}
-              onKeyDown={(e) => e.key === 'Enter' && handleFilterSend()}
+              onChange={(e) => {
+                setFilterInput(e.target.value);
+                e.target.style.height = 'auto';
+                e.target.style.height = Math.min(e.target.scrollHeight, 120) + 'px';
+              }}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                  e.preventDefault();
+                  handleFilterSend();
+                }
+              }}
               placeholder="Filter by..."
-              className="flex-1 bg-gray-50 border-0 rounded-lg px-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-gray-200"
+              rows={1}
+              className="flex-1 bg-gray-50 border-0 rounded-lg px-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-gray-200 resize-none overflow-hidden"
+              style={{ minHeight: '36px' }}
             />
             <button
               onClick={handleFilterSend}

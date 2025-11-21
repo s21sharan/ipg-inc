@@ -1,0 +1,266 @@
+{
+  "user_name": "Viktor",
+  "summary": "Duolingo is a practical tool for improving English on the go, but sometimes its lessons feel repetitive and not fully immersive.",
+  "top_quotes": [
+    "I like how Duolingo fits into my long breaks, like a quick 'puzzle' for English words.",
+    "Sometimes, it feels like I'm repeating same basics without getting deeper, you know?",
+    "When Duolingo works, it's that moment when I understand English better at a truck stop."
+  ],
+  "interview_script": [
+    {
+      "question": "Intro greeting",
+      "time_limit_sec": 0,
+      "answer": "Hello! I'm Viktor, nice to meet you. Ready to talk, yeah?"
+    },
+    {
+      "question": "Short version of your life story?",
+      "time_limit_sec": 180,
+      "answer": "Well, I grew up in Poland, small town near Wrocław. Moved to UK about ten years ago for work, you know, better opportunities. Been driving trucks all over, mostly between UK and Europe. It's like, always on the road. Recently trying to improve my English more seriously."
+    },
+    {
+      "question": "Where did you grow up?",
+      "time_limit_sec": 60,
+      "answer": "Grew up in Poland, little village close to Wrocław. Quiet place, lots of countryside, very peaceful."
+    },
+    {
+      "question": "What was it like growing up there?",
+      "time_limit_sec": 90,
+      "answer": "It was simple, you know? Not much going on but good community. People know each other, always someone to help. I liked the quiet, but sometimes felt bit isolated, like not much chance to see the world."
+    },
+    {
+      "question": "One turning point in your life?",
+      "time_limit_sec": 150,
+      "answer": "Moving to UK, definitely. Big change, new language, new culture. At first, very hard, but slowly got used. Plus, truck driving opened up Europe to me, so I see lots more now."
+    },
+    {
+      "question": "Why was that a turning point?",
+      "time_limit_sec": 120,
+      "answer": "Well, it changed everything—job, language, lifestyle. Before, I never left Poland. Now, I'm always on the road, meeting people from everywhere. It's like life opened up, you know?"
+    },
+    {
+      "question": "How did you handle that situation?",
+      "time_limit_sec": 120,
+      "answer": "At first, struggled a lot with English. So, I focused on learning from every interaction, picking up words and phrases during work. It was sink or swim, really."
+    },
+    {
+      "question": "What do you care most about right now?",
+      "time_limit_sec": 150,
+      "answer": "Right now, improving my English is important. Makes job easier and life in UK better. Also, I care about staying fit, you know, long drives can mess with health."
+    },
+    {
+      "question": "Why is that important?",
+      "time_limit_sec": 120,
+      "answer": "Better English means better work opportunities and understanding what's around me. Plus, health is everything, especially when driving long hours—got to be sharp and in shape."
+    },
+    {
+      "question": "What is a good day for you?",
+      "time_limit_sec": 120,
+      "answer": "Good day is a smooth drive, no traffic jams. I also like learning something new, maybe a new English phrase or word. End with a good meal, yeah?"
+    },
+    {
+      "question": "What makes you say \"this was a good day\"?",
+      "time_limit_sec": 90,
+      "answer": "When I go to sleep and feel I learnt something, even just a bit, and had good conversations at truck stops. That feels like progress."
+    },
+    {
+      "question": "How do you make big decisions?",
+      "time_limit_sec": 120,
+      "answer": "I usually think things through, talk to family back home for advice. Weigh pros and cons, and then decide based on what's best for future."
+    },
+    {
+      "question": "Planner or go-with-the-flow?",
+      "time_limit_sec": 90,
+      "answer": "Bit of both, I think. Have to plan routes for driving, but on the road, you need to be flexible. Things change fast, you know?"
+    },
+    {
+      "question": "Example showing that?",
+      "time_limit_sec": 120,
+      "answer": "Like, when a road closes, I must find another way quick. I plan my route, but sometimes GPS isn't always right, and I have to improvise."
+    },
+    {
+      "question": "How do you handle risk?",
+      "time_limit_sec": 120,
+      "answer": "I try to minimize it, plan carefully, but also stay ready to adapt. Risk is part of life, but careful planning keeps it in check."
+    },
+    {
+      "question": "Typical weekday?",
+      "time_limit_sec": 180,
+      "answer": "Wake up early, maybe 5 or 6 am. On the road soon after. Drive for hours with breaks every few hours. Use breaks to check phone, listen to radio or podcasts. Sometimes Duolingo to keep English up."
+    },
+    {
+      "question": "Which parts take the most energy?",
+      "time_limit_sec": 120,
+      "answer": "Definitely the driving itself. Concentration is a must, especially on busy highways and in bad weather. It gets tiring after long hours."
+    },
+    {
+      "question": "What do you wish you had more time or energy for?",
+      "time_limit_sec": 120,
+      "answer": "Would like more time to study English properly, maybe a course or more conversations. Also, more time to exercise regularly. Important for health, you know?"
+    },
+    {
+      "question": "Biggest constraint last year?",
+      "time_limit_sec": 150,
+      "answer": "Probably the pandemic. It affected routes, made things unpredictable. Also made personal time, like learning or relaxing, difficult to plan."
+    },
+    {
+      "question": "How do you deal with that constraint?",
+      "time_limit_sec": 120,
+      "answer": "Just took things day by day, adapted to new restrictions. Kept focused on what I can control, like my health and learning bits of language."
+    },
+    {
+      "question": "People you feel closest to?",
+      "time_limit_sec": 120,
+      "answer": "Family in Poland, for sure. And few friends from work, other drivers I've known for a while. You make connections on the road."
+    },
+    {
+      "question": "Describe those relationships.",
+      "time_limit_sec": 90,
+      "answer": "Family is supportive, always there for advice. Friends from work, we share experiences, help each other with things like routes, regulations."
+    },
+    {
+      "question": "Where do you spend most of your time?",
+      "time_limit_sec": 90,
+      "answer": "In the driver's seat, on the road. That's my 'office'. And in truck stops for breaks."
+    },
+    {
+      "question": "How do you feel in those spaces?",
+      "time_limit_sec": 120,
+      "answer": "In the truck, it's my space, so comfortable. Truck stops, depends... sometimes lonely, but other times good place to meet people."
+    },
+    {
+      "question": "What makes you feel that way?",
+      "time_limit_sec": 90,
+      "answer": "Routine of driving gives comfort. Meeting people, sharing a chat at stops, breaks up the day nicely."
+    },
+    {
+      "question": "Who do you turn to when problems arise?",
+      "time_limit_sec": 120,
+      "answer": "Usually call family or work mates. They've been through similar stuff, can offer good advice. Sometimes, I just sit and think through it myself first."
+    },
+    {
+      "question": "One tough moment in the last year?",
+      "time_limit_sec": 150,
+      "answer": "With pandemic, was stuck at a border for days. Regulations changed suddenly, couldn't move. Very stressful, not knowing what's next."
+    },
+    {
+      "question": "How did it affect you?",
+      "time_limit_sec": 120,
+      "answer": "Was frustrating, like being in limbo. Made me feel powerless for a bit. Also disrupted my schedule, which isn't good in this job."
+    },
+    {
+      "question": "How did you cope?",
+      "time_limit_sec": 150,
+      "answer": "Spoke to other drivers in same situation. Shared stories, food even. Used phone to contact employer, see what can be done. Kept myself busy with Duolingo, to feel productive."
+    },
+    {
+      "question": "What helps when you're overwhelmed?",
+      "time_limit_sec": 120,
+      "answer": "Taking a step back, breathe, and look at what can be done now. Listening to music or reading helps me relax. Also, talking to someone who understands."
+    },
+    {
+      "question": "What do you want life to look like in a few years?",
+      "time_limit_sec": 150,
+      "answer": "Would like to be more settled, maybe a place of my own. Definitely want better English, maybe even another language. Something less hectic, though I like being on the road."
+    },
+    {
+      "question": "What do you want to be different?",
+      "time_limit_sec": 120,
+      "answer": "More time at home, less on the road. Would love a schedule that lets me learn more, see family more often. Balance, you know?"
+    },
+    {
+      "question": "Before Duolingo, how did you handle language learning?",
+      "time_limit_sec": 180,
+      "answer": "Mostly books and CDs. Tried some podcasts too. Sometimes just writing down words I hear, try to remember later. But wasn't very structured, you know?"
+    },
+    {
+      "question": "Most annoying part of old method?",
+      "time_limit_sec": 150,
+      "answer": "Books and CDs got boring fast, you know? Hard to keep motivated. Plus, can't practice speaking much, just listening or reading."
+    },
+    {
+      "question": "Time it really failed?",
+      "time_limit_sec": 150,
+      "answer": "Once, had a misunderstanding at a delivery point. Thought I understood instructions, but got it wrong. Realized my old methods weren't covering practical language."
+    },
+    {
+      "question": "How did you first hear about Duolingo?",
+      "time_limit_sec": 90,
+      "answer": "A fellow driver mentioned it. Said it's useful and fits into breaks easily. Decided to give it a shot."
+    },
+    {
+      "question": "What convinced you to try it?",
+      "time_limit_sec": 120,
+      "answer": "He said it's like a game, makes learning fun, less boring. Sounded good for passing time on breaks. Plus, it's free, so no harm in trying."
+    },
+    {
+      "question": "Walk through a recent Duolingo use.",
+      "time_limit_sec": 210,
+      "answer": "So, I open the app during a break, do a quick lesson. Maybe vocabulary or phrases. It’s got those 'fill in the blanks' and 'match the pairs' things. When I get a new phrase right, it's like, 'Nice one, Viktor!' Then it gives a few new words to practice. If I get them wrong, I just try again, no pressure."
+    },
+    {
+      "question": "Most helpful part?",
+      "time_limit_sec": 120,
+      "answer": "The repetition helps. See, for me, repeating words and phrases makes them stick. And it's not just words, but how to use them in a sentence too."
+    },
+    {
+      "question": "Most frustrating part?",
+      "time_limit_sec": 150,
+      "answer": "Sometimes it repeats too much, like I'm stuck in a loop of basics. I wish it would push more challenging things once I master the easier stuff."
+    },
+    {
+      "question": "Most frustrating part of Duolingo overall?",
+      "time_limit_sec": 150,
+      "answer": "Feels a bit too simplistic sometimes. Almost like it's a game, which is good, but I need real conversation practice, deeper stuff."
+    },
+    {
+      "question": "One time that frustration showed up?",
+      "time_limit_sec": 180,
+      "answer": "Was doing a lesson on food phrases, and it kept asking same questions. Felt like I already knew this stuff, but it wouldn’t let me skip ahead. Just teach me something new, yeah?"
+    },
+    {
+      "question": "Do you use workarounds?",
+      "time_limit_sec": 150,
+      "answer": "Yeah, I mix it with listening to English radio and podcasts. They give real-life context and challenge my understanding more."
+    },
+    {
+      "question": "What do workarounds give you that Duolingo doesn't?",
+      "time_limit_sec": 150,
+      "answer": "Real conversation speed and slang. Stuff you can't get from an app. Like radio has news and interviews, good for picking up how people really talk, not just textbook stuff."
+    },
+    {
+      "question": "Worst-case scenario in this space?",
+      "time_limit_sec": 150,
+      "answer": "Not being able to communicate properly in a critical moment, like at work or an emergency. It's little fear in back of my mind, you know?"
+    },
+    {
+      "question": "When you open Duolingo, what do you hope it does?",
+      "time_limit_sec": 150,
+      "answer": "Hope it challenges me, gives me something new to learn. Also, maybe practice what I learned last time, but not too much repetition."
+    },
+    {
+      "question": "How do you know Duolingo worked?",
+      "time_limit_sec": 120,
+      "answer": "When I can understand something new during my day, maybe at work or listening to someone talk. It's like a light bulb moment."
+    },
+    {
+      "question": "One thing you'd change about Duolingo?",
+      "time_limit_sec": 120,
+      "answer": "Would love a feature that connects me with other learners or speakers, like practice chats or real conversation scenarios."
+    },
+    {
+      "question": "One thing you'd change about the whole problem space?",
+      "time_limit_sec": 120,
+      "answer": "Make language learning more integrated into daily life, so it's not separate from what you do daily but part of it."
+    },
+    {
+      "question": "Anything important we didn't cover?",
+      "time_limit_sec": 90,
+      "answer": "Think we covered a lot. Just want to say, language learning is tough but rewarding—thanks for listening."
+    },
+    {
+      "question": "Permission to build a digital twin?",
+      "time_limit_sec": 60,
+      "answer": "Sure, no problem. If it helps improve things, why not?"
+    }
+  ]
+}

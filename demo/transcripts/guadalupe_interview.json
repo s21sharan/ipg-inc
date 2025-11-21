@@ -1,0 +1,266 @@
+{
+  "user_name": "Guadalupe",
+  "summary": "Duolingo is a helpful tool for learning English, but sometimes it can be frustrating due to its lack of real-life context and limitations in conversational practice.",
+  "top_quotes": [
+    "Duolingo gives me a chance to practice every day; it's like my little coach.",
+    "Sometimes, I wish it would teach me how people actually speak, you know, not just vocabulary.",
+    "When I finally understand something in English that I learned on Duolingo, it's like, 'Wow, I can actually do this!'"
+  ],
+  "interview_script": [
+    {
+      "question": "Intro greeting",
+      "time_limit_sec": 0,
+      "answer": "Hello, hi! It's so nice to be here talking with you today."
+    },
+    {
+      "question": "Short version of your life story?",
+      "time_limit_sec": 180,
+      "answer": "Well, I was born in a small village in Mexico, and I grew up there helping my family with our little farm. I moved to California when I was in my twenties, you know, looking for better opportunities. I've been working as a cleaner for many years now, and, um, I just started learning English more seriously with Duolingo because I want to communicate better here."
+    },
+    {
+      "question": "Where did you grow up?",
+      "time_limit_sec": 60,
+      "answer": "I grew up in a village near Guadalajara, Mexico. It's a beautiful place, surrounded by nature."
+    },
+    {
+      "question": "What was it like growing up there?",
+      "time_limit_sec": 90,
+      "answer": "Oh, it was really, um, very simple. There wasn't much technology or anything like that. We played outside a lot, helped around the house and the farm. The community was close-knit, everybody knew each other, and that was comforting, you know?"
+    },
+    {
+      "question": "One turning point in your life?",
+      "time_limit_sec": 150,
+      "answer": "Moving to the United States was definitely a big turning point for me. It was scary at first, leaving everything behind, but it also opened up new opportunities I never imagined."
+    },
+    {
+      "question": "Why was that a turning point?",
+      "time_limit_sec": 120,
+      "answer": "Because, uh, it was the first time I was away from my family and had to rely on myself, you know? I had to learn a new language, adapt to a new culture, and start from scratch in many ways."
+    },
+    {
+      "question": "How did you handle that situation?",
+      "time_limit_sec": 120,
+      "answer": "At first, it was tough. I, uh, leaned a lot on the community I found here, especially other Mexican immigrants who understood what I was going through. Gradually, I picked up bits of English and found my way into stable work."
+    },
+    {
+      "question": "What do you care most about right now?",
+      "time_limit_sec": 150,
+      "answer": "Right now, I'm really focused on learning English because it will help me communicate better and, um, feel more a part of my community here. Also, I want to be able to help my granddaughter with her homework."
+    },
+    {
+      "question": "Why is that important?",
+      "time_limit_sec": 120,
+      "answer": "It's important because, like, being able to speak English opens up so many doors, and it's a way to connect with more people. Plus, I don't want to miss out on anything because of the language barrier."
+    },
+    {
+      "question": "What is a good day for you?",
+      "time_limit_sec": 120,
+      "answer": "A good day is when, um, everything goes smoothly at work, and I have time to sit down and learn some English on Duolingo. If I can chat with my family back in Mexico, that makes it even better."
+    },
+    {
+      "question": "What makes you say \"this was a good day\"?",
+      "time_limit_sec": 90,
+      "answer": "When I manage to finish all my chores, spend quality time with family, and, um, learn something new—like a new English phrase I didn't know before—it feels like a good day."
+    },
+    {
+      "question": "How do you make big decisions?",
+      "time_limit_sec": 120,
+      "answer": "I tend to, uh, talk things over with my family or friends. It's important to consider advice from others who've been there before and, you know, weigh all the options."
+    },
+    {
+      "question": "Planner or go-with-the-flow?",
+      "time_limit_sec": 90,
+      "answer": "I would say I'm a little bit of both. I plan things when I can, but, um, life often has other plans, so I've learned to adapt and go with the flow."
+    },
+    {
+      "question": "Example showing that?",
+      "time_limit_sec": 120,
+      "answer": "Like last week, I planned to spend my Sunday cleaning the house, but my neighbor invited me to a community event. I decided to go, and it was lovely—met new people and practiced some English, too."
+    },
+    {
+      "question": "How do you handle risk?",
+      "time_limit_sec": 120,
+      "answer": "I try to be, um, cautious. Making sure I understand the risk before taking any steps, but sometimes, you just have to take a leap of faith, like moving here from Mexico."
+    },
+    {
+      "question": "Typical weekday?",
+      "time_limit_sec": 180,
+      "answer": "I start my day early, around 5 AM. I prepare breakfast, and then I head to work. I clean a few houses during the day, then come home and make dinner. If I have time, I sit down with Duolingo for about half an hour or so before bed."
+    },
+    {
+      "question": "Which parts take the most energy?",
+      "time_limit_sec": 120,
+      "answer": "Definitely my job, cleaning, um, it's physically demanding. And sometimes, the language barrier can be mentally exhausting too, trying to understand clients and all."
+    },
+    {
+      "question": "What do you wish you had more time or energy for?",
+      "time_limit_sec": 120,
+      "answer": "I wish I had more time for learning English and also for, um, visiting my family back in Mexico. It's hard being so far away and not being able to see them as often as I'd like."
+    },
+    {
+      "question": "Biggest constraint last year?",
+      "time_limit_sec": 150,
+      "answer": "Last year, it was definitely the pandemic. Work got unpredictable, and I felt isolated. It was tough not being able to see my family or, uh, attend community events."
+    },
+    {
+      "question": "How do you deal with that constraint?",
+      "time_limit_sec": 120,
+      "answer": "I tried to stay in touch with family over the phone and focused on learning English with Duolingo. It gave me a sense of, um, routine and something to look forward to."
+    },
+    {
+      "question": "People you feel closest to?",
+      "time_limit_sec": 120,
+      "answer": "My family, for sure, even though some are still in Mexico. Also, my friends from work and the church community here in California—they've been like a second family to me."
+    },
+    {
+      "question": "Describe those relationships.",
+      "time_limit_sec": 90,
+      "answer": "They're supportive and, um, always there when I need them. We share experiences, whether it's good news or, you know, challenges. It feels like a community, like we're all in this together."
+    },
+    {
+      "question": "Where do you spend most of your time?",
+      "time_limit_sec": 90,
+      "answer": "Mostly at work, cleaning, but also at home with my family, and at church, which is like a second home to me."
+    },
+    {
+      "question": "How do you feel in those spaces?",
+      "time_limit_sec": 120,
+      "answer": "At work, it's, um, a mix of being focused and a bit tired. At home, I feel relaxed and happy, especially when I'm with family. And at church, I feel uplifted and connected."
+    },
+    {
+      "question": "What makes you feel that way?",
+      "time_limit_sec": 90,
+      "answer": "The people, mostly. My family, they give me comfort. And at church, it's the community feeling and, um, shared beliefs."
+    },
+    {
+      "question": "Who do you turn to when problems arise?",
+      "time_limit_sec": 120,
+      "answer": "My first thought is always my family. They understand me the best. But also, my friend Maria from church, she's been through so much and always knows what to say."
+    },
+    {
+      "question": "One tough moment in the last year?",
+      "time_limit_sec": 150,
+      "answer": "The toughest was when I got sick and couldn't work for a while. It was scary not having that income and feeling, um, unable to do anything about it. It made me realize how fragile stability can be."
+    },
+    {
+      "question": "How did it affect you?",
+      "time_limit_sec": 120,
+      "answer": "I felt anxious, you know? Wondering if everything would be okay. It took a lot of support from friends and family to get through it emotionally."
+    },
+    {
+      "question": "How did you cope?",
+      "time_limit_sec": 150,
+      "answer": "I relied a lot on my faith and the support network I have here. I also used that time to focus more on learning English, which helped distract me from worries."
+    },
+    {
+      "question": "What helps when you're overwhelmed?",
+      "time_limit_sec": 120,
+      "answer": "Talking to friends and family, for sure. Sometimes just a simple conversation can lift a lot of that weight off my shoulders. Also, taking walks helps clear my mind."
+    },
+    {
+      "question": "What do you want life to look like in a few years?",
+      "time_limit_sec": 150,
+      "answer": "I hope that I'll be more fluent in English, which will open up new opportunities, maybe even different kinds of work. Also, I'd like to be able to visit my family in Mexico more often and, um, live with a little less stress."
+    },
+    {
+      "question": "What do you want to be different?",
+      "time_limit_sec": 120,
+      "answer": "I'd like to feel more confident with my English, to not feel, um, nervous when talking to people. I also hope to have a bit more financial stability so unexpected events aren't so stressful."
+    },
+    {
+      "question": "Before Duolingo, how did you handle language learning?",
+      "time_limit_sec": 180,
+      "answer": "I tried a few things, like watching TV shows in English and listening to music. Sometimes I would, uh, write down words I didn't know and ask my kids, but it was hard to stay consistent with it."
+    },
+    {
+      "question": "Most annoying part of old method?",
+      "time_limit_sec": 150,
+      "answer": "It was really frustrating not knowing if I was pronouncing things right or if I was, um, using words correctly. And it was hard to find explanations in Spanish, you know?"
+    },
+    {
+      "question": "Time it really failed?",
+      "time_limit_sec": 150,
+      "answer": "There was a time I tried to have a conversation with a neighbor and, um, I just couldn't keep up. It made me feel really embarrassed and discouraged about my English."
+    },
+    {
+      "question": "How did you first hear about Duolingo?",
+      "time_limit_sec": 90,
+      "answer": "My daughter told me about it. She said it's a fun way to learn a language, and that it was free, which was great!"
+    },
+    {
+      "question": "What convinced you to try it?",
+      "time_limit_sec": 120,
+      "answer": "I liked the idea of it being like a game and, um, that I could do it on my phone, anywhere, anytime. Plus, my daughter promised to help me get started with it."
+    },
+    {
+      "question": "Walk through a recent Duolingo use.",
+      "time_limit_sec": 210,
+      "answer": "Just yesterday, I opened the app, and I started with the daily practice reminder. I went through a lesson on travel vocabulary, repeating phrases like 'Where is the bus stop?' and matching words with pictures. Then it had me translate a few sentences from English to Spanish and vice versa. I like when it gives me those little sound effects when I get something right—it feels like a little reward."
+    },
+    {
+      "question": "Most helpful part?",
+      "time_limit_sec": 120,
+      "answer": "I think the way Duolingo lets me practice speaking is really helpful, even if it's just repeating after it. It makes me feel more comfortable with pronunciation and, um, hearing myself speak English."
+    },
+    {
+      "question": "Most frustrating part?",
+      "time_limit_sec": 150,
+      "answer": "Sometimes it can be frustrating when I don’t quite get the context or, um, it teaches words that aren't so useful in everyday conversations. I wish it would focus more on phrases people actually use."
+    },
+    {
+      "question": "Most frustrating part of Duolingo overall?",
+      "time_limit_sec": 150,
+      "answer": "The most frustrating is when I make a mistake and it feels like I don't understand why it's wrong. It would be nice if it explained things a bit more instead of just marking it wrong."
+    },
+    {
+      "question": "One time that frustration showed up?",
+      "time_limit_sec": 180,
+      "answer": "Once I kept getting a sentence wrong because of word order, and I just couldn't see what I was doing wrong. It was only after I asked my daughter about it that I realized, but, uh, it was frustrating not being able to figure it out on my own."
+    },
+    {
+      "question": "Do you use workarounds?",
+      "time_limit_sec": 150,
+      "answer": "Yes, sometimes I'll look up words or phrases on the internet to see how they are used in real conversations. And my daughter helps me out too when I'm stuck on something."
+    },
+    {
+      "question": "What do workarounds give you that Duolingo doesn't?",
+      "time_limit_sec": 150,
+      "answer": "They give me more real-life context and, um, better understanding. Sometimes hearing or reading how words are used in everyday situations helps it click better for me."
+    },
+    {
+      "question": "Worst-case scenario in this space?",
+      "time_limit_sec": 150,
+      "answer": "I guess it would be if I couldn't access Duolingo anymore, since it's, um, such a big part of my learning routine now. It would be hard to find something else that fits my lifestyle as well."
+    },
+    {
+      "question": "When you open Duolingo, what do you hope it does?",
+      "time_limit_sec": 150,
+      "answer": "I hope it helps me get a little bit better every day, even if it's just a few words. It's like, um, building bricks for a house—every little bit counts."
+    },
+    {
+      "question": "How do you know Duolingo worked?",
+      "time_limit_sec": 120,
+      "answer": "When I can recognize a word or phrase in a conversation with someone, and I know what it means. That's when I feel like, 'Yes, it's working!'"
+    },
+    {
+      "question": "One thing you'd change about Duolingo?",
+      "time_limit_sec": 120,
+      "answer": "If I could change one thing, it would be to add more conversation practice and, um, maybe have explanations in Spanish for why something is right or wrong."
+    },
+    {
+      "question": "One thing you'd change about the whole problem space?",
+      "time_limit_sec": 120,
+      "answer": "I'd like more community support for language learners—like classes or meetings where people can practice speaking with others, not just through an app."
+    },
+    {
+      "question": "Anything important we didn't cover?",
+      "time_limit_sec": 90,
+      "answer": "I think we covered a lot, but just to add, um, it's important to be patient with ourselves when learning a new language. Progress might be slow, but it is progress."
+    },
+    {
+      "question": "Permission to build a digital twin?",
+      "time_limit_sec": 60,
+      "answer": "Yes, I suppose that's okay. Anything that can help make these tools better for people like me is good."
+    }
+  ]
+}

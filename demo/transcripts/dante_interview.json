@@ -1,0 +1,266 @@
+{
+  "user_name": "Dante",
+  "summary": "Dante finds Duolingo's lack of dialect and formal approach frustrating for his goal of bringing authentic Italian flavor to his restaurant.",
+  "top_quotes": [
+    "Duolingo's too formal, you know? Like, I need the slang for the kitchen, not just textbook talk.",
+    "I wanna make sure when customers hear our staff, it feels like they're getting a taste of Italy, not a language class.",
+    "Imagine having to explain a special to a customer in Italian and sounding like you just came outta a textbook. It just ain't right."
+  ],
+  "interview_script": [
+    {
+      "question": "Intro greeting",
+      "time_limit_sec": 0,
+      "answer": "Hey, how's it goin'? I'm Dante. Hope you're hungry to learn!"
+    },
+    {
+      "question": "Short version of your life story?",
+      "time_limit_sec": 180,
+      "answer": "Well, I grew up in Chicago, you know, surrounded by a big Italian family. Food's always been a huge part of my life, it’s kinda in my blood. My grandma taught me how to cook, and I’ve been workin' in kitchens since I was a teen. Now, I run my own Italian restaurant here in the city. Oh, and I'm tryin' to brush up on my Italian again, the real Italian, for the restaurant vibes."
+    },
+    {
+      "question": "Where did you grow up?",
+      "time_limit_sec": 60,
+      "answer": "Chicago, baby! Specifically, around the Near West Side. It's a great mix of cultures, ya know? Lots of Italians, lots of good eatin'."
+    },
+    {
+      "question": "What was it like growing up there?",
+      "time_limit_sec": 90,
+      "answer": "Man, it was loud, in a good way! Big family gatherings, everyone talkin' over each other, lots of pasta, and espresso all day. You always knew someone who knew someone. It was like living in a big ol' family."
+    },
+    {
+      "question": "One turning point in your life?",
+      "time_limit_sec": 150,
+      "answer": "Probably when I decided to open my own restaurant. I'd been workin' in other people’s kitchens for years, and I just got to a point where I wanted to put my own spin on things, ya know? It was scary, but I was ready to work hard and make it happen."
+    },
+    {
+      "question": "Why was that a turning point?",
+      "time_limit_sec": 120,
+      "answer": "Owning a restaurant is like, a whole new level of responsibility. You're not just cookin', you're runnin' the show. It challenged me in ways I never expected, financially and creatively. It pushed me to learn new things, like more about business and even relearning my Italian roots."
+    },
+    {
+      "question": "How did you handle that situation?",
+      "time_limit_sec": 120,
+      "answer": "Well, I leaned on my family a lot, especially in the beginning. My wife helped with the books, and my dad was always there for advice. Also, a lotta trial and error. You gotta be ready to mess up sometimes and just keep goin'."
+    },
+    {
+      "question": "What do you care most about right now?",
+      "time_limit_sec": 150,
+      "answer": "Right now, it's making sure my restaurant feels like a little slice of Italy in Chicago. That means getting the food just right, but also the atmosphere. Having staff who can speak Italian really adds to the authenticity, which is why I'm relearning myself."
+    },
+    {
+      "question": "Why is that important?",
+      "time_limit_sec": 120,
+      "answer": "Authenticity is everything, you know? If people wanted something generic, they'd get fast food. When folks come to my restaurant, they're lookin' for an experience, not just dinner. Plus, it's a nod to my heritage, staying true to my roots."
+    },
+    {
+      "question": "What is a good day for you?",
+      "time_limit_sec": 120,
+      "answer": "A good day? That's when service goes smooth, everyone's happy – both staff and customers. Oh, and when a customer compliments our food, especially if they're from Italy! That's the best kind of validation."
+    },
+    {
+      "question": "What makes you say \"this was a good day\"?",
+      "time_limit_sec": 90,
+      "answer": "It's those little moments, you know? Like a full house, no mistakes in the orders, everyone leavin' with a smile. Those nights where I can just sit down after and think, 'Yeah, we nailed it tonight.'"
+    },
+    {
+      "question": "How do you make big decisions?",
+      "time_limit_sec": 120,
+      "answer": "I usually bounce ideas off my wife first. She's got a good head on her shoulders and brings a different perspective. Then I might talk to some of the staff or even my mom – she’s seen everythin'. I like to get a lotta input before I go all in."
+    },
+    {
+      "question": "Planner or go-with-the-flow?",
+      "time_limit_sec": 90,
+      "answer": "Eh, I’m kind of in between, I guess. I try to plan, 'specially for the restaurant, but things can change in a heartbeat, and you gotta be ready to roll with it. In the kitchen, flexibility’s key."
+    },
+    {
+      "question": "Example showing that?",
+      "time_limit_sec": 120,
+      "answer": "Like last week, we had this big private event, and the delivery of fresh basil we were countin' on didn't show. I had to just improvise and use a different base for the pesto. It’s all about adapting. Everyone still loved it, so sometimes wingin' it works."
+    },
+    {
+      "question": "How do you handle risk?",
+      "time_limit_sec": 120,
+      "answer": "I try to weigh the pros and cons, you know? Sometimes you just gotta dive in and hope for the best, but I never go in completely blind. Fallback plans are a must – backups for my backups."
+    },
+    {
+      "question": "Typical weekday?",
+      "time_limit_sec": 180,
+      "answer": "Mornings are usually coffee and emails, maybe a quick trip to the market for fresh ingredients or checkin' deliveries. Afternoons are prep time, gettin' the kitchen ready. Evenings? It's all about dinner service, making sure everything's just right. After we close, I spend time with the family, unwind with them, maybe watch a game or two."
+    },
+    {
+      "question": "Which parts take the most energy?",
+      "time_limit_sec": 120,
+      "answer": "Dinner service, hands down. It's fast-paced, and you gotta be on point the whole time. Keepin' an eye on everything, makin' sure the staff's on track, and dealing with any hiccups. It’s a rush, but it’s exhausting too."
+    },
+    {
+      "question": "What do you wish you had more time or energy for?",
+      "time_limit_sec": 120,
+      "answer": "Honestly, I’d love to spend more time with my kids. They’re growin' up so fast, and sometimes I feel like work keeps pulling me away. Also, I wouldn’t mind more time for brushing up my Italian outside the basics."
+    },
+    {
+      "question": "Biggest constraint last year?",
+      "time_limit_sec": 150,
+      "answer": "COVID was a big one. We had to shut the restaurant down for a while, and when we reopened, things were different. Staff was harder to find, and adapting to new health guidelines took a toll on everyone. We had to get creative just to keep things floatin'."
+    },
+    {
+      "question": "How do you deal with that constraint?",
+      "time_limit_sec": 120,
+      "answer": "It was all about pivoting, like offering takeout and delivery, which we didn't do much of before. And lots of community support too, which was incredible. We had to adjust our seating, menu, pretty much everything just to fit with new regulations."
+    },
+    {
+      "question": "People you feel closest to?",
+      "time_limit_sec": 120,
+      "answer": "Definitely my wife and kids. And I'd say my mom, too. We talk all the time. My brother’s also a big part of my life – we’ve been tight since we were kids, always got each other’s back."
+    },
+    {
+      "question": "Describe those relationships.",
+      "time_limit_sec": 90,
+      "answer": "We’re all really close-knit. My wife’s my rock and partner in crime. My kids, they’re my joy, even when they're driving me nuts. And my mom and brother, they’re my roots, the ones who keep me grounded and remind me of where I come from."
+    },
+    {
+      "question": "Where do you spend most of your time?",
+      "time_limit_sec": 90,
+      "answer": "At the restaurant, for sure. I mean, it’s my second home. If I ain't at home with the family, I’m there, probably in the kitchen or out front making sure things are good."
+    },
+    {
+      "question": "How do you feel in those spaces?",
+      "time_limit_sec": 120,
+      "answer": "The restaurant? It's like my stage, where I get to perform and create. At home, it's more about relaxin' and recharging. Both places give me a sense of fulfillment, just in different ways. One’s about creativity and work, the other’s about comfort."
+    },
+    {
+      "question": "What makes you feel that way?",
+      "time_limit_sec": 90,
+      "answer": "The people, honestly. At the restaurant, it's the team and the customers, feeling like we’re all in it together. At home, it’s family. They’re my motivation and my biggest cheerleaders."
+    },
+    {
+      "question": "Who do you turn to when problems arise?",
+      "time_limit_sec": 120,
+      "answer": "My wife, she's like my first go-to. She keeps me sane and offers a different viewpoint. I also rely a lot on my brother for business advice, he's got a good head for these things."
+    },
+    {
+      "question": "One tough moment in the last year?",
+      "time_limit_sec": 150,
+      "answer": "There was a point when we weren't sure if the restaurant would survive the pandemic. We had to make tough decisions, like laying off staff temporarily and figuring out how to pay the bills. It was rough and scary, not knowing what the next day would bring."
+    },
+    {
+      "question": "How did it affect you?",
+      "time_limit_sec": 120,
+      "answer": "Honestly, it was stressful, and it put a lotta weight on my shoulders. It made me question everything I was doing. But it also made me appreciate what I have and pushed me to think outside the box more."
+    },
+    {
+      "question": "How did you cope?",
+      "time_limit_sec": 150,
+      "answer": "I spent a lotta time just talking to my family, getting their opinions and support. We had to make some hard sacrifices. Also, focusing on the community aspect, reaching out to regulars and the neighborhood to keep them engaged with what we were doing."
+    },
+    {
+      "question": "What helps when you're overwhelmed?",
+      "time_limit_sec": 120,
+      "answer": "Taking a step back and inhaling deeply, you know? A nice long walk helps, or just some family time, like watching a movie with my kids. Simpler times to detach from work and reset."
+    },
+    {
+      "question": "What do you want life to look like in a few years?",
+      "time_limit_sec": 150,
+      "answer": "I'd love for the restaurant to be thriving, maybe even think about a second location if things go well. And more time with my family, of course. I want to be able to step back a little, have someone else handle the day-to-day so I can focus on bigger things."
+    },
+    {
+      "question": "What do you want to be different?",
+      "time_limit_sec": 120,
+      "answer": "I’d like to see things more stable, like fewer surprises that come outta nowhere. And I'd love my Italian to be at a point where I feel totally comfortable using it professionally without thinking twice."
+    },
+    {
+      "question": "Before Duolingo, how did you handle language learning?",
+      "time_limit_sec": 180,
+      "answer": "Honestly, it was mostly through family conversations and trying to pick up bits and pieces from older relatives. I took some classes in high school, but they didn't stick. I also tried some CDs, like Pimsleur, but it's hard to stay motivated when it’s just you and a CD player."
+    },
+    {
+      "question": "Most annoying part of old method?",
+      "time_limit_sec": 150,
+      "answer": "It was just so dry, you know? No interaction at all, just me repeating phrases over and over. Felt like my brain would just tune out after a while. Plus, no real way to practice the stuff that mattered to me, like the dialect and slang."
+    },
+    {
+      "question": "Time it really failed?",
+      "time_limit_sec": 150,
+      "answer": "I remember this time we had an Italian food critic visiting, and I tried to talk shop in Italian. Man, it was rough. I couldn’t remember half of what I wanted to say and just ended up fumbling through it. That’s when I knew I needed a change."
+    },
+    {
+      "question": "How did you first hear about Duolingo?",
+      "time_limit_sec": 90,
+      "answer": "My cousin actually told me about it. He was using it to learn Spanish, and he said it was easy to use and had that game-like feel, so I thought I’d give it a shot."
+    },
+    {
+      "question": "What convinced you to try it?",
+      "time_limit_sec": 120,
+      "answer": "The fact that it was free was a big draw, you know? Plus, hearing my cousin talk about the daily streaks and the gamified lessons, I thought if it could keep me engaged, why not? Seemed better than the CDs, at least."
+    },
+    {
+      "question": "Walk through a recent Duolingo use.",
+      "time_limit_sec": 210,
+      "answer": "Sure, so I opened up the app, and it usually starts me off with a review of what I did last time. So it's like, 'Hey, remember how you say pasta in Italian?' After that, I dove into a new lesson. They show you a word, then they have you match it with the picture or type it out on your own. There’s a little speaking exercise where you gotta repeat a phrase back, and the app tells you if you nailed it or if you need another shot. Once I get through the exercises, it gives me a score, and I see if I beat my friends’ streaks. It's fun, but like I said, it feels more textbook than real talk."
+    },
+    {
+      "question": "Most helpful part?",
+      "time_limit_sec": 120,
+      "answer": "I’d say the repetition is good, helps to really drill some basics into my brain. Also, the app gives you immediate feedback, so you know right away if you messed up. And I do appreciate the little reminders to keep my streak going, keeps me on track."
+    },
+    {
+      "question": "Most frustrating part?",
+      "time_limit_sec": 150,
+      "answer": "The formal language, like I said. It’s great for basics but like, I need 'how to order calamari' or 'tell me about today's special' Italian. It's stuck in this perfect, classroom-style language and it just doesn’t cut it for what I need day-to-day."
+    },
+    {
+      "question": "Most frustrating part of Duolingo overall?",
+      "time_limit_sec": 150,
+      "answer": "How it feels like they’re so focused on grammar rules and not enough on practicality. I mean, I get that knowing how to conjugate is important, but I wish there was more focus on conversational skills, y'know? Throw in some local dialect, make it more lively."
+    },
+    {
+      "question": "One time that frustration showed up?",
+      "time_limit_sec": 180,
+      "answer": "Last week, I was tryin' to explain the concept of a dish to the new Italian waiter, and I was blanking on the right words. I realized that what I'd learned wasn't helping much at all in real conversation. It's frustrating because in the kitchen, ya gotta be quick and clear, and Duolingo wasn’t cutting it for that moment."
+    },
+    {
+      "question": "Do you use workarounds?",
+      "time_limit_sec": 150,
+      "answer": "Yeah, I do. Sometimes I just switch to watchin' Italian cooking shows or follow Italian chefs on social media. They use the kind of language I’m looking for. Plus, I get to learn some new recipes – two birds, one stone, right?"
+    },
+    {
+      "question": "What do workarounds give you that Duolingo doesn't?",
+      "time_limit_sec": 150,
+      "answer": "They give me practical vocabulary, like the slang and expressions that people actually use in Italy. It’s like learning the language of the streets versus what you’d find in a textbook. Helps me sound more natural, especially in a restaurant setting."
+    },
+    {
+      "question": "Worst-case scenario in this space?",
+      "time_limit_sec": 150,
+      "answer": "Worst-case? I can't communicate effectively with Italian-speaking staff or customers. It’d be like havin' a customer come in speakin' only Italian, and here I am, blankin' out or reaching for a dictionary. Not a good look for authenticity, you know?"
+    },
+    {
+      "question": "When you open Duolingo, what do you hope it does?",
+      "time_limit_sec": 150,
+      "answer": "I'm hopin' it'll help me remember more phrases and words that I can actually use in the kitchen. You know, stuff that makes me sound like I belong, rather than just a tourist tryna get by. I want it to fit more into my day-to-day conversations."
+    },
+    {
+      "question": "How do you know Duolingo worked?",
+      "time_limit_sec": 120,
+      "answer": "When I'm able to slip some Italian into my daily interactions at work without thinking too hard about it. Also, if I can listen to one of those Italian cooking shows and understand more without subtitles, that's a win for me."
+    },
+    {
+      "question": "One thing you'd change about Duolingo?",
+      "time_limit_sec": 120,
+      "answer": "I’d bring in more dialect and casual expressions, definitely. Make it less about perfect grammar all the time and more about practical, real-world Italian. Maybe even include some regional dialects."
+    },
+    {
+      "question": "One thing you'd change about the whole problem space?",
+      "time_limit_sec": 120,
+      "answer": "Overall, I’d want language learning tools to cater more to specific needs, like different professions or settings. If you’re in the food business, like me, you want to learn the kind of vocabulary that’s used in a kitchen, you know?"
+    },
+    {
+      "question": "Anything important we didn't cover?",
+      "time_limit_sec": 90,
+      "answer": "Nah, I think we hit pretty much everything. I just hope this leads to some changes that help folks like me make language learning more effective and fun."
+    },
+    {
+      "question": "Permission to build a digital twin?",
+      "time_limit_sec": 60,
+      "answer": "Uh, sure, as long as it's as good lookin' and funny as the real thing, why not?"
+    }
+  ]
+}

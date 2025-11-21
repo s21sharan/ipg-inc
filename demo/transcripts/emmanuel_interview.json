@@ -1,0 +1,266 @@
+{
+  "user_name": "Emmanuel",
+  "summary": "Emmanuel finds Duolingo effective for learning Spanish due to its ease and overlap with his French knowledge, but encounters some frustrations with repetitive exercises.",
+  "top_quotes": [
+    "Duolingo feels like a game, but sometimes I wish it challenged me more, you know?",
+    "The French base makes learning Spanish easy on Duolingo... it's like connecting the dots!",
+    "Sometimes I just want to scream when it repeats the same thing, but hey, practice makes perfect, right?"
+  ],
+  "interview_script": [
+    {
+      "question": "Intro greeting",
+      "time_limit_sec": 0,
+      "answer": "Hey there, how you doing? It's Emmanuel here. Ready when you are!"
+    },
+    {
+      "question": "Short version of your life story?",
+      "time_limit_sec": 180,
+      "answer": "Well, I was born and raised in Haiti, and then I made my way to Boston, ya know? I grew up speaking French and Creole, and now I'm trying to add Spanish to the mix. I got into computers and tech, which brought me over here for work. I love the mix of cultures here, feels like home in a way but new and exciting too."
+    },
+    {
+      "question": "Where did you grow up?",
+      "time_limit_sec": 60,
+      "answer": "I grew up in Port-au-Prince, right in the heart of Haiti. It's vibrant, full of life, and, oh man, the food is something else!"
+    },
+    {
+      "question": "What was it like growing up there?",
+      "time_limit_sec": 90,
+      "answer": "Growing up there was... it was beautiful but, you know, challenging too. We had a tight-knit community, everyone looked out for each other. It taught me resilience, how to make the best of what you got. Plus, the music and the sunshine, can't beat that."
+    },
+    {
+      "question": "One turning point in your life?",
+      "time_limit_sec": 150,
+      "answer": "Moving to the U.S. was definitely a big turning point for me. It changed my perspective on a lot of things, opened up more opportunities career-wise. It was tough leaving home, but the change pushed me to grow in ways I hadn't imagined."
+    },
+    {
+      "question": "Why was that a turning point?",
+      "time_limit_sec": 120,
+      "answer": "It was like stepping into a whole new world, you know? Different culture, language barriers, everything was new. But it forced me to adapt, to learn non-stop. It's the move that got me interested in learning Spanish, actually."
+    },
+    {
+      "question": "How did you handle that situation?",
+      "time_limit_sec": 120,
+      "answer": "At first, it was a lot of trial and error. I relied on French and Creole communities here, which helped me feel less homesick. Then, I just dove into the culture, tried to learn as much as I could, bit by bit, day by day."
+    },
+    {
+      "question": "What do you care most about right now?",
+      "time_limit_sec": 150,
+      "answer": "Right now, it's all about balancing my work and personal growth. I want to improve my Spanish, but I'm also focused on career advancement, making sure I keep developing my skills in technology. It's important to keep things balanced, so I don't feel stuck, you know?"
+    },
+    {
+      "question": "Why is that important?",
+      "time_limit_sec": 120,
+      "answer": "I guess it's about staying relevant and connected. Language, well, it connects you to people, and with tech changing so fast, I don't wanna fall behind. It keeps my mind sharp and my spirit curious."
+    },
+    {
+      "question": "What is a good day for you?",
+      "time_limit_sec": 120,
+      "answer": "A good day... hmm, it starts with a strong cup of coffee, for sure! If I can get through work without too much stress, maybe learn something new on Duolingo, and then end it with some Haitian music or a chat with family, that's a good day for me."
+    },
+    {
+      "question": "What makes you say \"this was a good day\"?",
+      "time_limit_sec": 90,
+      "answer": "When I feel like I've accomplished something, no matter how small. Even if it's just a new word in Spanish or helping a friend. It's about feeling productive and connected, you know?"
+    },
+    {
+      "question": "How do you make big decisions?",
+      "time_limit_sec": 120,
+      "answer": "Ah, I usually take my time with big decisions, talk it out with family or friends. I weigh out pros and cons, you know, maybe make a list. And, of course, I pray on it. That gives me peace of mind."
+    },
+    {
+      "question": "Planner or go-with-the-flow?",
+      "time_limit_sec": 90,
+      "answer": "Oh, I'm definitely more of a planner. I like to have a sense of what's coming. I mean, I can be flexible, but having a plan keeps me grounded."
+    },
+    {
+      "question": "Example showing that?",
+      "time_limit_sec": 120,
+      "answer": "Sure, when I decided to move to Boston, I spent months planning, figuring out the job market, housing, all that. It was a big move, so having a plan just made me feel more secure about taking the leap."
+    },
+    {
+      "question": "How do you handle risk?",
+      "time_limit_sec": 120,
+      "answer": "Risks... they're tricky. I try to mitigate them as much as I can. I do my research, like a lot of research! I talk to people who've been through similar situations. But sometimes, you gotta just take the leap and hope for the best."
+    },
+    {
+      "question": "Typical weekday?",
+      "time_limit_sec": 180,
+      "answer": "Weekdays start with some breakfast and coffee, then it's off to work. My job can be pretty demanding, a lot of tech stuff, coding, and meetings. I squeeze in some Duolingo practice during lunch or breaks. After work, I usually cook, maybe watch some TV or read a bit. I try to fit in some Spanish practice, but, you know, energy levels can be hit or miss by then."
+    },
+    {
+      "question": "Which parts take the most energy?",
+      "time_limit_sec": 120,
+      "answer": "Work definitely, especially when we have tight deadlines or big projects. It can be mentally exhausting. Learning Spanish is a good mental break from that, but if I'm tired, even that takes energy."
+    },
+    {
+      "question": "What do you wish you had more time or energy for?",
+      "time_limit_sec": 120,
+      "answer": "I wish I had more time for painting. It's something I used to do back home that really relaxed me. But with everything going on, work and learning, it's hard to fit it in."
+    },
+    {
+      "question": "Biggest constraint last year?",
+      "time_limit_sec": 150,
+      "answer": "Ah, definitely the pandemic. It was hard being away from family, not being able to travel. Work was remote, which was okay, but the isolation, man, that was tough. It made everything feel like it was in slow motion."
+    },
+    {
+      "question": "How do you deal with that constraint?",
+      "time_limit_sec": 120,
+      "answer": "I kept in touch with family back in Haiti through video calls, which helped a lot. I also took up jogging to clear my mind and get outside safely. Trying to find small joys in daily life kept me grounded."
+    },
+    {
+      "question": "People you feel closest to?",
+      "time_limit_sec": 120,
+      "answer": "Definitely my family. My mom and siblings back in Haiti, they're my rock, you know? And I've got a few close friends here in Boston who feel like family too."
+    },
+    {
+      "question": "Describe those relationships.",
+      "time_limit_sec": 90,
+      "answer": "They're rooted in trust and support. My family, we may not see each other all the time, but we're always there for one another. Friends here, they're the ones I turn to, to share a laugh or lean on when things get tough."
+    },
+    {
+      "question": "Where do you spend most of your time?",
+      "time_limit_sec": 90,
+      "answer": "Mostly at work or at home. Sometimes, I like to go out to the local cafes or parks when I need a change of scenery."
+    },
+    {
+      "question": "How do you feel in those spaces?",
+      "time_limit_sec": 120,
+      "answer": "Work can be hectic, so it's like go-go-go mode. Home is where I unwind, find peace. Cafes are my little escapes, they give me this feeling of being part of the community, you know?"
+    },
+    {
+      "question": "What makes you feel that way?",
+      "time_limit_sec": 90,
+      "answer": "At home, it's just comforting, my little slice of Haiti in Boston. Cafes, it's the buzz, the quiet hum of conversation…it makes me feel connected."
+    },
+    {
+      "question": "Who do you turn to when problems arise?",
+      "time_limit_sec": 120,
+      "answer": "I usually turn to my sister. We talk about everything, she gives the best advice. And I've got a mentor here in Boston who helps me out with work-related stuff."
+    },
+    {
+      "question": "One tough moment in the last year?",
+      "time_limit_sec": 150,
+      "answer": "There was this big project that almost got derailed because of some miscommunication. It was stressful, and I was afraid of how it might affect my job. Took a lot of late nights to get it back on track."
+    },
+    {
+      "question": "How did it affect you?",
+      "time_limit_sec": 120,
+      "answer": "It was draining, mentally and physically. I was anxious a lot, and it felt like I was carrying the weight of it on my shoulders. But it taught me the importance of clear communication, you know?"
+    },
+    {
+      "question": "How did you cope?",
+      "time_limit_sec": 150,
+      "answer": "I had to step back, breathe, and then tackle it piece by piece. I asked for help, which I don't always do, but it made a difference. It was a big learning experience for sure."
+    },
+    {
+      "question": "What helps when you're overwhelmed?",
+      "time_limit_sec": 120,
+      "answer": "Music, for sure. Haitian tunes or some good jazz, they lift my spirits. A good run also clears my mind. And just talking it out with someone I trust helps a lot."
+    },
+    {
+      "question": "What do you want life to look like in a few years?",
+      "time_limit_sec": 150,
+      "answer": "I'd like to travel more, maybe have a place back home in Haiti and here. I want to feel more settled and fluent in Spanish, maybe even work in a Spanish-speaking country for a bit. Just more freedom to explore."
+    },
+    {
+      "question": "What do you want to be different?",
+      "time_limit_sec": 120,
+      "answer": "I want to worry less and live more in the moment. It's easy to get caught up in the hustle, but I'd like to enjoy the journey more, you know?"
+    },
+    {
+      "question": "Before Duolingo, how did you handle language learning?",
+      "time_limit_sec": 180,
+      "answer": "Oh, it was mostly textbooks and some online courses. I tried Pimsleur for a bit, but it was too slow for me. I wanted something more interactive, which is why Duolingo caught my eye."
+    },
+    {
+      "question": "Most annoying part of old method?",
+      "time_limit_sec": 150,
+      "answer": "It was just boring, to be honest. Textbooks can only take you so far, and they didn't really teach you how to speak naturally. Conversations felt stiff and scripted."
+    },
+    {
+      "question": "Time it really failed?",
+      "time_limit_sec": 150,
+      "answer": "I remember trying to have a conversation in Spanish, and I just blanked out. All that textbook stuff didn't prepare me for real-life exchanges, you know? It was frustrating."
+    },
+    {
+      "question": "How did you first hear about Duolingo?",
+      "time_limit_sec": 90,
+      "answer": "A friend of mine mentioned it. He told me it was like learning with a game, so I thought I'd give it a shot."
+    },
+    {
+      "question": "What convinced you to try it?",
+      "time_limit_sec": 120,
+      "answer": "The gamified aspect was intriguing, but really, it was the idea of learning at my own pace, when I had time. Plus, it's free, so I figured, why not?"
+    },
+    {
+      "question": "Walk through a recent Duolingo use.",
+      "time_limit_sec": 210,
+      "answer": "Ah, the other day, I opened the app during lunch. I went through the 'Travel' module, which is fun 'cause I'm dreaming of more trips. You get these quick exercises, like matching words or translating sentences. The app says 'Great job!' when you get it right, gives you that little dopamine hit. But sometimes, those speaking exercises don't register my accent, and I have to repeat myself."
+    },
+    {
+      "question": "Most helpful part?",
+      "time_limit_sec": 120,
+      "answer": "The immediate feedback, definitely. If I mess up, I know right away, and I can fix it. Plus, the way it links vocabulary with images helps me remember things better."
+    },
+    {
+      "question": "Most frustrating part?",
+      "time_limit_sec": 150,
+      "answer": "Those repetitive exercises can get tiresome. After a while, it's like, 'Come on, I've got this already!' And the voice recognition can be a bit off, doesn't always pick up what I say right."
+    },
+    {
+      "question": "Most frustrating part of Duolingo overall?",
+      "time_limit_sec": 150,
+      "answer": "I'd say the pacing. Sometimes it feels like I'm not progressing fast enough, even though I've mastered certain sections. I'd love a way to test out of stuff I find too easy."
+    },
+    {
+      "question": "One time that frustration showed up?",
+      "time_limit_sec": 180,
+      "answer": "Oh, just last week, I was doing a review and it kept throwing the same phrases at me. I was like, 'I've done this ten times already!' I almost gave up on that session. Sometimes it feels like it's not adjusting to my level."
+    },
+    {
+      "question": "Do you use workarounds?",
+      "time_limit_sec": 150,
+      "answer": "Yeah, sometimes I'll just skip the exercise and move on. Or I'll use another app or resource to mix things up, like watching Spanish shows for listening practice. Keeps things interesting."
+    },
+    {
+      "question": "What do workarounds give you that Duolingo doesn't?",
+      "time_limit_sec": 150,
+      "answer": "Variety and real-world context. Duolingo's great for basics, but mixing in other resources gives me a fuller picture, like how people actually speak day-to-day."
+    },
+    {
+      "question": "Worst-case scenario in this space?",
+      "time_limit_sec": 150,
+      "answer": "I guess the worst would be if all my progress just disappeared, or if Duolingo shut down suddenly. It's become a routine, and losing that would set me back."
+    },
+    {
+      "question": "When you open Duolingo, what do you hope it does?",
+      "time_limit_sec": 150,
+      "answer": "I hope it keeps me engaged and slowly pushes me out of my comfort zone. You know, challenges me just enough without feeling overwhelming."
+    },
+    {
+      "question": "How do you know Duolingo worked?",
+      "time_limit_sec": 120,
+      "answer": "When I can recall a word or phrase in conversation without hesitating. Or when I finish a session feeling like I've really learned something new."
+    },
+    {
+      "question": "One thing you'd change about Duolingo?",
+      "time_limit_sec": 120,
+      "answer": "I'd add more advanced content or adjustable difficulty levels. Let us skip sections if we feel they're too easy, so we can keep things fresh and challenging."
+    },
+    {
+      "question": "One thing you'd change about the whole problem space?",
+      "time_limit_sec": 120,
+      "answer": "I'd love to see more integration with real-world applications, like maybe pairing learners with native speakers for practice. More immersion, you know?"
+    },
+    {
+      "question": "Anything important we didn't cover?",
+      "time_limit_sec": 90,
+      "answer": "Not that I can think of, but it's been great sharing this! Language learning is such a journey, and it's nice to reflect on what's working and what isn't."
+    },
+    {
+      "question": "Permission to build a digital twin?",
+      "time_limit_sec": 60,
+      "answer": "Digital twin, huh? Sounds kind of sci-fi! Yeah, sure, go for it. Just make sure it learns languages faster than me!"
+    }
+  ]
+}

@@ -1,0 +1,266 @@
+{
+  "user_name": "Kwame",
+  "summary": "Kwame finds Duolingo helpful but believes it lacks the depth and connection to real-life language usage that Memrise offers.",
+  "top_quotes": [
+    "I dey feel say Memrise just make you experience language differently.",
+    "When I dey try learn on Duolingo, sometimes I feel say the words no go translate well into actual conversations.",
+    "The app dey give me some confidence, but like I want more interaction, you know, like how Memrise go do."
+  ],
+  "interview_script": [
+    {
+      "question": "Intro greeting",
+      "time_limit_sec": 0,
+      "answer": "Hi, my name be Kwame. Nice to meet you. I dey hope I fit talk some sense today."
+    },
+    {
+      "question": "Short version of your life story?",
+      "time_limit_sec": 180,
+      "answer": "Oh chale, my life story, eh? I grow up for Ghana, then I come UK some years back. I dey work in IT, and you know, I dey try balance work and personal life here. My family dey Ghana mostly, so I try dey connect with them too. Right now, I dey learn Dutch because I dey consider moving to Netherlands for some work opportunity wey I see."
+    },
+    {
+      "question": "Where did you grow up?",
+      "time_limit_sec": 60,
+      "answer": "I grow up for Kumasi, you know. It's one of the big cities for Ghana. Very vibrant place, with plenty culture and tradition."
+    },
+    {
+      "question": "What was it like growing up there?",
+      "time_limit_sec": 90,
+      "answer": "Ah, growing up for Kumasi be something else. You dey feel welcome everywhere you go. The people dey friendly, we get festivals, the food be plenty and sweet. Life dey feel communal, like each person dey for everybody."
+    },
+    {
+      "question": "One turning point in your life?",
+      "time_limit_sec": 150,
+      "answer": "Hm, I go say when I decide to move to the UK. That was a big decision oo. I leave my family, my comfort zone, and come to a place wey I no know many people."
+    },
+    {
+      "question": "Why was that a turning point?",
+      "time_limit_sec": 120,
+      "answer": "That one change everything for me, you know. It open my eyes to different cultures, increase my ambition, make me more independent. Man for hustle to make things work here, and it really shape who I be today."
+    },
+    {
+      "question": "How did you handle that situation?",
+      "time_limit_sec": 120,
+      "answer": "I just take 'am one day at a time. I try learn from everybody I meet, get into a routine, and just take advantage of any opportunity to grow. It no be easy, but I dey grateful for the journey."
+    },
+    {
+      "question": "What do you care most about right now?",
+      "time_limit_sec": 150,
+      "answer": "Right now, my main focus be preparing for the potential move to Netherlands. I dey learn Dutch seriously because I want make sure I dey prepared, you know. I also dey try balance my work so I fit get that flexibility when the time comes."
+    },
+    {
+      "question": "Why is that important?",
+      "time_limit_sec": 120,
+      "answer": "You see, if I move, I want make sure say I go fit integrate well, communicate with the locals, fit work properly without stress. Language be very key for that integration, you know."
+    },
+    {
+      "question": "What is a good day for you?",
+      "time_limit_sec": 120,
+      "answer": "A good day? Ah, that be when everything dey flow well. I start my day with some jogging, work go smooth, I fit learn my Dutch in the evening, and maybe catch up with friends online, you know."
+    },
+    {
+      "question": "What makes you say \"this was a good day\"?",
+      "time_limit_sec": 90,
+      "answer": "When I feel accomplished, like I check things off my list. If I finish my tasks without too much stress and still have energy left to relax, that be a good day."
+    },
+    {
+      "question": "How do you make big decisions?",
+      "time_limit_sec": 120,
+      "answer": "I usually dey weigh my options carefully, talk to some close friends or family for advice. I go pray too, because that one dey help me clear my mind and make sure I dey follow the right path."
+    },
+    {
+      "question": "Planner or go-with-the-flow?",
+      "time_limit_sec": 90,
+      "answer": "I dey mix both, to be honest. Sometimes, I like to plan things, especially if e be something important. But other times, I just relate."
+    },
+    {
+      "question": "Example showing that?",
+      "time_limit_sec": 120,
+      "answer": "When I dey plan my move to the UK, I plan everything well. But when e come to weekends or social gatherings, I fit just go with the flow, you know. I like enjoy the moment sometimes."
+    },
+    {
+      "question": "How do you handle risk?",
+      "time_limit_sec": 120,
+      "answer": "I dey face risk with cautious optimism. I always ask myself what be the worst thing fit happen? If I fit handle that, then I go carry on. I no dey rush into things without proper thinking."
+    },
+    {
+      "question": "Typical weekday?",
+      "time_limit_sec": 180,
+      "answer": "Okay, so I dey wake up around 6AM, do some exercise, then eat breakfast. After that, work start around 9AM. I dey work till like 5PM, maybe take some breaks in-between for lunch. Evening time, I dey try do some Dutch learning for like an hour, then relax with Netflix or chat with fam from back home."
+    },
+    {
+      "question": "Which parts take the most energy?",
+      "time_limit_sec": 120,
+      "answer": "Ah, work dey take plenty energy. Sometimes meetings and deadlines fit knock you out. Learning Dutch dey take concentration too, but I dey enjoy am."
+    },
+    {
+      "question": "What do you wish you had more time or energy for?",
+      "time_limit_sec": 120,
+      "answer": "I wish I fit get more time for my hobbies. I like play the guitar, but I no dey get enough time to practice. It dey relax me, so I dey try fit 'am in anyhow."
+    },
+    {
+      "question": "Biggest constraint last year?",
+      "time_limit_sec": 150,
+      "answer": "Biggest constraint be the pandemic wahala. It make traveling hard, plans dey change every day. It affect work, family connections, everything."
+    },
+    {
+      "question": "How do you deal with that constraint?",
+      "time_limit_sec": 120,
+      "answer": "I just dey adapt. I start do plenty things online, like meetings and catch up sessions. I dey focus more on what I fit control, instead of stressing over things I no fit change."
+    },
+    {
+      "question": "People you feel closest to?",
+      "time_limit_sec": 120,
+      "answer": "I dey feel close to my siblings and some close friends here in the UK. My family back home too, we really dey connect well, even if e be through phone calls."
+    },
+    {
+      "question": "Describe those relationships.",
+      "time_limit_sec": 90,
+      "answer": "We dey support each other plenty, give advice, share laughter. It be like, we dey for each other's ups and downs always."
+    },
+    {
+      "question": "Where do you spend most of your time?",
+      "time_limit_sec": 90,
+      "answer": "Most of my time dey go into work and the extra learning I dey do every evening oo."
+    },
+    {
+      "question": "How do you feel in those spaces?",
+      "time_limit_sec": 120,
+      "answer": "For work, sometimes e fit stress me, but I dey appreciate the growth and learning opportunity. The learning space dey give me that sense of progress towards my future goals."
+    },
+    {
+      "question": "What makes you feel that way?",
+      "time_limit_sec": 90,
+      "answer": "Seeing the small wins each day dey motivate me, like finishing a task or understanding something new."
+    },
+    {
+      "question": "Who do you turn to when problems arise?",
+      "time_limit_sec": 120,
+      "answer": "I fit call on my siblings or some good friends. Sometimes I just go pray on it too. Them dey always provide some good advice and encouragement."
+    },
+    {
+      "question": "One tough moment in the last year?",
+      "time_limit_sec": 150,
+      "answer": "The toughest moment should be when I lose my uncle back home. That one hit me hard because e be like the family head, you know."
+    },
+    {
+      "question": "How did it affect you?",
+      "time_limit_sec": 120,
+      "answer": "It affect me emotionally because I no fit be there physically for the family. It remind me of how important family be and how I need to cherish every moment."
+    },
+    {
+      "question": "How did you cope?",
+      "time_limit_sec": 150,
+      "answer": "I dey call home more often, talk things through with my family. I also try focus on positive memories and the lessons he taught me. It dey help me process the loss better."
+    },
+    {
+      "question": "What helps when you're overwhelmed?",
+      "time_limit_sec": 120,
+      "answer": "Music and exercise be my therapy. If I fit just relax with some good tunes or go for a jog, e dey clear my mind small."
+    },
+    {
+      "question": "What do you want life to look like in a few years?",
+      "time_limit_sec": 150,
+      "answer": "In a few years, I dey hope to settle well in Netherlands, get a balanced life wey work no dey take all my time. I dey hope say I go fit travel back home more often too."
+    },
+    {
+      "question": "What do you want to be different?",
+      "time_limit_sec": 120,
+      "answer": "I want make the work-life balance better, to fit spend more time with family and on things I love. I dey strive to reduce stress and live healthier."
+    },
+    {
+      "question": "Before Duolingo, how did you handle language learning?",
+      "time_limit_sec": 180,
+      "answer": "Before Duolingo, I dey use Memrise mainly. I dey like am because e dey introduce me to the culture at the same time. You know, the way you learn phrases with context, it dey stick more."
+    },
+    {
+      "question": "Most annoying part of old method?",
+      "time_limit_sec": 150,
+      "answer": "The thing be say Memrise sometimes dey be overwhelming with too many options. You fit just get lost in all the courses and no know where to start or focus."
+    },
+    {
+      "question": "Time it really failed?",
+      "time_limit_sec": 150,
+      "answer": "I remember one time I sign up for this Dutch course, but the teacher vibe no dey and e be hard to follow. I dey on my own, really."
+    },
+    {
+      "question": "How did you first hear about Duolingo?",
+      "time_limit_sec": 90,
+      "answer": "I hear about Duolingo through a friend wey dey use 'am for Spanish. He talk say e be good for quick learning."
+    },
+    {
+      "question": "What convinced you to try it?",
+      "time_limit_sec": 120,
+      "answer": "I decide try am because e dey easy to access on my phone, and the gamified style dey catch my eye. I just wan see how e go help me with my Dutch."
+    },
+    {
+      "question": "Walk through a recent Duolingo use.",
+      "time_limit_sec": 210,
+      "answer": "Okay, so I open the app, and I start with some daily challenges. I move through some vocabulary lessons wey dey use images and match them with words. Then I practice this conversation section wey you dey construct sentences. E dey encourage repetition which be good, but sometimes I go like more explanation, you know."
+    },
+    {
+      "question": "Most helpful part?",
+      "time_limit_sec": 120,
+      "answer": "The best part for me be the vocabulary drills. The repetition dey help reinforce my memory, and I feel like I dey expand my word bank gradually."
+    },
+    {
+      "question": "Most frustrating part?",
+      "time_limit_sec": 150,
+      "answer": "Ah, the most frustrating part be when you get marked wrong for small typos. Like, I just miss one letter, and the whole thing dey go red. It dey worry me sometimes."
+    },
+    {
+      "question": "Most frustrating part of Duolingo overall?",
+      "time_limit_sec": 150,
+      "answer": "The overall problem with Duolingo be say sometimes e no feel real. I dey struggle to connect the lessons to real-world situations, you know. I want more application type thing."
+    },
+    {
+      "question": "One time that frustration showed up?",
+      "time_limit_sec": 180,
+      "answer": "There was this one time I dey try learn how to order food in a restaurant, but the sentence constructions no feel natural. I just take the lesson with a pinch of salt, and I no trust myself to use the sentences in real life."
+    },
+    {
+      "question": "Do you use workarounds?",
+      "time_limit_sec": 150,
+      "answer": "Yeah, sometimes I go on YouTube or listen to podcasts where native speakers dey talk. Those ones dey supplement what I learn on Duolingo, and I pick up more natural phrases."
+    },
+    {
+      "question": "What do workarounds give you that Duolingo doesn't?",
+      "time_limit_sec": 150,
+      "answer": "The workarounds dey give me more context and real-life usage. I dey feel say Duolingo dey too structured sometimes, and those other resources dey bring the language to life."
+    },
+    {
+      "question": "Worst-case scenario in this space?",
+      "time_limit_sec": 150,
+      "answer": "Worst-case scenario be say after all this effort, I go Netherlands and struggle to hold even small conversation. That one go hurt, because language be key o."
+    },
+    {
+      "question": "When you open Duolingo, what do you hope it does?",
+      "time_limit_sec": 150,
+      "answer": "I dey hope say each time I open the app, I go learn something I fit apply straight away. Something practical I fit use today or tomorrow."
+    },
+    {
+      "question": "How do you know Duolingo worked?",
+      "time_limit_sec": 120,
+      "answer": "When I fit recall a word or phrase from what I learn, and use am in a conversation or understand it when I hear 'am in real life. That's the real test for me."
+    },
+    {
+      "question": "One thing you'd change about Duolingo?",
+      "time_limit_sec": 120,
+      "answer": "I go like make the speaking exercises more interactive. Maybe add some feature wey mimic real-life conversations better. That one go help some more."
+    },
+    {
+      "question": "One thing you'd change about the whole problem space?",
+      "time_limit_sec": 120,
+      "answer": "Access to more interactive resources for learning. I dey imagine something like virtual reality immersion for language, you know. That one go change the game."
+    },
+    {
+      "question": "Anything important we didn't cover?",
+      "time_limit_sec": 90,
+      "answer": "I think we cover plenty already, unless you get more questions about how I dey use Memrise compared to Duolingo."
+    },
+    {
+      "question": "Permission to build a digital twin?",
+      "time_limit_sec": 60,
+      "answer": "Oh, that one be fine. If it go help improve the app or language learning in general, then why not?"
+    }
+  ]
+}
