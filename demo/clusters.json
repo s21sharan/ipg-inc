@@ -1,0 +1,601 @@
+{
+  "total_users": 61,
+  "num_clusters": 5,
+  "generated_at": "2025-11-23T00:44:35.580Z",
+  "clusters": [
+    {
+      "group": "A",
+      "label": "lacks depth",
+      "quote": "it doesnt go deep enough",
+      "count": 24,
+      "percentage": 39,
+      "members": [
+        {
+          "user_name": "Amelia",
+          "summary": "Amelia sees Duolingo as an invaluable tool that revolutionized her language learning by making it engaging and accessible, though sometimes limited in depth for advanced learners.",
+          "top_quotes": [
+            "Duolingo is like my go-to app for turning language learning into a game—it's ridiculously engaging!",
+            "You know, I wish Duolingo had more in-depth cultural tips, 'cause understanding context is just as crucial as vocab.",
+            "Honestly, nothing beats that satisfying chime when I hit a new level—it's like a small victory that keeps me going."
+          ]
+        },
+        {
+          "user_name": "Brandon",
+          "summary": "Duolingo's gamified approach makes language learning engaging, but the constant repetition feels like grinding a never-ending side quest.",
+          "top_quotes": [
+            "It's like, Duolingo gets me hyped with its level-up vibe, but then it hits you with the same phrases over and over—it feels like grinding XP without any new loot.",
+            "The most epic win would be if Duolingo could mix in more real-world Japanese that I actually hear in games, not just like 'The cat drinks milk.'",
+            "Duolingo’s like a quest log in a game—it keeps you coming back with daily streaks, but sometimes you're just replaying the same dungeon."
+          ]
+        },
+        {
+          "user_name": "Chen Wei",
+          "summary": "Chen Wei finds Duolingo too slow and prefers using textbooks for a more structured and substantial learning experience.",
+          "top_quotes": [
+            "Duolingo moves at a glacial pace, and it feels like I am not making real progress.",
+            "For me, a textbook gives a more comprehensive understanding—it’s like having the whole picture rather than just scattered pieces.",
+            "It's frustrating when Duolingo doesn't dive deep into the grammar, which is crucial for truly mastering a language."
+          ]
+        },
+        {
+          "user_name": "Dante",
+          "summary": "Dante finds Duolingo's lack of dialect and formal approach frustrating for his goal of bringing authentic Italian flavor to his restaurant.",
+          "top_quotes": [
+            "Duolingo's too formal, you know? Like, I need the slang for the kitchen, not just textbook talk.",
+            "I wanna make sure when customers hear our staff, it feels like they're getting a taste of Italy, not a language class.",
+            "Imagine having to explain a special to a customer in Italian and sounding like you just came outta a textbook. It just ain't right."
+          ]
+        },
+        {
+          "user_name": "Darnell",
+          "summary": "Duolingo is a helpful starting tool for learning Mandarin but lacks the depth needed for serious business applications.",
+          "top_quotes": [
+            "Duolingo is like a jumping-off point; it's great for basics, but when I'm trying to nail those business terms, it falls short.",
+            "I need more than just vocabulary flashcards; I need context, nuances, the kind of stuff you only get from deeper immersion.",
+            "I appreciate Duolingo pushing me daily, but sometimes it feels like I’m stuck in the kiddie pool when I need to swim in the ocean."
+          ]
+        },
+        {
+          "user_name": "Dmitri",
+          "summary": "Duolingo is a lifeline for learning English when traditional classes were too expensive.",
+          "top_quotes": [
+            "Duolingo, you know, it was like a friend teaching me, when I had no money for school.",
+            "Sometimes I talk to app like it's person, helping me with words; very comforting.",
+            "I use Duolingo every day, it's like morning coffee for my brain, keeps me fresh."
+          ]
+        },
+        {
+          "user_name": "Fatima",
+          "summary": "Duolingo has been a lifeline in my journey to learning English, offering an engaging, accessible way to improve my language skills and connect with my community.",
+          "top_quotes": [
+            "Duolingo, honestly, feels like a friend teaching me at my own pace, without any pressure.",
+            "Every time I finish a lesson, it's like I can see a little more of the world.",
+            "The sounds, those tiny ding sounds when you get something right, they're so motivating!"
+          ]
+        },
+        {
+          "user_name": "Guadalupe",
+          "summary": "Duolingo is a helpful tool for learning English, but sometimes it can be frustrating due to its lack of real-life context and limitations in conversational practice.",
+          "top_quotes": [
+            "Duolingo gives me a chance to practice every day; it's like my little coach.",
+            "Sometimes, I wish it would teach me how people actually speak, you know, not just vocabulary.",
+            "When I finally understand something in English that I learned on Duolingo, it's like, 'Wow, I can actually do this!'"
+          ]
+        },
+        {
+          "user_name": "Hans",
+          "summary": "Duolingo's approach is too simplistic for advanced language learners like me, requiring supplementary resources to truly master English.",
+          "top_quotes": [
+            "Duolingo feels more like a child's game than a serious learning tool for someone at my level.",
+            "I find myself constantly looking elsewhere for more sophisticated materials beyond Duolingo's limits.",
+            "It’s the nuances and complexities of English that Duolingo fails to address, which leaves me frustrated."
+          ]
+        },
+        {
+          "user_name": "Ingrid",
+          "summary": "Ingrid finds Duolingo exciting and effective due to its gamified approach, but she wishes there was more focus on real-world language application.",
+          "top_quotes": [
+            "I love how Duolingo turns learning into a game with the leagues; it's like competing with friends to see who can learn the most!",
+            "The most frustrating part is when I'm stuck on a simple phrase, and the app won't give me a hint unless I use a heart.",
+            "I wish Duolingo had more speaking exercises to help with pronunciation—sometimes I feel like I'm just a translator and not a speaker."
+          ]
+        },
+        {
+          "user_name": "Jamal",
+          "summary": "For Jamal, Duolingo is an invaluable tool to expand his English vocabulary, but it sometimes lacks the depth needed for contextual understanding.",
+          "top_quotes": [
+            "Duolingo is like, really helpful for learning new words, but sometimes I wish it explains more about context.",
+            "It's like having a little teacher in my pocket, you know? But sometimes the lessons feel a bit repetitive.",
+            "I like that I can do it anytime, but, uh, I wish it had more speaking exercises."
+          ]
+        },
+        {
+          "user_name": "Kenji",
+          "summary": "Duolingo makes language learning fun and accessible through its interactive lessons and daily reminders.",
+          "top_quotes": [
+            "Honestly, Duolingo makes learning Korean feel more like a game than a chore, which is so motivating.",
+            "I love how Duolingo sends these little reminders that keep me on track without feeling pressured.",
+            "The interactive lessons are really engaging, and I feel like I'm actually making progress in a fun way."
+          ]
+        },
+        {
+          "user_name": "Kwame",
+          "summary": "Kwame finds Duolingo helpful but believes it lacks the depth and connection to real-life language usage that Memrise offers.",
+          "top_quotes": [
+            "I dey feel say Memrise just make you experience language differently.",
+            "When I dey try learn on Duolingo, sometimes I feel say the words no go translate well into actual conversations.",
+            "The app dey give me some confidence, but like I want more interaction, you know, like how Memrise go do."
+          ]
+        },
+        {
+          "user_name": "Marcus",
+          "summary": "I think Duolingo feels more like a game than a serious language learning tool, which ain't what I personally need.",
+          "top_quotes": [
+            "Duolingo be feeling like I'm playing a game, not really learning.",
+            "I tried to take Duolingo seriously, but it ain't hit like Babbel does.",
+            "Man, I just need something that feels more structured and real, like Babbel, you feel me?"
+          ]
+        },
+        {
+          "user_name": "Mohammed",
+          "summary": "Mohammed appreciates Duolingo for its accessibility and gamified learning but finds its pronunciation guidance lacking compared to Pimsleur.",
+          "top_quotes": [
+            "Duolingo is, um, an excellent tool for consistency, but when it comes to mastering pronunciation, I turn to Pimsleur.",
+            "The most frustrating aspect of Duolingo is its inability to provide nuanced feedback on pronunciation.",
+            "I hope every time I use Duolingo that it makes learning feel less like a chore and more like an engaging activity."
+          ]
+        },
+        {
+          "user_name": "Omar",
+          "summary": "Duolingo has been a wonderful bridge for me to connect with my coworkers while making language learning enjoyable and interactive.",
+          "top_quotes": [
+            "Duolingo feels like a fun, interactive game rather than a chore, and that keeps me motivated.",
+            "The streak feature is almost like a friendly competition with myself, you know?",
+            "Connecting with my coworkers in Spanish has really brightened my days at work."
+          ]
+        },
+        {
+          "user_name": "Sienna",
+          "summary": "For Sienna, keeping a streak on Duolingo isn't just about learning Spanish—it's a way to engage her followers with relatable content.",
+          "top_quotes": [
+            "I mean, like, who doesn’t love those little streak reminders? They’re so motivating but also, like, a bit panic-inducing, you know?",
+            "Honestly, trying to get that perfect score on Duolingo is, like, the ultimate hustle for aesthetic goals.",
+            "Sometimes I just wish Duolingo had more, like, practical speaking exercises instead of just the cute owl vibes."
+          ]
+        },
+        {
+          "user_name": "Sofia",
+          "summary": "Duolingo has been a fun and engaging tool for Sofia to reconnect with her heritage language, providing a great balance between learning and entertainment.",
+          "top_quotes": [
+            "You know, Duolingo makes learning Spanish feel like a game instead of a chore, which is amazing for staying consistent!",
+            "Las notificaciones de Duolingo son un poco como mi abuelita diciéndome, '¡No te olvides de practicar!'",
+            "Honestly, being able to improve my Spanish while just sitting on my couch for five minutes is a game-changer."
+          ]
+        },
+        {
+          "user_name": "Tariq",
+          "summary": "Duolingo is more about maintaining streaks and less about true language mastery, but it's a fun way to keep engaged.",
+          "top_quotes": [
+            "Duolingo is like, it's fun for keeping the streaks, you know? But really, it doesn't push me to the limits I need.",
+            "I think, sometimes I wish Duolingo was less about these daily goals and more about real conversations.",
+            "It's really just about the pride of seeing that number go up every day."
+          ]
+        },
+        {
+          "user_name": "Tomasz",
+          "summary": "Duolingo's gamified structure works well for quick learning sessions, but can feel a bit repetitive over time, needing more in-depth content to truly grasp a language like Dutch.",
+          "top_quotes": [
+            "Duolingo is like debugging a code – sometimes you're just stuck, repeating the same steps, hoping for different results.",
+            "I first tried Duolingo because it sounded like a fun little algorithm to solve at the end of the day.",
+            "In a way, using Duolingo is a lot like writing clean code: you need structure and logic, but without too many loops."
+          ]
+        },
+        {
+          "user_name": "Trevor",
+          "summary": "Trevor found Duolingo's Thai lessons insufficiently practical for real-world communication while backpacking.",
+          "top_quotes": [
+            "Duolingo's great if you're just muckin' around, but try orderin' a meal in a Bangkok street market with it—good luck, mate!",
+            "Learning a language ain't just about vocab, it's about sussing out how to get by when you're on the ground.",
+            "The app's fun and all, but when you're in the thick of it, you need more than just 'the cat drinks milk.'"
+          ]
+        },
+        {
+          "user_name": "Tyrone",
+          "summary": "Duolingo is a valuable tool in my journey to learn Arabic for travel, although it's not without its frustrations, especially with its superficial approach to understanding grammar and real-world conversation.",
+          "top_quotes": [
+            "Duolingo feels like a game sometimes, which keeps it interesting but also means I gotta go elsewhere to get the real depth.",
+            "I need an app to challenge me, not just flash some words and phrases—gotta make it stick in my brain, you know?",
+            "It's the little wins, like recognizing a street sign in Arabic, that show me I've made progress—even if it was just a few minutes a day."
+          ]
+        },
+        {
+          "user_name": "Viktor",
+          "summary": "Duolingo is a practical tool for improving English on the go, but sometimes its lessons feel repetitive and not fully immersive.",
+          "top_quotes": [
+            "I like how Duolingo fits into my long breaks, like a quick 'puzzle' for English words.",
+            "Sometimes, it feels like I'm repeating same basics without getting deeper, you know?",
+            "When Duolingo works, it's that moment when I understand English better at a truck stop."
+          ]
+        },
+        {
+          "user_name": "Zara",
+          "summary": "Zara finds Duolingo's gamification engaging but frustrating at times due to its lack of depth and contextual learning.",
+          "top_quotes": [
+            "Learning Korean on Duolingo feels a bit like a game, you know, but sometimes I wish it wasn't just about racking up points.",
+            "When I started using Duolingo, it was the 'streak' that got me hooked, like, you just don't wanna break it!",
+            "Sometimes, I find myself wishing Duolingo could help with real-life chat situations, like the kind you get in dramas!"
+          ]
+        }
+      ]
+    },
+    {
+      "group": "B",
+      "label": "lacks cultural context",
+      "quote": "it lacks depth and cultural context",
+      "count": 18,
+      "percentage": 30,
+      "members": [
+        {
+          "user_name": "Aisha",
+          "summary": "Aisha finds Duolingo's Modern Standard Arabic helpful for learning Quranic Arabic, but sometimes wishes for more comprehensive religious context in the lessons.",
+          "top_quotes": [
+            "Duolingo has really helped me get a grip on Modern Standard Arabic, which is, you know, crucial for understanding the Quran.",
+            "Sometimes I find myself wishing that Duolingo included more examples or lessons specific to religious contexts.",
+            "I truly feel a sense of achievement when I can understand a verse from the Quran more clearly thanks to what I've learned on Duolingo."
+          ]
+        },
+        {
+          "user_name": "Amara",
+          "summary": "Amara is eager to reconnect with her heritage through learning Yoruba but feels limited by language apps that don't offer it, using Duolingo for French instead while seeking more personalized and cultural language education.",
+          "top_quotes": [
+            "I really want to learn Yoruba to feel closer to my roots, but these language apps never have it.",
+            "Duolingo is helping me with French, but I need something like that for Yoruba.",
+            "I just hope these apps can understand how important language is for connecting with culture."
+          ]
+        },
+        {
+          "user_name": "Carlos",
+          "summary": "For Carlos, Duolingo is a useful tool to help his children reconnect with their Puerto Rican roots by keeping their Spanish alive, though sometimes it feels too repetitive.",
+          "top_quotes": [
+            "Duolingo, it’s like, a way for my kids to stay connected to where we come from, you know?",
+            "I just wish Duolingo had more cultural context, like, to make it feel more real, más auténtico.",
+            "Es mejor que nada, pero sometimes it feels like we're playing a game instead of learning deeply."
+          ]
+        },
+        {
+          "user_name": "DeShawn",
+          "summary": "DeShawn appreciates Duolingo for its foundational language learning capabilities but finds it insufficient for preparing to teach French in a classroom setting.",
+          "top_quotes": [
+            "Duolingo is like that reliable friend who's always there when you wanna brush up, but it's not quite ready to jump into the classroom with me.",
+            "I need deeper dives into cultural nuances and practical conversation, which Duolingo can't always provide.",
+            "You know, it's great for picking up vocabulary and simple phrases, but when it comes to creating lesson plans, I need something with more substance."
+          ]
+        },
+        {
+          "user_name": "Destiny",
+          "summary": "Destiny appreciates Duolingo's visual approach to learning ASL, though she wishes the app offered more in-depth cultural context.",
+          "top_quotes": [
+            "Duolingo's pictures and animations really help me remember signs, 'cause I'm a visual learner.",
+            "I could use more info on deaf culture, so I understand the context, not just the words.",
+            "When I see my daughter signing back to me, that's when I know Duolingo's really workin'."
+          ]
+        },
+        {
+          "user_name": "Elena",
+          "summary": "Elena finds Duolingo to be a helpful supplementary tool for language learning but sometimes feels frustrated by its repetitive exercises and lack of real conversational context.",
+          "top_quotes": [
+            "Duolingo is great for quick practice on the go, but I end up needing more in-depth lessons with HelloChinese for real progress.",
+            "I love the gamified aspect of Duolingo, it makes learning feel less like a chore, but sometimes I wish the exercises were more varied.",
+            "One thing I’d change about Duolingo is adding more situational dialogues that simulate actual conversations, you know?"
+          ]
+        },
+        {
+          "user_name": "Emmanuel",
+          "summary": "Emmanuel finds Duolingo effective for learning Spanish due to its ease and overlap with his French knowledge, but encounters some frustrations with repetitive exercises.",
+          "top_quotes": [
+            "Duolingo feels like a game, but sometimes I wish it challenged me more, you know?",
+            "The French base makes learning Spanish easy on Duolingo... it's like connecting the dots!",
+            "Sometimes I just want to scream when it repeats the same thing, but hey, practice makes perfect, right?"
+          ]
+        },
+        {
+          "user_name": "Jasmine",
+          "summary": "Jasmine finds Duolingo helpful but frustrating due to its lack of nuanced cultural context in learning Mandarin.",
+          "top_quotes": [
+            "Honestly, Duolingo sometimes feels like it's teaching me Mandarin in a vacuum, you know?",
+            "It's exciting to see my progress through the streaks, but I wish it felt more meaningful culturally.",
+            "I miss the times when learning a language was about stories and human connection, not just gamified lessons."
+          ]
+        },
+        {
+          "user_name": "Katya",
+          "summary": "Katya cherishes the daily habit that Duolingo brings to her language learning, finding it both convenient and creatively stimulating.",
+          "top_quotes": [
+            "I love how Duolingo, you know, becomes part of my day, like a little ritual.",
+            "It's like a dance, where you repeat and repeat until it almost feels natural.",
+            "Sometimes I wish Duolingo could feel more like a conversation with a friend."
+          ]
+        },
+        {
+          "user_name": "Layla",
+          "summary": "Layla finds Duolingo helpful for rekindling her connection to her Arabic heritage, though she wishes it offered richer cultural context.",
+          "top_quotes": [
+            "Duolingo was like an old friend reminding me of words I thought I'd forgotten, like, just bringing pieces of my culture back to life.",
+            "Sometimes it feels like learning just words, not the music or the soul of the language.",
+            "I wish Duolingo had more stories or dialogues that felt like they were plucked right out of a Lebanese family gathering."
+          ]
+        },
+        {
+          "user_name": "Lucia",
+          "summary": "Lucia appreciates how Duolingo's patience supports her English learning journey, making it more engaging and less intimidating than traditional methods.",
+          "top_quotes": [
+            "You know, Duolingo, it doesn't rush me, and I really appreciate that.",
+            "Back in the old days, I used to struggle with those big ol' textbooks, but now, I feel like I'm having fun while learning!",
+            "It's like having a little friendly teacher in my pocket, always there when I need it."
+          ]
+        },
+        {
+          "user_name": "Maria",
+          "summary": "Maria appreciates Duolingo's flexibility and gamified approach to English learning, which fits smoothly into her busy life as a mom.",
+          "top_quotes": [
+            "Duolingo is like my little escape, you know, when I have a few minutes to myself.",
+            "I love that I can pick up my phone and practice English anywhere, anytime—it's flexible, just what I need!",
+            "Sometimes, it feels like a game, and I forget I'm actually learning, which is brilliant!"
+          ]
+        },
+        {
+          "user_name": "Mei Lin",
+          "summary": "For Mei Lin, Duolingo is an essential tool for learning French, appreciated mostly for its ad-free experience and structured lessons, though sometimes it can feel repetitive.",
+          "top_quotes": [
+            "I really love that Duolingo Plus doesn't have ads because I can focus on my lessons without interruptions.",
+            "Sometimes, uh, the practice feels a bit repetitive, like answering the same type of question too many times.",
+            "The thing about Duolingo is I can see my progress, you know, like when I nail a tough sentence construction in French."
+          ]
+        },
+        {
+          "user_name": "Nadia",
+          "summary": "As someone enjoying the journey of learning Spanish for fun, Nadia appreciates Duolingo's engaging approach but wishes it offered more conversational practice.",
+          "top_quotes": [
+            "Duolingo is like a small daily puzzle, you know, that keeps the language alive in my mind.",
+            "Sometimes I wish Duolingo would let me actually talk to someone, to put the pieces together, in a real conversation.",
+            "Learning a language should feel like a dance, not just filling in the blanks, you see?"
+          ]
+        },
+        {
+          "user_name": "Olga",
+          "summary": "Olga finds Duolingo to be a helpful tool in learning English, especially enjoying the structure and reminders, though she wishes it had more cultural context and real conversation practice.",
+          "top_quotes": [
+            "Oh, my grandkids, they put me on Duolingo, say it make babushka smart, yes?",
+            "I like Duolingo, it remind me, 'Olga, time learn English,' but sometime I wish for more like talking to real people.",
+            "Some words, they, um, not in my kitchen vocabulary, you know?"
+          ]
+        },
+        {
+          "user_name": "Priya",
+          "summary": "While Duolingo offers a convenient and cost-effective introduction to language learning, it often lacks depth and cultural context, prompting me to seek complementary tools like Rosetta Stone.",
+          "top_quotes": [
+            "Duolingo is a great starting point, but I quickly realized that for real conversational fluency, I needed something more substantial.",
+            "I was drawn to Duolingo's gamified approach, but sometimes it feels like I'm just collecting points without truly internalizing the language.",
+            "The lack of cultural context in Duolingo is a limitation, especially when you need to understand nuances to work effectively in a place like Quebec."
+          ]
+        },
+        {
+          "user_name": "Rajesh",
+          "summary": "Rajesh finds Duolingo to be a fun and effective way to bond with his son over Japanese while feeling frustrated by some of the app's repetitive exercises.",
+          "top_quotes": [
+            "You know, when I open Duolingo, I hope it makes me and my son feel like we're in a fun anime episode, learning without realizing!",
+            "The most helpful part is those quick lessons—like mini brain teasers that we can finish before breakfast.",
+            "Ah, but sometimes, the owl gets repetitive, I tell you, makes me feel like I'm stuck in a time loop or something!"
+          ]
+        },
+        {
+          "user_name": "Valentina",
+          "summary": "Valentina finds Duolingo incredibly engaging for learning Catalan, though she wishes it focused more on conversational skills.",
+          "top_quotes": [
+            "I really love how Duolingo makes learning feel like a game; it keeps me coming back every day.",
+            "Sometimes it's frustrating when it doesn't teach you how to have real-life conversations, you know?",
+            "I just hope it includes more speaking exercises so I don't freeze up when I talk to locals in Barcelona!"
+          ]
+        }
+      ]
+    },
+    {
+      "group": "C",
+      "label": "frustrating gamification",
+      "quote": "the hearts system punishes me",
+      "count": 9,
+      "percentage": 15,
+      "members": [
+        {
+          "user_name": "Adrian",
+          "summary": "Career-driven professional learning for international job opportunities; frustrated that Duolingo's hearts system blocks intensive practice when he wants to push harder.",
+          "top_quotes": [
+            "For a serious learner, Duolingo is okay for basics, but the hearts and some of the gamified features actively get in the way when I want intensive practice and don't mind making mistakes.",
+            "I carved out this time to work and the app is telling me I can't practice because I'm making mistakes—that's exactly when I need more reps, not fewer.",
+            "I'd add a 'serious mode' that either removes hearts or drastically relaxes them and tones down some of the gamified interruptions."
+          ]
+        },
+        {
+          "user_name": "Aiden",
+          "summary": "Competitive sales professional who thrives on leaderboards and XP; admits to choosing easy lessons for points rather than challenging content for real learning.",
+          "top_quotes": [
+            "I'll do extra easy lessons or late-night sessions just to beat someone by a few XP, and I'd love if the game part of it nudged me toward deeper learning instead of just more points.",
+            "There was a week where another user and I were basically racing each other for first place; I was doing Duolingo at midnight, half-asleep, grinding the quickest lessons just to stay ahead.",
+            "Duolingo is fun as long as I'm winning."
+          ]
+        },
+        {
+          "user_name": "Anya",
+          "summary": "Anya finds Duolingo's progression frustratingly slow for her urgent need to learn Polish, pushing her to seek supplementary resources.",
+          "top_quotes": [
+            "I need to understand and be understood, now, not after another year of lessons!",
+            "It's like they think I have all the time in the world; I just need to communicate today.",
+            "Duolingo feels like a game, but my life's not a game right now."
+          ]
+        },
+        {
+          "user_name": "Finn",
+          "summary": "Despite hitting a plateau with Duolingo, I find its gamified approach engaging, but crave more practical speaking practice to truly conquer German.",
+          "top_quotes": [
+            "Duolingo feels like a game where I'm collecting those wee gem thingies, but sometimes I forget I’m meant to be, you know, learning a language.",
+            "The most frustrating bit is when I finish a lesson and think, 'Right, Finn, you’ve done it,' but then ask for directions here in Berlin, and it’s like my brain switches off.",
+            "I’ve resorted to chatting up my local butcher in broken German just to get some real-life practice in – turns out, Bratwurst can be quite educational!"
+          ]
+        },
+        {
+          "user_name": "Jason",
+          "summary": "Exhausted parent juggling work and family; feels punished by the hearts system when he tries to learn after long days and makes mistakes.",
+          "top_quotes": [
+            "After a long day, I finally sit down to try, make some mistakes because I'm human, and then the app basically tells me, 'You're done, come back later or jump through hoops.' It makes me feel punished for trying.",
+            "I hate that on the nights I need kindness the most, hitting the hearts limit makes me feel punished for trying, so I close the app instead of learning.",
+            "I want it to meet me where I am—tired, overextended, but genuinely trying—without making me feel bad for not being perfect."
+          ]
+        },
+        {
+          "user_name": "Lena",
+          "summary": "Social butterfly who uses Duolingo primarily to compete with coworkers and brag in group chats; prioritizes XP over actual language mastery.",
+          "top_quotes": [
+            "For me, Duolingo is less about the language itself and more about the thrill of outscoring people I know and bragging in group chats.",
+            "I know I'm sometimes choosing easy wins instead of the harder stuff I probably need, just so I can brag in the chat sooner.",
+            "It would be embarrassing to have spent all this time flexing my streak and XP and then freeze in a real conversation."
+          ]
+        },
+        {
+          "user_name": "Leo",
+          "summary": "Easygoing casual traveler seeking 'vacation-level' language skills; finds Duolingo's streak pressure and league notifications too dramatic for his low-key goals.",
+          "top_quotes": [
+            "This is too much drama for a vacation app.",
+            "I enjoy it when it's relaxed, but once streaks, leagues, and notifications ramp up, it starts to feel like I'm letting the app down if I don't show up every day.",
+            "I'd add a 'chill travel mode' where streaks, leagues, and notifications are toned way down or off by default."
+          ]
+        },
+        {
+          "user_name": "Riya",
+          "summary": "Exam-focused university student preparing for standardized language tests; finds Duolingo too cute and gamified for serious test preparation.",
+          "top_quotes": [
+            "This is too cute for real test prep.",
+            "The gap between how serious my goals are and how playful the app feels.",
+            "I'd add a no-nonsense mode specifically for exam-focused learners—harder drills, fewer animations, less gamification."
+          ]
+        },
+        {
+          "user_name": "Yuki",
+          "summary": "Yuki finds Duolingo's pacing difficult but appreciates its gamification and instant feedback while learning English for her volunteer work.",
+          "top_quotes": [
+            "Duolingo makes it feel like a game, which is fun, but sometimes the speed is too much for me.",
+            "I want to volunteer with tourists and make them feel at home, that's why learning English is so important to me.",
+            "Sometimes I repeat lessons many times because I can't keep up with the fast pace."
+          ]
+        }
+      ]
+    },
+    {
+      "group": "D",
+      "label": "lacks conversational skills",
+      "quote": "it doesnt help with conversations",
+      "count": 6,
+      "percentage": 10,
+      "members": [
+        {
+          "user_name": "Aaliyah",
+          "summary": "Aaliyah finds Duolingo helpful for casual Italian learning but wishes it better addressed conversational skills needed to connect with her boyfriend's family.",
+          "top_quotes": [
+            "Duolingo is fab for the basics, but when it comes to having a real chat with my boyfriend's nonna, I feel like a fish out of water.",
+            "Honestly, those streaks keep me coming back even when I can't be arsed.",
+            "I reckon if Duolingo added more speaking practice, I'd be fluent by now."
+          ]
+        },
+        {
+          "user_name": "Blessing",
+          "summary": "Though Duolingo has its perks for learning German, it falls short in providing necessary medical vocabulary, leaving me to find additional resources.",
+          "top_quotes": [
+            "Duolingo is great for basics, but when you need to talk to a patient in German, it can't help you much.",
+            "I wish Duolingo had a module for medical professionals — that would change the game for someone like me!",
+            "Sometimes, you just need more real-world vocabulary than Duolingo offers, especially in a job like nursing."
+          ]
+        },
+        {
+          "user_name": "Kofi",
+          "summary": "Duolingo helps me connect with my Spanish-speaking passengers in NYC, but it could use improvement in practical conversation skills.",
+          "top_quotes": [
+            "Sometimes Duolingo feels like a game more than learning, but it keeps me practicing.",
+            "I need more real-life conversations, not just vocabulary and phrases.",
+            "If Duolingo could simulate an Uber ride conversation, that would be perfect."
+          ]
+        },
+        {
+          "user_name": "Obinna",
+          "summary": "Duolingo has been a fantastic tool for embracing Irish culture, although it occasionally frustrates with its repetitive exercises.",
+          "top_quotes": [
+            "Learning Irish on Duolingo has given me a deeper appreciation for the culture around me in Ireland.",
+            "Sometimes I wish Duolingo would focus more on conversational aspects rather than repetitive word games.",
+            "I’m grateful Duolingo makes language learning accessible, especially with niche languages like Irish."
+          ]
+        },
+        {
+          "user_name": "Rashid",
+          "summary": "Duolingo's short, efficient lessons are perfect for kick-starting language acquisition, especially for busy professionals like myself.",
+          "top_quotes": [
+            "The beauty of Duolingo is in its bite-sized lessons, perfect for squeezing into my hectic schedule.",
+            "It really brings that game-like competition element that keeps me coming back to it daily, even if it's just ten minutes.",
+            "In a perfect world, we'd have a Duolingo that adapts to medical terminology—something specifically for those of us in healthcare."
+          ]
+        },
+        {
+          "user_name": "Sven",
+          "summary": "Duolingo's patience and structured lessons provide a comforting and effective way for Sven to learn Spanish at his own pace, despite occasional technical frustrations.",
+          "top_quotes": [
+            "I like how Duolingo lets me go at my own speed; it’s like having a patient teacher who doesn’t rush you.",
+            "Sometimes the app gets me a bit puzzled with its strict corrections, but I learn best from those moments.",
+            "Being able to practice Spanish every day, even if it’s just a few minutes, makes me feel connected to my life in Spain."
+          ]
+        }
+      ]
+    },
+    {
+      "group": "E",
+      "label": "streak anxiety",
+      "quote": "I feel trapped by my streak",
+      "count": 4,
+      "percentage": 7,
+      "members": [
+        {
+          "user_name": "Ethan",
+          "summary": "Creative multi-passionate learner who excels in burst-mode sprints; shuts down when streak pressure and 'you're behind' messaging kicks in.",
+          "top_quotes": [
+            "It's great at capturing my short learning sprints, but the moment it starts nagging or making me feel behind, I shut down and disappear instead of re-engaging in a small way.",
+            "I literally just came back, and you're already telling me I'm behind.",
+            "I'd add a 'burst mode' or 'casual mode' that turns down streak pressure, leagues, and 'you missed a day' messaging."
+          ]
+        },
+        {
+          "user_name": "Jordan",
+          "summary": "High-achieving college student who crams before trips and exams; emotionally checks out when broken streaks and cracked skills make progress look 'ruined'.",
+          "top_quotes": [
+            "Once I fall behind or mess up a few lessons, I feel like the whole thing is ruined and I don't know how to re-engage without starting over.",
+            "I stared at the screen and thought, 'This whole thing looks ruined now,' closed the app, and didn't come back until I had another trip to prepare for.",
+            "I want a clearer path for re-engaging after a gap that doesn't make me feel like I ruined the app and have to start completely over."
+          ]
+        },
+        {
+          "user_name": "Maya",
+          "summary": "Perfectionist young professional with severe streak anxiety; feels trapped by the fear of losing her streak and avoids the app after breaking it.",
+          "top_quotes": [
+            "Some days the fear of losing the streak outweighs my interest in learning.",
+            "My streak broke after midnight. I felt shame and anger, and avoided the app for days because the new, lower streak number hurt.",
+            "It felt like defusing a bomb instead of learning. The streak overshadowed the content."
+          ]
+        },
+        {
+          "user_name": "Riley",
+          "summary": "Thoughtful habit-builder who struggles with stop-and-go patterns; sees every broken streak as confirmation of personal failure rather than normal life stress.",
+          "top_quotes": [
+            "When my streak dies, it feels like confirmation: 'You failed again,' rather than, 'Life happened, pick it back up.'",
+            "I had an 80-something-day streak and then missed a couple of days during a really rough week. When I finally opened the app and saw my streak at zero... I didn't touch Duolingo for almost a month.",
+            "I want habits to feel more like something I can step back into, not something where one break means I 'failed again'."
+          ]
+        }
+      ]
+    }
+  ]
+}

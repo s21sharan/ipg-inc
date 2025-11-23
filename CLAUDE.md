@@ -137,3 +137,37 @@ Enhanced campaign creation UI with auto-growing textareas, persistent save funct
 
 ### #Background
 Session focused on UX improvements for campaign creation. Auto-growing textareas prevent page scrolling while providing flexibility. Save buttons allow iterative editing without losing context. "Create from Prompt" offers AI-assisted campaign creation workflow.
+
+## 2025-11-22 – Compact Session
+
+### #CurrentFocus
+Built demo page with clustered hexagon UI, interview clustering script, and demographic metadata extraction.
+
+### #SessionChanges
+- Updated landing page text (WHAT WE DO, HOW IT WORKS, WHO WE ARE sections)
+- Reduced landing page spacing to fit on one desktop screen without scrolling
+- Fixed TypeScript build error: added missing `id` field to drafted Campaign object
+- Created `demo/scripts/cluster_interviews.js` using OpenAI embeddings + K-means clustering
+- Added quote generation for each cluster (5-6 word first-person complaints)
+- Redesigned demo page with clustered hexagon layout (3 top, 2 bottom staggered)
+- Implemented honeycomb pattern generator for variable cluster sizes
+- Updated `demo/scripts/extract_metadata.js` to include gender, race, hometown fields
+- Fixed extraction script to extract actual transcript data instead of hallucinating
+- Added blue demographic tags to hexagon tooltips (age, gender, race, hometown, occupation, country)
+- Fixed metadata ID mismatch: now matches by name instead of array index
+- Hide metadata fields with "unknown" values in tooltips
+- Moved agent_metadata.json from public/ to demo/ and updated import
+
+### #NextSteps
+- Run updated extract_metadata.js to populate new demographic fields
+- Fine-tune hexagon cluster positioning and sizing
+- Implement filter functionality in demo page sidebar
+- Connect "Chat with Collective Memory" to actual agent data
+
+### #BugsAndTheories
+- Olga showing Valentina's data ⇒ Agent ID mismatch between agentData and metadata (fixed: match by name)
+- Metadata extraction hallucinating ⇒ GPT not reading transcript carefully (fixed: stricter prompts)
+- Hexagons too small/centered ⇒ Spacing and layout values too tight (fixed: increased sizes)
+
+### #Background
+Demo page shows Duolingo user interview clusters visualized as hexagon groups. Each cluster represents users with similar pain points (e.g., "lacks depth", "streak anxiety"). Metadata extraction uses GPT to pull demographics from interview transcripts. Clustering uses OpenAI embeddings on summary + frustration answers.

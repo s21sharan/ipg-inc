@@ -4,39 +4,43 @@
     "name": "Aaliyah",
     "filename": "aaliyah_interview.json",
     "age": 26,
+    "gender": "female",
+    "race": "unknown",
+    "hometown": "East London",
     "occupation": "marketing",
     "country": "United Kingdom",
     "primaryApp": "Duolingo",
     "otherApps": [],
     "learningLanguage": "Italian",
-    "learningGoal": "heritage",
+    "learningGoal": "social",
     "sentiments": {
-      "overall": "mixed",
+      "overall": "positive",
       "streaks": "positive",
       "gamification": "positive",
       "hearts": "neutral",
       "notifications": "positive",
       "pricing": "neutral",
-      "content_quality": "mixed",
+      "content_quality": "positive",
       "progression_speed": "mixed"
     },
     "usageFrequency": "daily",
     "isPremiumUser": false,
     "personality": [
-      "casual",
       "social",
-      "thoughtful",
-      "ambitious"
+      "ambitious",
+      "curious",
+      "supportive",
+      "reflective"
     ],
     "painPoints": [
       "lack of real conversation practice",
-      "repetitive exercises",
-      "feeling stuck at a beginner level"
+      "repetitiveness of exercises",
+      "time management"
     ],
     "valueProps": [
       "immediate feedback",
-      "gamification makes learning fun",
-      "small, manageable lessons"
+      "gamification",
+      "small manageable bits of learning"
     ]
   },
   {
@@ -44,16 +48,14 @@
     "name": "Adrian",
     "filename": "adrian_interview.json",
     "age": 31,
-    "occupation": "tech",
-    "country": "U.S.",
+    "gender": "male",
+    "race": "unknown",
+    "hometown": "mid-sized city outside the U.S.",
+    "occupation": "tech professional",
+    "country": "United States",
     "primaryApp": "Duolingo",
-    "otherApps": [
-      "textbooks",
-      "online courses",
-      "grammar sites",
-      "conversation practice"
-    ],
-    "learningLanguage": "not specified",
+    "otherApps": [],
+    "learningLanguage": "unknown",
     "learningGoal": "career",
     "sentiments": {
       "overall": "mixed",
@@ -70,8 +72,9 @@
     "personality": [
       "disciplined",
       "structured",
-      "competitive",
-      "goal-oriented"
+      "goal-oriented",
+      "serious",
+      "analytical"
     ],
     "painPoints": [
       "gamified features slow down serious practice",
@@ -79,9 +82,9 @@
       "lack of tools for advanced learners"
     ],
     "valueProps": [
-      "structured path for basics",
-      "quick review of vocabulary",
-      "keeps core material circulating"
+      "structured way to review basics",
+      "keeps core material circulating",
+      "efficient for vocabulary practice"
     ]
   },
   {
@@ -89,12 +92,15 @@
     "name": "Aiden",
     "filename": "aiden_interview.json",
     "age": 26,
+    "gender": "male",
+    "race": "unknown",
+    "hometown": "mid-sized city",
     "occupation": "sales",
     "country": "United States",
     "primaryApp": "Duolingo",
     "otherApps": [],
-    "learningLanguage": "not specified",
-    "learningGoal": "hobby",
+    "learningLanguage": "unknown",
+    "learningGoal": "education",
     "sentiments": {
       "overall": "mixed",
       "streaks": "positive",
@@ -109,19 +115,20 @@
     "isPremiumUser": false,
     "personality": [
       "competitive",
-      "casual",
       "goal-oriented",
-      "social"
+      "social",
+      "energetic",
+      "strategic"
     ],
     "painPoints": [
-      "choosing lessons based on XP efficiency rather than actual learning",
-      "not separating competitive mode from serious study",
-      "feeling unprepared for real-life language use"
+      "choosing lessons based on XP efficiency rather than actual learning needs",
+      "not having a mode for serious practice separate from league mode",
+      "frustration with the lack of real-world skill alignment in competition"
     ],
     "valueProps": [
-      "leaderboards and XP jumps",
-      "competitive aspect keeps it engaging",
-      "visibility of progress"
+      "leaderboards and XP jumps are motivating",
+      "the competitive aspect makes learning fun",
+      "the app is engaging and encourages regular use"
     ]
   },
   {
@@ -129,7 +136,10 @@
     "name": "Aisha",
     "filename": "aisha_interview.json",
     "age": 30,
-    "occupation": "working mother",
+    "gender": "female",
+    "race": "Asian/South Asian",
+    "hometown": "Dhaka, Bangladesh",
+    "occupation": "homemaker",
     "country": "United Kingdom",
     "primaryApp": "Duolingo",
     "otherApps": [],
@@ -148,20 +158,20 @@
     "usageFrequency": "daily",
     "isPremiumUser": false,
     "personality": [
+      "thoughtful",
       "organized",
-      "reflective",
-      "supportive",
-      "curious",
+      "spiritual",
+      "family-oriented",
       "adaptable"
     ],
     "painPoints": [
       "lack of context in exercises",
       "inconsistency in difficulty level",
-      "audio speed being too fast"
+      "audio speed"
     ],
     "valueProps": [
       "immediate feedback and corrections",
-      "gamified learning experience",
+      "gamification of learning",
       "bite-sized lessons"
     ]
   },
@@ -170,11 +180,14 @@
     "name": "Amara",
     "filename": "amara_interview.json",
     "age": 30,
+    "gender": "female",
+    "race": "Black/African American",
+    "hometown": "Houston",
     "occupation": "IT professional",
     "country": "United States",
     "primaryApp": "Duolingo",
     "otherApps": [],
-    "learningLanguage": "Yoruba",
+    "learningLanguage": "French",
     "learningGoal": "heritage",
     "sentiments": {
       "overall": "mixed",
@@ -183,26 +196,27 @@
       "hearts": "neutral",
       "notifications": "neutral",
       "pricing": "positive",
-      "content_quality": "negative",
-      "progression_speed": "mixed"
+      "content_quality": "mixed",
+      "progression_speed": "neutral"
     },
     "usageFrequency": "daily",
     "isPremiumUser": false,
     "personality": [
-      "disciplined",
-      "reflective",
+      "thoughtful",
       "culturally aware",
-      "goal-oriented"
+      "motivated",
+      "reflective",
+      "family-oriented"
     ],
     "painPoints": [
-      "Lack of Yoruba language option",
-      "Irrelevant phrases in content",
-      "Limited resources for Yoruba learning"
+      "lack of Yoruba language option",
+      "irrelevant phrases in lessons",
+      "time management for learning"
     ],
     "valueProps": [
-      "Engaging and interactive exercises",
-      "Daily goals for motivation",
-      "Immediate feedback on progress"
+      "structure and consistency of lessons",
+      "engaging variety of exercises",
+      "immediate feedback on progress"
     ]
   },
   {
@@ -210,8 +224,11 @@
     "name": "Amelia",
     "filename": "amelia_interview.json",
     "age": 17,
+    "gender": "female",
+    "race": "unknown",
+    "hometown": "Paris and Beijing",
     "occupation": "student",
-    "country": "unknown",
+    "country": "United States",
     "primaryApp": "Duolingo",
     "otherApps": [
       "Rosetta Stone"
@@ -224,28 +241,28 @@
       "gamification": "positive",
       "hearts": "neutral",
       "notifications": "neutral",
-      "pricing": "neutral",
+      "pricing": "positive",
       "content_quality": "mixed",
       "progression_speed": "positive"
     },
     "usageFrequency": "daily",
     "isPremiumUser": false,
     "personality": [
-      "curious",
       "adaptable",
+      "curious",
       "motivated",
-      "planner",
-      "resilient"
+      "reflective",
+      "social"
     ],
     "painPoints": [
       "lack of deeper cultural context",
-      "translations can be too literal",
-      "monotony of traditional language learning methods"
+      "translations feel too literal",
+      "superficial understanding of language"
     ],
     "valueProps": [
-      "gamification makes learning fun",
-      "speaking exercises improve pronunciation",
-      "engaging interface keeps me motivated"
+      "gamification aspect",
+      "speaking exercises",
+      "colorful and inviting interface"
     ]
   },
   {
@@ -253,6 +270,9 @@
     "name": "Anya",
     "filename": "anya_interview.json",
     "age": 30,
+    "gender": "female",
+    "race": "White/Eastern European",
+    "hometown": "Kyiv, Ukraine",
     "occupation": "teacher",
     "country": "Poland",
     "primaryApp": "Duolingo",
@@ -263,9 +283,9 @@
     "learningGoal": "immigration",
     "sentiments": {
       "overall": "mixed",
-      "streaks": "neutral",
+      "streaks": "negative",
       "gamification": "negative",
-      "hearts": "negative",
+      "hearts": "neutral",
       "notifications": "neutral",
       "pricing": "positive",
       "content_quality": "mixed",
@@ -274,19 +294,20 @@
     "usageFrequency": "daily",
     "isPremiumUser": false,
     "personality": [
-      "adaptable",
       "determined",
-      "anxious",
-      "social"
+      "adaptable",
+      "reflective",
+      "community-oriented",
+      "resilient"
     ],
     "painPoints": [
-      "slow progression in language learning",
-      "language barrier affecting daily life",
-      "lack of practical conversation practice"
+      "slow progression",
+      "language barrier",
+      "lack of practical conversation"
     ],
     "valueProps": [
-      "immediate feedback on exercises",
-      "flexibility of learning anytime",
+      "immediate feedback",
+      "flexibility of learning",
       "structured lessons"
     ]
   },
@@ -295,8 +316,11 @@
     "name": "Blessing",
     "filename": "blessing_interview.json",
     "age": 30,
-    "occupation": "Nurse",
-    "country": "United Kingdom",
+    "gender": "female",
+    "race": "Black/African",
+    "hometown": "Lagos, Nigeria",
+    "occupation": "nurse",
+    "country": "Germany",
     "primaryApp": "Duolingo",
     "otherApps": [],
     "learningLanguage": "German",
@@ -308,26 +332,27 @@
       "hearts": "neutral",
       "notifications": "positive",
       "pricing": "positive",
-      "content_quality": "negative",
+      "content_quality": "mixed",
       "progression_speed": "mixed"
     },
     "usageFrequency": "daily",
     "isPremiumUser": false,
     "personality": [
-      "disciplined",
+      "determined",
+      "organized",
       "supportive",
       "adaptable",
       "reflective"
     ],
     "painPoints": [
-      "Lack of medical vocabulary",
-      "Gaps in specialized vocabulary",
-      "Difficulty balancing work and language learning"
+      "lack of medical vocabulary",
+      "gaps in specialized vocabulary",
+      "dry and outdated materials in previous learning methods"
     ],
     "valueProps": [
-      "Listening exercises improve pronunciation",
-      "Convenient for on-the-go learning",
-      "Engaging and game-like lessons"
+      "listening exercises improve pronunciation",
+      "short, game-like lessons keep engagement",
+      "convenience of using the app on the go"
     ]
   },
   {
@@ -335,6 +360,9 @@
     "name": "Brandon",
     "filename": "brandon_interview.json",
     "age": 19,
+    "gender": "male",
+    "race": "unknown",
+    "hometown": "small-town Ohio",
     "occupation": "college student",
     "country": "United States",
     "primaryApp": "Duolingo",
@@ -347,27 +375,28 @@
       "gamification": "positive",
       "hearts": "neutral",
       "notifications": "neutral",
-      "pricing": "positive",
+      "pricing": "very_positive",
       "content_quality": "mixed",
       "progression_speed": "negative"
     },
     "usageFrequency": "daily",
     "isPremiumUser": false,
     "personality": [
-      "competitive",
-      "casual",
+      "enthusiastic",
+      "determined",
+      "social",
       "adaptable",
-      "anxious"
+      "creative"
     ],
     "painPoints": [
-      "constant repetition of basic content",
-      "lack of advanced material",
-      "limited real-world application"
+      "constant repetition of basic stuff",
+      "lack of immersive, real-world application segments",
+      "grinding the same level over and over"
     ],
     "valueProps": [
-      "gamification and streak feature",
-      "immediate feedback",
-      "free access"
+      "streak feature",
+      "immediate feedback and corrections",
+      "gamification aspect"
     ]
   },
   {
@@ -375,7 +404,10 @@
     "name": "Carlos",
     "filename": "carlos_interview.json",
     "age": 40,
-    "occupation": "father and remote worker",
+    "gender": "male",
+    "race": "Hispanic/Latino",
+    "hometown": "San Juan, Puerto Rico",
+    "occupation": "father",
     "country": "United States",
     "primaryApp": "Duolingo",
     "otherApps": [],
@@ -389,16 +421,16 @@
       "notifications": "neutral",
       "pricing": "positive",
       "content_quality": "mixed",
-      "progression_speed": "mixed"
+      "progression_speed": "negative"
     },
     "usageFrequency": "daily",
     "isPremiumUser": false,
     "personality": [
-      "dedicated",
-      "thoughtful",
       "family-oriented",
-      "culturally aware",
-      "pragmatic"
+      "caring",
+      "thoughtful",
+      "adaptable",
+      "community-focused"
     ],
     "painPoints": [
       "repetition in lessons",
@@ -407,7 +439,7 @@
     ],
     "valueProps": [
       "immediate feedback",
-      "engaging and fun for kids",
+      "engaging content",
       "structured practice"
     ]
   },
@@ -415,8 +447,11 @@
     "id": 10,
     "name": "Chen Wei",
     "filename": "chen wei_interview.json",
-    "age": 24,
-    "occupation": "Student",
+    "age": 20,
+    "gender": "male",
+    "race": "Asian",
+    "hometown": "Beijing, China",
+    "occupation": "student",
     "country": "United States",
     "primaryApp": "Duolingo",
     "otherApps": [
@@ -426,11 +461,11 @@
     "learningGoal": "career",
     "sentiments": {
       "overall": "mixed",
-      "streaks": "positive",
+      "streaks": "neutral",
       "gamification": "positive",
       "hearts": "neutral",
       "notifications": "neutral",
-      "pricing": "positive",
+      "pricing": "neutral",
       "content_quality": "negative",
       "progression_speed": "negative"
     },
@@ -438,15 +473,15 @@
     "isPremiumUser": false,
     "personality": [
       "organized",
-      "independent",
-      "motivated",
-      "passionate",
-      "reflective"
+      "goal-oriented",
+      "reflective",
+      "curious",
+      "passionate"
     ],
     "painPoints": [
       "lack of depth in content",
       "slow and repetitive pace",
-      "insufficient grammar explanations"
+      "limited grammar explanations"
     ],
     "valueProps": [
       "immediate feedback on pronunciation",
@@ -459,42 +494,45 @@
     "name": "Dante",
     "filename": "dante_interview.json",
     "age": 35,
-    "occupation": "Restaurant Owner",
+    "gender": "male",
+    "race": "White/Italian",
+    "hometown": "Chicago, specifically around the Near West Side",
+    "occupation": "restaurant owner",
     "country": "United States",
     "primaryApp": "Duolingo",
     "otherApps": [
       "Pimsleur"
     ],
     "learningLanguage": "Italian",
-    "learningGoal": "heritage",
+    "learningGoal": "career",
     "sentiments": {
       "overall": "mixed",
       "streaks": "positive",
       "gamification": "positive",
       "hearts": "neutral",
       "notifications": "positive",
-      "pricing": "positive",
-      "content_quality": "negative",
+      "pricing": "very_positive",
+      "content_quality": "mixed",
       "progression_speed": "neutral"
     },
     "usageFrequency": "daily",
     "isPremiumUser": false,
     "personality": [
-      "competitive",
       "family-oriented",
+      "hardworking",
       "adaptable",
       "creative",
-      "reflective"
+      "community-focused"
     ],
     "painPoints": [
-      "formal language focus",
-      "lack of practical vocabulary",
-      "grammar-heavy content"
+      "formal language not practical",
+      "focus on grammar over conversation",
+      "lack of dialect and slang"
     ],
     "valueProps": [
       "immediate feedback",
-      "repetition for basics",
-      "daily reminders for streaks"
+      "gamified lessons",
+      "repetition helps with basics"
     ]
   },
   {
@@ -502,7 +540,10 @@
     "name": "Darnell",
     "filename": "darnell_interview.json",
     "age": 30,
-    "occupation": "entrepreneur",
+    "gender": "male",
+    "race": "Black/African American",
+    "hometown": "Atlanta, Georgia",
+    "occupation": "business owner",
     "country": "United States",
     "primaryApp": "Duolingo",
     "otherApps": [
@@ -524,19 +565,20 @@
     "isPremiumUser": false,
     "personality": [
       "disciplined",
-      "competitive",
-      "flexible",
-      "determined"
+      "goal-oriented",
+      "adaptable",
+      "reflective",
+      "supportive"
     ],
     "painPoints": [
       "repetitive nature of exercises",
       "lack of context in initial lessons",
-      "glitches with voice recognition"
+      "voice recognition issues"
     ],
     "valueProps": [
       "instant feedback and corrections",
-      "gamified approach keeps me engaged",
-      "ability to track progress with streaks"
+      "streaks for motivation",
+      "engaging gamified approach"
     ]
   },
   {
@@ -544,7 +586,10 @@
     "name": "DeShawn",
     "filename": "deshawn_interview.json",
     "age": 35,
-    "occupation": "high school teacher",
+    "gender": "male",
+    "race": "Black/African American",
+    "hometown": "Detroit",
+    "occupation": "teacher",
     "country": "United States",
     "primaryApp": "Duolingo",
     "otherApps": [],
@@ -564,15 +609,15 @@
     "isPremiumUser": false,
     "personality": [
       "passionate",
+      "dedicated",
+      "thoughtful",
       "organized",
-      "determined",
-      "reflective",
       "supportive"
     ],
     "painPoints": [
       "lack of real conversation practice",
       "lack of context in some exercises",
-      "frustration with retention of complex sentences"
+      "frustration with gaps in understanding"
     ],
     "valueProps": [
       "user-friendly interface",
@@ -585,20 +630,23 @@
     "name": "Destiny",
     "filename": "destiny_interview.json",
     "age": 30,
+    "gender": "female",
+    "race": "unknown",
+    "hometown": "Atlanta, Georgia",
     "occupation": "single mom",
     "country": "United States",
     "primaryApp": "Duolingo",
     "otherApps": [],
     "learningLanguage": "ASL",
-    "learningGoal": "heritage",
+    "learningGoal": "social",
     "sentiments": {
       "overall": "positive",
-      "streaks": "neutral",
+      "streaks": "positive",
       "gamification": "positive",
       "hearts": "neutral",
       "notifications": "neutral",
       "pricing": "neutral",
-      "content_quality": "mixed",
+      "content_quality": "positive",
       "progression_speed": "positive"
     },
     "usageFrequency": "daily",
@@ -606,18 +654,18 @@
     "personality": [
       "creative",
       "determined",
-      "supportive",
+      "nurturing",
       "reflective",
-      "adaptable"
+      "community-oriented"
     ],
     "painPoints": [
-      "app freezes or doesn't sync progress",
-      "lessons lack cultural context",
+      "app freezes or doesn’t sync progress",
+      "lessons lacking cultural context",
       "inconsistent pacing of old learning methods"
     ],
     "valueProps": [
       "visual and interactive elements",
-      "engaging gamification",
+      "engaging game-like experience",
       "ability to practice anytime, anywhere"
     ]
   },
@@ -625,13 +673,16 @@
     "id": 15,
     "name": "Dmitri",
     "filename": "dmitri_interview.json",
-    "age": 40,
-    "occupation": "Factory worker",
+    "age": 45,
+    "gender": "male",
+    "race": "White/Eastern European",
+    "hometown": "Yaroslavl",
+    "occupation": "factory worker",
     "country": "United States",
     "primaryApp": "Duolingo",
     "otherApps": [],
     "learningLanguage": "English",
-    "learningGoal": "immigration",
+    "learningGoal": "social",
     "sentiments": {
       "overall": "positive",
       "streaks": "positive",
@@ -645,20 +696,21 @@
     "usageFrequency": "daily",
     "isPremiumUser": false,
     "personality": [
-      "disciplined",
-      "family-oriented",
       "determined",
-      "thoughtful"
+      "family-oriented",
+      "hardworking",
+      "thoughtful",
+      "adaptable"
     ],
     "painPoints": [
-      "Repetitive exercises",
-      "Lack of detailed explanations",
-      "Feeling stuck at times"
+      "repetitive exercises",
+      "lack of detailed explanations",
+      "language barrier"
     ],
     "valueProps": [
-      "Free access to learning",
-      "Interactive exercises",
-      "Ability to learn at own pace"
+      "free access",
+      "interactive exercises",
+      "engaging content"
     ]
   },
   {
@@ -666,7 +718,10 @@
     "name": "Elena",
     "filename": "elena_interview.json",
     "age": 30,
-    "occupation": "Project Manager",
+    "gender": "female",
+    "race": "White/European",
+    "hometown": "Thessaloniki",
+    "occupation": "project manager",
     "country": "Australia",
     "primaryApp": "Duolingo",
     "otherApps": [
@@ -687,15 +742,16 @@
     "usageFrequency": "daily",
     "isPremiumUser": false,
     "personality": [
-      "disciplined",
-      "thoughtful",
+      "organized",
+      "reflective",
+      "curious",
       "social",
-      "curious"
+      "adaptable"
     ],
     "painPoints": [
       "lack of real conversation practice",
       "repetitive exercises",
-      "need for more contextual dialogues"
+      "not enough contextual dialogues"
     ],
     "valueProps": [
       "accessibility",
@@ -708,7 +764,10 @@
     "name": "Emmanuel",
     "filename": "emmanuel_interview.json",
     "age": 30,
-    "occupation": "Tech professional",
+    "gender": "male",
+    "race": "Black/African American",
+    "hometown": "Port-au-Prince, Haiti",
+    "occupation": "unknown",
     "country": "United States",
     "primaryApp": "Duolingo",
     "otherApps": [
@@ -718,32 +777,32 @@
     "learningGoal": "career",
     "sentiments": {
       "overall": "mixed",
-      "streaks": "positive",
+      "streaks": "neutral",
       "gamification": "positive",
       "hearts": "neutral",
       "notifications": "neutral",
-      "pricing": "very_positive",
+      "pricing": "positive",
       "content_quality": "mixed",
       "progression_speed": "negative"
     },
-    "usageFrequency": "daily",
+    "usageFrequency": "several_times_week",
     "isPremiumUser": false,
     "personality": [
-      "planner",
+      "reflective",
+      "determined",
+      "community-oriented",
       "curious",
-      "resilient",
-      "social",
-      "supportive"
+      "adaptable"
     ],
     "painPoints": [
-      "Voice recognition issues",
-      "Repetitive exercises",
-      "Pacing feels slow"
+      "repetitive exercises",
+      "voice recognition issues",
+      "pacing of content"
     ],
     "valueProps": [
-      "Immediate feedback",
-      "Gamified learning experience",
-      "Visual vocabulary linking"
+      "immediate feedback",
+      "gamified learning experience",
+      "visual vocabulary linking"
     ]
   },
   {
@@ -751,53 +810,59 @@
     "name": "Ethan",
     "filename": "ethan_interview.json",
     "age": 24,
-    "occupation": "creative",
-    "country": "USA",
+    "gender": "male",
+    "race": "unknown",
+    "hometown": "unknown",
+    "occupation": "unknown",
+    "country": "unknown",
     "primaryApp": "Duolingo",
     "otherApps": [],
-    "learningLanguage": "not specified",
+    "learningLanguage": "unknown",
     "learningGoal": "hobby",
     "sentiments": {
       "overall": "mixed",
       "streaks": "negative",
-      "gamification": "neutral",
-      "hearts": "negative",
+      "gamification": "mixed",
+      "hearts": "neutral",
       "notifications": "negative",
-      "pricing": "neutral",
+      "pricing": "unknown",
       "content_quality": "positive",
-      "progression_speed": "positive"
+      "progression_speed": "mixed"
     },
-    "usageFrequency": "several_times_week",
+    "usageFrequency": "sporadic",
     "isPremiumUser": false,
     "personality": [
-      "curious",
       "creative",
-      "go-with-the-flow",
-      "multi-passionate",
-      "restless"
+      "curious",
+      "reflective",
+      "non-judgmental",
+      "supportive"
     ],
     "painPoints": [
       "nagging notifications",
-      "pressure from streaks",
+      "pressure to maintain streaks",
       "feeling behind"
     ],
     "valueProps": [
       "captures bursts of motivation",
-      "short learning sprints",
-      "flexibility in usage"
+      "easy to use",
+      "short learning sprints"
     ]
   },
   {
     "id": 19,
     "name": "Fatima",
     "filename": "fatima_interview.json",
-    "age": 28,
-    "occupation": "Student/Volunteer",
+    "age": 30,
+    "gender": "female",
+    "race": "Black/African",
+    "hometown": "Somalia",
+    "occupation": "unknown",
     "country": "United States",
     "primaryApp": "Duolingo",
     "otherApps": [],
     "learningLanguage": "English",
-    "learningGoal": "immigration",
+    "learningGoal": "education",
     "sentiments": {
       "overall": "positive",
       "streaks": "positive",
@@ -806,12 +871,12 @@
       "notifications": "neutral",
       "pricing": "positive",
       "content_quality": "mixed",
-      "progression_speed": "neutral"
+      "progression_speed": "mixed"
     },
     "usageFrequency": "daily",
     "isPremiumUser": false,
     "personality": [
-      "disciplined",
+      "determined",
       "supportive",
       "reflective",
       "community-oriented",
@@ -833,12 +898,15 @@
     "name": "Finn",
     "filename": "finn_interview.json",
     "age": 30,
-    "occupation": "Tech professional",
+    "gender": "male",
+    "race": "White/European",
+    "hometown": "small town in Ireland",
+    "occupation": "tech professional",
     "country": "Germany",
     "primaryApp": "Duolingo",
     "otherApps": [],
     "learningLanguage": "German",
-    "learningGoal": "immigration",
+    "learningGoal": "social",
     "sentiments": {
       "overall": "mixed",
       "streaks": "positive",
@@ -852,40 +920,43 @@
     "usageFrequency": "daily",
     "isPremiumUser": false,
     "personality": [
-      "competitive",
       "adaptable",
-      "resourceful",
-      "patient",
-      "humorous"
+      "humorous",
+      "reflective",
+      "social",
+      "persistent"
     ],
     "painPoints": [
-      "Plateau in learning progress",
-      "Frustration with grammar and app's strictness",
-      "Lack of real-world conversation practice"
+      "plateau in learning",
+      "lack of real-life conversation practice",
+      "grammar frustrations"
     ],
     "valueProps": [
-      "Gamified learning experience",
-      "Repetition with variation",
-      "Encouragement from the app's design"
+      "gamified learning experience",
+      "repetition with variation",
+      "encouraging mascot"
     ]
   },
   {
     "id": 21,
     "name": "Guadalupe",
     "filename": "guadalupe_interview.json",
-    "age": 50,
+    "age": 65,
+    "gender": "female",
+    "race": "Hispanic/Latino",
+    "hometown": "village near Guadalajara, Mexico",
     "occupation": "cleaner",
     "country": "United States",
     "primaryApp": "Duolingo",
     "otherApps": [],
     "learningLanguage": "English",
-    "learningGoal": "immigration",
+    "learningGoal": "social",
     "sentiments": {
       "overall": "positive",
       "streaks": "positive",
       "gamification": "positive",
       "hearts": "neutral",
-      "notifications": "positive",
+      "notifications": "neutral",
       "pricing": "positive",
       "content_quality": "mixed",
       "progression_speed": "positive"
@@ -895,18 +966,19 @@
     "personality": [
       "adaptable",
       "community-oriented",
+      "determined",
       "supportive",
       "patient"
     ],
     "painPoints": [
-      "frustration with understanding mistakes",
-      "lack of context in lessons",
-      "difficulty with pronunciation"
+      "language barrier",
+      "frustration with mistakes",
+      "lack of real-life context in learning"
     ],
     "valueProps": [
-      "ability to practice speaking",
-      "flexibility of learning anywhere",
-      "engaging gamification elements"
+      "flexibility of learning on the go",
+      "practice speaking and pronunciation",
+      "support from family"
     ]
   },
   {
@@ -914,7 +986,10 @@
     "name": "Hans",
     "filename": "hans_interview.json",
     "age": 45,
-    "occupation": "Engineer",
+    "gender": "male",
+    "race": "White/Eastern European",
+    "hometown": "small town near Munich, Germany",
+    "occupation": "engineer",
     "country": "United States",
     "primaryApp": "Duolingo",
     "otherApps": [],
@@ -930,24 +1005,24 @@
       "content_quality": "negative",
       "progression_speed": "negative"
     },
-    "usageFrequency": "daily",
+    "usageFrequency": "several_times_week",
     "isPremiumUser": false,
     "personality": [
       "analytical",
-      "structured",
-      "determined",
       "family-oriented",
-      "reflective"
+      "curious",
+      "structured",
+      "goal-driven"
     ],
     "painPoints": [
-      "Lack of advanced content",
-      "Repetitive exercises",
-      "Difficulty in mastering idioms and complex structures"
+      "lack of depth in material",
+      "repetitive exercises",
+      "not challenging enough for advanced learners"
     ],
     "valueProps": [
-      "Convenience of practice",
-      "Immediate feedback on exercises",
-      "Ability to learn in short bursts"
+      "convenience of practice",
+      "immediate feedback",
+      "ability to practice in short bursts"
     ]
   },
   {
@@ -955,7 +1030,10 @@
     "name": "Ingrid",
     "filename": "ingrid_interview.json",
     "age": 30,
-    "occupation": "Professional (exact role not specified)",
+    "gender": "female",
+    "race": "White/European",
+    "hometown": "small town near Stockholm, Sweden",
+    "occupation": "unknown",
     "country": "United States",
     "primaryApp": "Duolingo",
     "otherApps": [],
@@ -968,34 +1046,37 @@
       "hearts": "negative",
       "notifications": "positive",
       "pricing": "positive",
-      "content_quality": "mixed",
+      "content_quality": "positive",
       "progression_speed": "positive"
     },
     "usageFrequency": "daily",
     "isPremiumUser": false,
     "personality": [
-      "competitive",
       "curious",
-      "planner",
-      "cautious",
+      "competitive",
+      "organized",
+      "reflective",
       "creative"
     ],
     "painPoints": [
-      "Lack of speaking and conversation practice",
-      "Frustration with losing hearts for minor mistakes",
-      "Rigid translations not reflecting real-life language use"
+      "lack of speaking and conversation practice",
+      "losing hearts for simple mistakes",
+      "rigid translations"
     ],
     "valueProps": [
-      "Gamification and leagues for motivation",
-      "Engaging and fun learning experience",
-      "Visual and auditory aids in lessons"
+      "gamification aspects",
+      "leagues and streaks",
+      "visual and auditory learning aids"
     ]
   },
   {
     "id": 24,
     "name": "Jamal",
     "filename": "jamal_interview.json",
-    "age": 22,
+    "age": 20,
+    "gender": "male",
+    "race": "unknown",
+    "hometown": "Chefchaouen, Morocco",
     "occupation": "student",
     "country": "France",
     "primaryApp": "Duolingo",
@@ -1015,21 +1096,21 @@
     "usageFrequency": "daily",
     "isPremiumUser": false,
     "personality": [
-      "determined",
-      "social",
+      "curious",
       "adaptable",
+      "social",
       "reflective",
-      "curious"
+      "motivated"
     ],
     "painPoints": [
-      "repetitive exercises",
+      "repetition in exercises",
       "lack of speaking practice",
       "limited variety in content"
     ],
     "valueProps": [
       "flexibility of learning",
-      "immediate feedback",
-      "variety of exercises"
+      "interactive vocabulary exercises",
+      "immediate feedback"
     ]
   },
   {
@@ -1037,7 +1118,10 @@
     "name": "Jasmine",
     "filename": "jasmine_interview.json",
     "age": 25,
-    "occupation": "Tech professional",
+    "gender": "female",
+    "race": "Asian",
+    "hometown": "San Francisco",
+    "occupation": "tech professional",
     "country": "United States",
     "primaryApp": "Duolingo",
     "otherApps": [
@@ -1052,25 +1136,27 @@
       "hearts": "neutral",
       "notifications": "neutral",
       "pricing": "neutral",
-      "content_quality": "negative",
+      "content_quality": "mixed",
       "progression_speed": "positive"
     },
     "usageFrequency": "daily",
     "isPremiumUser": false,
     "personality": [
-      "go-with-the-flow",
       "reflective",
-      "culturally aware"
+      "culturally aware",
+      "motivated",
+      "social",
+      "adaptive"
     ],
     "painPoints": [
-      "Lack of depth in cultural context",
-      "Monotony of traditional learning methods",
-      "Feeling disconnected from heritage"
+      "lack of depth in cultural context",
+      "monotony of old methods",
+      "feeling disconnected from heritage"
     ],
     "valueProps": [
-      "Gamified learning experience",
-      "Sense of progress with streaks",
-      "Flexibility to practice anytime"
+      "sense of progress",
+      "gamified approach",
+      "flexibility in learning"
     ]
   },
   {
@@ -1078,11 +1164,14 @@
     "name": "Jason",
     "filename": "jason_interview.json",
     "age": 36,
+    "gender": "male",
+    "race": "unknown",
+    "hometown": "small city",
     "occupation": "full-time worker",
     "country": "United States",
     "primaryApp": "Duolingo",
     "otherApps": [],
-    "learningLanguage": "not specified",
+    "learningLanguage": "unknown",
     "learningGoal": "hobby",
     "sentiments": {
       "overall": "mixed",
@@ -1094,24 +1183,24 @@
       "content_quality": "positive",
       "progression_speed": "neutral"
     },
-    "usageFrequency": "daily",
+    "usageFrequency": "sporadic",
     "isPremiumUser": false,
     "personality": [
-      "busy",
       "caring",
-      "overextended",
+      "stressed",
       "reflective",
+      "determined",
       "practical"
     ],
     "painPoints": [
-      "hitting the hearts limit when tired",
+      "hitting the hearts limit",
       "feeling punished for trying",
       "lack of time and mental energy"
     ],
     "valueProps": [
       "quick and light lessons",
-      "small moments of personal growth",
-      "structured practice in tiny pockets of time"
+      "structured moments for personal growth",
+      "ability to fit learning into small pockets of time"
     ]
   },
   {
@@ -1119,12 +1208,15 @@
     "name": "Jordan",
     "filename": "jordan_interview.json",
     "age": 19,
+    "gender": "unknown",
+    "race": "unknown",
+    "hometown": "big city in the U.S.",
     "occupation": "college student",
     "country": "United States",
     "primaryApp": "Duolingo",
     "otherApps": [],
     "learningLanguage": "Spanish",
-    "learningGoal": "career",
+    "learningGoal": "travel",
     "sentiments": {
       "overall": "mixed",
       "streaks": "negative",
@@ -1133,34 +1225,38 @@
       "notifications": "neutral",
       "pricing": "neutral",
       "content_quality": "positive",
-      "progression_speed": "negative"
+      "progression_speed": "mixed"
     },
     "usageFrequency": "sporadic",
     "isPremiumUser": false,
     "personality": [
-      "competitive",
-      "disciplined",
+      "outcome-driven",
       "goal-oriented",
-      "anxious"
+      "competitive",
+      "reflective",
+      "organized"
     ],
     "painPoints": [
-      "feeling overwhelmed by broken streaks and cracked skills",
-      "difficulty maintaining consistent practice",
-      "the pressure to achieve visible progress"
+      "feeling overwhelmed by gaps in consistency",
+      "struggling to re-engage after falling behind",
+      "frustration with visual tracking of progress"
     ],
     "valueProps": [
-      "visual satisfaction of progress bars and skill trees",
-      "structured review of older skills",
-      "the gamified approach to language learning"
+      "structured review of skills",
+      "visual satisfaction of progress",
+      "gamified experience of language learning"
     ]
   },
   {
     "id": 28,
     "name": "Katya",
     "filename": "katya_interview.json",
-    "age": 25,
-    "occupation": "Ballet dancer",
-    "country": "USA",
+    "age": 30,
+    "gender": "female",
+    "race": "White/Eastern European",
+    "hometown": "Saint Petersburg",
+    "occupation": "dancer",
+    "country": "United States",
     "primaryApp": "Duolingo",
     "otherApps": [],
     "learningLanguage": "English",
@@ -1170,7 +1266,7 @@
       "streaks": "positive",
       "gamification": "positive",
       "hearts": "neutral",
-      "notifications": "positive",
+      "notifications": "neutral",
       "pricing": "neutral",
       "content_quality": "mixed",
       "progression_speed": "positive"
@@ -1181,18 +1277,18 @@
       "creative",
       "determined",
       "adaptable",
-      "social",
-      "reflective"
+      "reflective",
+      "supportive"
     ],
     "painPoints": [
-      "Repetitive exercises that feel disengaging",
-      "App not recognizing accent",
-      "Sentences feeling irrelevant to daily life"
+      "repetitive exercises",
+      "accent recognition issues",
+      "irrelevant sentences"
     ],
     "valueProps": [
-      "Daily engagement and progress tracking",
-      "Instant feedback on pronunciation",
-      "Repetition that aids learning"
+      "daily engagement",
+      "progress tracking",
+      "instant feedback"
     ]
   },
   {
@@ -1200,7 +1296,10 @@
     "name": "Kenji",
     "filename": "kenji_interview.json",
     "age": 20,
-    "occupation": "college student",
+    "gender": "male",
+    "race": "Asian",
+    "hometown": "California, in a suburb outside of LA",
+    "occupation": "student",
     "country": "United States",
     "primaryApp": "Duolingo",
     "otherApps": [],
@@ -1219,20 +1318,21 @@
     "usageFrequency": "daily",
     "isPremiumUser": false,
     "personality": [
-      "go-with-the-flow",
       "curious",
-      "social",
-      "creative"
+      "sociable",
+      "flexible",
+      "motivated",
+      "reflective"
     ],
     "painPoints": [
+      "hitting a plateau in learning",
       "repetitive exercises",
-      "hitting a plateau",
       "lack of speaking exercises"
     ],
     "valueProps": [
       "immediate feedback",
       "interactive learning",
-      "fun and engaging experience"
+      "accessibility of the app"
     ]
   },
   {
@@ -1240,6 +1340,9 @@
     "name": "Kofi",
     "filename": "kofi_interview.json",
     "age": 30,
+    "gender": "male",
+    "race": "Black/African",
+    "hometown": "Accra, Ghana",
     "occupation": "Uber driver",
     "country": "United States",
     "primaryApp": "Duolingo",
@@ -1247,7 +1350,7 @@
       "language exchange apps"
     ],
     "learningLanguage": "Spanish",
-    "learningGoal": "career",
+    "learningGoal": "social",
     "sentiments": {
       "overall": "mixed",
       "streaks": "positive",
@@ -1261,16 +1364,16 @@
     "usageFrequency": "daily",
     "isPremiumUser": false,
     "personality": [
+      "resilient",
       "adaptable",
       "family-oriented",
-      "resilient",
       "curious",
-      "go-with-the-flow"
+      "optimistic"
     ],
     "painPoints": [
       "lack of deep conversational practice",
       "repetitiveness",
-      "random sentences"
+      "need for more real-life context"
     ],
     "valueProps": [
       "audio and speaking exercises",
@@ -1283,6 +1386,9 @@
     "name": "Kwame",
     "filename": "kwame_interview.json",
     "age": 30,
+    "gender": "male",
+    "race": "Black/African",
+    "hometown": "Kumasi, Ghana",
     "occupation": "IT professional",
     "country": "United Kingdom",
     "primaryApp": "Duolingo",
@@ -1290,10 +1396,10 @@
       "Memrise"
     ],
     "learningLanguage": "Dutch",
-    "learningGoal": "immigration",
+    "learningGoal": "career",
     "sentiments": {
       "overall": "mixed",
-      "streaks": "positive",
+      "streaks": "neutral",
       "gamification": "positive",
       "hearts": "negative",
       "notifications": "neutral",
@@ -1304,28 +1410,31 @@
     "usageFrequency": "daily",
     "isPremiumUser": false,
     "personality": [
-      "disciplined",
       "ambitious",
       "adaptable",
       "reflective",
-      "social"
+      "social",
+      "cautious"
     ],
     "painPoints": [
-      "Frustration with small typos marking answers wrong",
-      "Lessons feeling disconnected from real-world usage",
-      "Overwhelming options in previous app (Memrise)"
+      "overwhelming options in Memrise",
+      "small typos causing frustration",
+      "struggle to connect lessons to real-world situations"
     ],
     "valueProps": [
-      "Vocabulary drills help reinforce memory",
-      "Gamified style makes learning engaging",
-      "Easy access on mobile"
+      "vocabulary drills",
+      "gamified style",
+      "easy access on phone"
     ]
   },
   {
     "id": 32,
     "name": "Layla",
     "filename": "layla_interview.json",
-    "age": 22,
+    "age": 20,
+    "gender": "female",
+    "race": "unknown",
+    "hometown": "suburb in Michigan",
     "occupation": "student",
     "country": "United States",
     "primaryApp": "Duolingo",
@@ -1333,33 +1442,33 @@
     "learningLanguage": "Arabic",
     "learningGoal": "heritage",
     "sentiments": {
-      "overall": "mixed",
+      "overall": "positive",
       "streaks": "positive",
       "gamification": "positive",
       "hearts": "neutral",
       "notifications": "positive",
       "pricing": "positive",
-      "content_quality": "negative",
-      "progression_speed": "neutral"
+      "content_quality": "mixed",
+      "progression_speed": "mixed"
     },
     "usageFrequency": "daily",
     "isPremiumUser": false,
     "personality": [
       "thoughtful",
+      "culturally aware",
       "reflective",
       "determined",
-      "culturally aware",
-      "anxious"
+      "adaptable"
     ],
     "painPoints": [
       "lack of real conversation practice",
-      "repetitiveness",
-      "lack of cultural context"
+      "repetitiveness of exercises",
+      "feeling overwhelmed with language learning"
     ],
     "valueProps": [
-      "interactive and game-like experience",
+      "game-like and interactive learning",
       "daily goal reminders",
-      "ability to review past mistakes"
+      "ability to fix past mistakes"
     ]
   },
   {
@@ -1367,11 +1476,14 @@
     "name": "Lena",
     "filename": "lena_interview.json",
     "age": 27,
-    "occupation": "office worker",
-    "country": "USA",
+    "gender": "female",
+    "race": "unknown",
+    "hometown": "suburbs",
+    "occupation": "unknown",
+    "country": "United States",
     "primaryApp": "Duolingo",
     "otherApps": [],
-    "learningLanguage": "not specified",
+    "learningLanguage": "unknown",
     "learningGoal": "hobby",
     "sentiments": {
       "overall": "mixed",
@@ -1381,26 +1493,26 @@
       "notifications": "neutral",
       "pricing": "neutral",
       "content_quality": "neutral",
-      "progression_speed": "negative"
+      "progression_speed": "neutral"
     },
     "usageFrequency": "daily",
     "isPremiumUser": false,
     "personality": [
-      "competitive",
       "social",
+      "competitive",
       "playful",
-      "go-with-the-flow",
-      "casual"
+      "outgoing",
+      "supportive"
     ],
     "painPoints": [
-      "treating Duolingo like a game instead of a serious learning tool",
-      "difficulty in finding time for focused study",
-      "lack of distinction between learning and bragging modes"
+      "frustration with not learning effectively",
+      "time constraints",
+      "difficulty focusing on serious learning"
     ],
     "valueProps": [
-      "social energy and competition with friends",
-      "ability to turn learning into a fun activity",
-      "shared experiences and challenges with peers"
+      "social competition",
+      "fun engagement with friends",
+      "ability to track progress"
     ]
   },
   {
@@ -1408,11 +1520,14 @@
     "name": "Leo",
     "filename": "leo_interview.json",
     "age": 28,
+    "gender": "male",
+    "race": "unknown",
+    "hometown": "suburban area",
     "occupation": "office worker",
-    "country": "not specified",
+    "country": "United States",
     "primaryApp": "Duolingo",
     "otherApps": [],
-    "learningLanguage": "not specified",
+    "learningLanguage": "food and restaurant phrases",
     "learningGoal": "travel",
     "sentiments": {
       "overall": "mixed",
@@ -1420,7 +1535,7 @@
       "gamification": "negative",
       "hearts": "neutral",
       "notifications": "negative",
-      "pricing": "neutral",
+      "pricing": "unknown",
       "content_quality": "positive",
       "progression_speed": "neutral"
     },
@@ -1430,7 +1545,8 @@
       "curious",
       "easygoing",
       "relaxed",
-      "low-pressure"
+      "supportive",
+      "adventurous"
     ],
     "painPoints": [
       "pressure from streaks and notifications",
@@ -1439,24 +1555,27 @@
     ],
     "valueProps": [
       "light and low-pressure learning",
-      "specific phrases for travel",
-      "fun and engaging content"
+      "specific phrases for practical use",
+      "flexibility in learning"
     ]
   },
   {
     "id": 35,
     "name": "Lucia",
     "filename": "lucia_interview.json",
-    "age": 62,
-    "occupation": "Homemaker",
+    "age": 65,
+    "gender": "female",
+    "race": "White/Eastern European",
+    "hometown": "small village in southern Italy",
+    "occupation": "retired",
     "country": "United States",
     "primaryApp": "Duolingo",
     "otherApps": [],
     "learningLanguage": "English",
-    "learningGoal": "heritage",
+    "learningGoal": "social",
     "sentiments": {
       "overall": "positive",
-      "streaks": "neutral",
+      "streaks": "mixed",
       "gamification": "positive",
       "hearts": "neutral",
       "notifications": "neutral",
@@ -1468,18 +1587,18 @@
     "isPremiumUser": false,
     "personality": [
       "family-oriented",
-      "determined",
+      "optimistic",
       "supportive",
-      "nostalgic",
+      "reflective",
       "adaptable"
     ],
     "painPoints": [
       "ads interrupting focus",
-      "lessons not matching real-life language",
+      "lessons not matching real-life language use",
       "hitting a plateau in progress"
     ],
     "valueProps": [
-      "fun and engaging learning",
+      "fun and engaging learning experience",
       "repetition and feedback",
       "ability to connect with family"
     ]
@@ -1489,7 +1608,10 @@
     "name": "Marcus",
     "filename": "marcus_interview.json",
     "age": 30,
-    "occupation": "Software Engineer",
+    "gender": "male",
+    "race": "Black/African American",
+    "hometown": "Atlanta, Georgia",
+    "occupation": "software engineer",
     "country": "United States",
     "primaryApp": "Duolingo",
     "otherApps": [
@@ -1507,24 +1629,24 @@
       "content_quality": "mixed",
       "progression_speed": "neutral"
     },
-    "usageFrequency": "daily",
+    "usageFrequency": "several_times_week",
     "isPremiumUser": false,
     "personality": [
+      "ambitious",
       "logical",
-      "planner",
-      "eager to learn",
-      "flexible",
-      "supportive"
+      "reflective",
+      "social",
+      "curious"
     ],
     "painPoints": [
-      "Lack of engagement in learning",
-      "Frustration with gamification distractions",
-      "Insufficient explanations for mistakes"
+      "lack of engagement",
+      "gamification distractions",
+      "inadequate explanations"
     ],
     "valueProps": [
-      "Repetition helps retention",
-      "Immediate feedback on mistakes",
-      "Convenience of mobile learning"
+      "repetition helps retention",
+      "immediate feedback",
+      "mobile accessibility"
     ]
   },
   {
@@ -1532,12 +1654,15 @@
     "name": "Maria",
     "filename": "maria_interview.json",
     "age": 35,
-    "occupation": "Stay-at-home mom",
+    "gender": "female",
+    "race": "unknown",
+    "hometown": "Campinas, Brazil",
+    "occupation": "homemaker",
     "country": "United States",
     "primaryApp": "Duolingo",
     "otherApps": [],
     "learningLanguage": "English",
-    "learningGoal": "immigration",
+    "learningGoal": "social",
     "sentiments": {
       "overall": "positive",
       "streaks": "positive",
@@ -1551,21 +1676,21 @@
     "usageFrequency": "daily",
     "isPremiumUser": false,
     "personality": [
-      "cautious",
-      "flexible",
       "family-oriented",
       "curious",
-      "supportive"
+      "supportive",
+      "adaptable",
+      "cautious"
     ],
     "painPoints": [
-      "Repetitive exercises",
-      "Speech recognition issues",
-      "Desire for more complex challenges"
+      "repetitive exercises",
+      "speech recognition issues",
+      "lack of challenge in exercises"
     ],
     "valueProps": [
-      "Bite-sized lessons fit into busy schedule",
-      "Instant feedback for corrections",
-      "Gamified approach makes learning fun"
+      "bite-sized lessons",
+      "instant feedback",
+      "flexibility in learning"
     ]
   },
   {
@@ -1573,30 +1698,33 @@
     "name": "Maya",
     "filename": "maya_interview.json",
     "age": 24,
-    "occupation": "Software Engineer",
+    "gender": "female",
+    "race": "unknown",
+    "hometown": "suburb outside a mid-sized U.S. city",
+    "occupation": "software engineer",
     "country": "United States",
     "primaryApp": "Duolingo",
     "otherApps": [],
-    "learningLanguage": "Spanish",
-    "learningGoal": "hobby",
+    "learningLanguage": "unknown",
+    "learningGoal": "education",
     "sentiments": {
       "overall": "mixed",
-      "streaks": "very_negative",
-      "gamification": "negative",
+      "streaks": "negative",
+      "gamification": "neutral",
       "hearts": "neutral",
       "notifications": "negative",
-      "pricing": "neutral",
-      "content_quality": "positive",
-      "progression_speed": "mixed"
+      "pricing": "unknown",
+      "content_quality": "mixed",
+      "progression_speed": "neutral"
     },
     "usageFrequency": "daily",
     "isPremiumUser": false,
     "personality": [
       "meticulous",
       "self-critical",
+      "reliable",
       "anxious",
-      "planner",
-      "high-performing"
+      "goal-oriented"
     ],
     "painPoints": [
       "streak anxiety",
@@ -1604,17 +1732,20 @@
       "feeling trapped by the app"
     ],
     "valueProps": [
-      "structure and routine",
-      "ability to track progress",
-      "sense of accomplishment from streaks"
+      "structure",
+      "streak tracking",
+      "immediate relief from maintaining streaks"
     ]
   },
   {
     "id": 39,
     "name": "Mei Lin",
     "filename": "mei lin_interview.json",
-    "age": 24,
-    "occupation": "Graduate student / Professional",
+    "age": 30,
+    "gender": "female",
+    "race": "Asian",
+    "hometown": "Taipei, Taiwan",
+    "occupation": "unknown",
     "country": "Canada",
     "primaryApp": "Duolingo",
     "otherApps": [],
@@ -1634,19 +1765,20 @@
     "isPremiumUser": true,
     "personality": [
       "curious",
-      "planner",
       "open-minded",
-      "disciplined"
+      "organized",
+      "determined",
+      "supportive"
     ],
     "painPoints": [
-      "Repetitive practice exercises",
-      "Lack of clear grammar explanations",
-      "Time constraints for learning"
+      "lack of clear grammar explanations",
+      "repetitive practice",
+      "time constraints for learning"
     ],
     "valueProps": [
-      "Variety of exercises",
-      "Gamified approach",
-      "Ease of use"
+      "variety of exercises",
+      "engaging and interactive",
+      "ease of use"
     ]
   },
   {
@@ -1654,6 +1786,9 @@
     "name": "Mohammed",
     "filename": "mohammed_interview.json",
     "age": 30,
+    "gender": "male",
+    "race": "unknown",
+    "hometown": "Cairo, Egypt",
     "occupation": "PhD student",
     "country": "United Kingdom",
     "primaryApp": "Duolingo",
@@ -1675,27 +1810,31 @@
     "usageFrequency": "daily",
     "isPremiumUser": false,
     "personality": [
-      "disciplined",
-      "reflective",
+      "intellectual",
       "motivated",
-      "academic"
+      "structured",
+      "reflective",
+      "adaptable"
     ],
     "painPoints": [
       "lack of speaking practice",
       "pronunciation feedback",
-      "overemphasis on reading and writing"
+      "limited interactivity"
     ],
     "valueProps": [
       "instant feedback",
-      "gamified learning experience",
-      "accessibility of the app"
+      "gamified elements",
+      "user-friendly interface"
     ]
   },
   {
     "id": 41,
     "name": "Nadia",
     "filename": "nadia_interview.json",
-    "age": 35,
+    "age": 40,
+    "gender": "female",
+    "race": "unknown",
+    "hometown": "Tehran",
     "occupation": "graphic designer",
     "country": "Canada",
     "primaryApp": "Duolingo",
@@ -1703,10 +1842,10 @@
     "learningLanguage": "Spanish",
     "learningGoal": "hobby",
     "sentiments": {
-      "overall": "mixed",
+      "overall": "positive",
       "streaks": "positive",
       "gamification": "positive",
-      "hearts": "negative",
+      "hearts": "neutral",
       "notifications": "neutral",
       "pricing": "positive",
       "content_quality": "mixed",
@@ -1718,7 +1857,7 @@
       "creative",
       "curious",
       "reflective",
-      "flexible",
+      "adaptable",
       "resilient"
     ],
     "painPoints": [
@@ -1729,7 +1868,7 @@
     "valueProps": [
       "interactive elements",
       "engaging visuals and sound effects",
-      "ability to reinforce learning"
+      "fun and accessible learning experience"
     ]
   },
   {
@@ -1737,54 +1876,61 @@
     "name": "Obinna",
     "filename": "obinna_interview.json",
     "age": 25,
-    "occupation": "medical student",
+    "gender": "male",
+    "race": "Black/African",
+    "hometown": "Lagos, Nigeria",
+    "occupation": "student",
     "country": "Ireland",
     "primaryApp": "Duolingo",
     "otherApps": [],
     "learningLanguage": "Irish",
-    "learningGoal": "social",
+    "learningGoal": "cultural",
     "sentiments": {
-      "overall": "mixed",
+      "overall": "positive",
       "streaks": "positive",
       "gamification": "positive",
       "hearts": "neutral",
       "notifications": "neutral",
-      "pricing": "very_positive",
+      "pricing": "positive",
       "content_quality": "mixed",
       "progression_speed": "neutral"
     },
     "usageFrequency": "daily",
     "isPremiumUser": false,
     "personality": [
-      "disciplined",
       "curious",
+      "determined",
       "reflective",
-      "social"
+      "organized",
+      "adaptable"
     ],
     "painPoints": [
       "repetitive exercises",
-      "lack of practical conversation scenarios",
-      "emphasis on vocabulary over dialogue"
+      "emphasis on vocabulary over conversation",
+      "lack of real-life conversational scenarios"
     ],
     "valueProps": [
       "immediate feedback",
-      "gamified experience",
-      "free access"
+      "engaging and accessible",
+      "gamified learning experience"
     ]
   },
   {
     "id": 43,
     "name": "Olga",
     "filename": "olga_interview.json",
-    "age": 70,
-    "occupation": "Babushka (grandmother)",
+    "age": 65,
+    "gender": "female",
+    "race": "White/Eastern European",
+    "hometown": "village near Kyiv, Ukraine",
+    "occupation": "retired",
     "country": "United States",
     "primaryApp": "Duolingo",
     "otherApps": [
       "Rosetta Stone"
     ],
     "learningLanguage": "English",
-    "learningGoal": "family",
+    "learningGoal": "social",
     "sentiments": {
       "overall": "positive",
       "streaks": "positive",
@@ -1798,21 +1944,21 @@
     "usageFrequency": "daily",
     "isPremiumUser": false,
     "personality": [
+      "caring",
       "patient",
+      "determined",
       "family-oriented",
-      "curious",
-      "adaptable",
-      "supportive"
+      "optimistic"
     ],
     "painPoints": [
       "not enough real conversation practice",
       "app moves too fast",
-      "tricky words that aren't useful"
+      "words learned sometimes seem not useful"
     ],
     "valueProps": [
-      "structured learning",
+      "structure keeps me on track",
       "encouraging reminders",
-      "hearing pronunciation"
+      "hearing pronunciation helps"
     ]
   },
   {
@@ -1820,7 +1966,10 @@
     "name": "Omar",
     "filename": "omar_interview.json",
     "age": 40,
-    "occupation": "auto industry worker",
+    "gender": "male",
+    "race": "Middle Eastern",
+    "hometown": "Amman, Jordan",
+    "occupation": "auto industry professional",
     "country": "United States",
     "primaryApp": "Duolingo",
     "otherApps": [],
@@ -1839,21 +1988,21 @@
     "usageFrequency": "daily",
     "isPremiumUser": false,
     "personality": [
-      "open-minded",
       "family-oriented",
-      "determined",
-      "adaptable",
-      "cautious"
+      "community-focused",
+      "open-minded",
+      "resilient",
+      "goal-oriented"
     ],
     "painPoints": [
       "intrusive ads in the free version",
       "penalization for small errors",
-      "time management with learning"
+      "time management constraints"
     ],
     "valueProps": [
-      "engaging and interactive lessons",
-      "instant feedback on exercises",
-      "manageable lesson lengths"
+      "engaging lessons",
+      "instant feedback",
+      "manageable lesson sizes"
     ]
   },
   {
@@ -1861,6 +2010,9 @@
     "name": "Priya",
     "filename": "priya_interview.json",
     "age": 30,
+    "gender": "female",
+    "race": "Asian/Indian",
+    "hometown": "Bangalore, India",
     "occupation": "IT professional",
     "country": "Canada",
     "primaryApp": "Duolingo",
@@ -1883,33 +2035,36 @@
     "isPremiumUser": false,
     "personality": [
       "analytical",
-      "disciplined",
       "curious",
-      "goal-oriented",
+      "structured",
+      "determined",
       "supportive"
     ],
     "painPoints": [
-      "lack of depth and context in lessons",
-      "rigidity of the app's progression",
-      "repetitiveness of exercises"
+      "lack of depth and context",
+      "rigidity in progression",
+      "repetitive exercises"
     ],
     "valueProps": [
-      "interactive and gamified learning experience",
-      "flexibility to learn anytime, anywhere",
-      "listening and speaking exercises for active engagement"
+      "interactive learning",
+      "listening and speaking exercises",
+      "visual cues for memory reinforcement"
     ]
   },
   {
     "id": 46,
     "name": "Rajesh",
     "filename": "rajesh_interview.json",
-    "age": 45,
+    "age": 40,
+    "gender": "male",
+    "race": "Asian/Indian",
+    "hometown": "Chennai, India",
     "occupation": "IT professional",
     "country": "United States",
     "primaryApp": "Duolingo",
     "otherApps": [],
     "learningLanguage": "Japanese",
-    "learningGoal": "hobby",
+    "learningGoal": "social",
     "sentiments": {
       "overall": "positive",
       "streaks": "positive",
@@ -1923,11 +2078,11 @@
     "usageFrequency": "daily",
     "isPremiumUser": false,
     "personality": [
-      "competitive",
       "family-oriented",
+      "thoughtful",
+      "humorous",
       "organized",
-      "supportive",
-      "fun-loving"
+      "supportive"
     ],
     "painPoints": [
       "repetition of lessons",
@@ -1945,8 +2100,11 @@
     "name": "Rashid",
     "filename": "rashid_interview.json",
     "age": 40,
-    "occupation": "Doctor",
-    "country": "UK",
+    "gender": "male",
+    "race": "Asian/South Asian",
+    "hometown": "Lahore",
+    "occupation": "doctor",
+    "country": "United Kingdom",
     "primaryApp": "Duolingo",
     "otherApps": [
       "Rosetta Stone"
@@ -1954,7 +2112,7 @@
     "learningLanguage": "Spanish",
     "learningGoal": "career",
     "sentiments": {
-      "overall": "mixed",
+      "overall": "positive",
       "streaks": "positive",
       "gamification": "positive",
       "hearts": "neutral",
@@ -1967,19 +2125,20 @@
     "isPremiumUser": false,
     "personality": [
       "analytical",
-      "planner",
       "empathetic",
-      "dedicated"
+      "family-oriented",
+      "motivated",
+      "strategic"
     ],
     "painPoints": [
-      "Translations can be too literal",
-      "Over-simplicity of some lessons",
-      "Lack of specialized medical vocabulary"
+      "translations are too literal",
+      "over-simplicity of some lessons",
+      "lack of specialized medical vocabulary"
     ],
     "valueProps": [
-      "Short, game-like lessons",
-      "Immediate feedback",
-      "Ability to practice anywhere, anytime"
+      "brevity of lessons",
+      "gamification aspect",
+      "immediate feedback"
     ]
   },
   {
@@ -1987,19 +2146,22 @@
     "name": "Riley",
     "filename": "riley_interview.json",
     "age": 29,
+    "gender": "female",
+    "race": "unknown",
+    "hometown": "small town in the Midwest",
     "occupation": "marketing",
-    "country": "USA",
+    "country": "United States",
     "primaryApp": "Duolingo",
     "otherApps": [],
-    "learningLanguage": "not specified",
+    "learningLanguage": "unknown",
     "learningGoal": "hobby",
     "sentiments": {
       "overall": "mixed",
       "streaks": "negative",
-      "gamification": "neutral",
+      "gamification": "mixed",
       "hearts": "neutral",
       "notifications": "negative",
-      "pricing": "neutral",
+      "pricing": "unknown",
       "content_quality": "positive",
       "progression_speed": "negative"
     },
@@ -2008,14 +2170,14 @@
     "personality": [
       "reflective",
       "thoughtful",
-      "anxious",
-      "disciplined",
-      "overthinker"
+      "overthinker",
+      "planner",
+      "self-critical"
     ],
     "painPoints": [
-      "frustration with streak system",
-      "feeling of failure when routines break",
-      "emotional mismatch with app notifications"
+      "streak system feels all-or-nothing",
+      "emotional mismatch with app notifications",
+      "feeling of starting over"
     ],
     "valueProps": [
       "bite-sized lessons",
@@ -2028,11 +2190,14 @@
     "name": "Riya",
     "filename": "riya_interview.json",
     "age": 22,
+    "gender": "female",
+    "race": "unknown",
+    "hometown": "mid-sized town",
     "occupation": "university student",
-    "country": "not specified",
+    "country": "United States",
     "primaryApp": "Duolingo",
     "otherApps": [],
-    "learningLanguage": "not specified",
+    "learningLanguage": "language",
     "learningGoal": "education",
     "sentiments": {
       "overall": "mixed",
@@ -2044,32 +2209,35 @@
       "content_quality": "negative",
       "progression_speed": "neutral"
     },
-    "usageFrequency": "several_times_week",
+    "usageFrequency": "sporadic",
     "isPremiumUser": false,
     "personality": [
       "practical",
-      "disciplined",
-      "skeptical",
+      "structured",
       "focused",
+      "skeptical",
       "analytical"
     ],
     "painPoints": [
       "too cute for real test prep",
-      "gap between goals and app's playful nature",
-      "lack of serious exam-focused mode"
+      "gap between serious goals and app's playful nature",
+      "lack of serious exam mode"
     ],
     "valueProps": [
       "light reinforcement of vocabulary",
-      "basic sentence exposure",
-      "somewhat helpful on low-energy days"
+      "somewhat helpful on low-energy days",
+      "keeps language from feeling distant"
     ]
   },
   {
     "id": 50,
     "name": "Sienna",
     "filename": "sienna_interview.json",
-    "age": 22,
-    "occupation": "Content Creator/Influencer",
+    "age": 20,
+    "gender": "female",
+    "race": "unknown",
+    "hometown": "small town in Indiana",
+    "occupation": "content creator",
     "country": "United States",
     "primaryApp": "Duolingo",
     "otherApps": [
@@ -2083,18 +2251,18 @@
       "gamification": "positive",
       "hearts": "neutral",
       "notifications": "positive",
-      "pricing": "negative",
+      "pricing": "neutral",
       "content_quality": "positive",
       "progression_speed": "positive"
     },
     "usageFrequency": "daily",
     "isPremiumUser": false,
     "personality": [
-      "organized",
       "creative",
-      "motivated",
-      "social",
-      "adaptable"
+      "organized",
+      "ambitious",
+      "adaptable",
+      "supportive"
     ],
     "painPoints": [
       "ads in the free version",
@@ -2102,7 +2270,7 @@
       "lack of practical speaking exercises"
     ],
     "valueProps": [
-      "instant feedback",
+      "instant feedback and corrections",
       "gamified experience",
       "community vibe"
     ]
@@ -2112,12 +2280,15 @@
     "name": "Sofia",
     "filename": "sofia_interview.json",
     "age": 30,
+    "gender": "female",
+    "race": "Hispanic/Latinx",
+    "hometown": "small town in Texas, not far from San Antonio",
     "occupation": "nurse",
     "country": "United States",
     "primaryApp": "Duolingo",
     "otherApps": [],
     "learningLanguage": "Spanish",
-    "learningGoal": "heritage",
+    "learningGoal": "career",
     "sentiments": {
       "overall": "positive",
       "streaks": "positive",
@@ -2132,19 +2303,19 @@
     "isPremiumUser": false,
     "personality": [
       "caring",
-      "flexible",
-      "disciplined",
-      "reflective",
-      "community-oriented"
+      "determined",
+      "community-oriented",
+      "adaptable",
+      "reflective"
     ],
     "painPoints": [
-      "repetitive nature of exercises",
+      "repetitive nature of certain exercises",
       "lack of grammar explanations",
-      "feeling stuck on basic lessons"
+      "feeling stuck on lessons I've mastered"
     ],
     "valueProps": [
-      "engaging and fun learning experience",
-      "ability to repeat and review lessons",
+      "engaging and interactive learning",
+      "ability to repeat and review",
       "convenience of practicing anywhere"
     ]
   },
@@ -2153,8 +2324,11 @@
     "name": "Sven",
     "filename": "sven_interview.json",
     "age": 65,
-    "occupation": "Engineer (retired)",
-    "country": "Sweden",
+    "gender": "male",
+    "race": "White/European",
+    "hometown": "Värnamo, Sweden",
+    "occupation": "retired",
+    "country": "Spain",
     "primaryApp": "Duolingo",
     "otherApps": [],
     "learningLanguage": "Spanish",
@@ -2165,7 +2339,7 @@
       "gamification": "positive",
       "hearts": "neutral",
       "notifications": "neutral",
-      "pricing": "neutral",
+      "pricing": "positive",
       "content_quality": "mixed",
       "progression_speed": "positive"
     },
@@ -2173,28 +2347,31 @@
     "isPremiumUser": false,
     "personality": [
       "curious",
-      "patient",
-      "supportive",
+      "reflective",
       "cautious",
+      "supportive",
       "engaged"
     ],
     "painPoints": [
-      "Lack of context in learning materials",
-      "Strict app corrections",
-      "Technical glitches"
+      "lack of context",
+      "technical glitches",
+      "strict corrections"
     ],
     "valueProps": [
-      "Immediate feedback during lessons",
-      "Engaging and fun learning experience",
-      "Short, manageable lessons"
+      "immediate feedback",
+      "engaging lessons",
+      "manageable lesson lengths"
     ]
   },
   {
     "id": 53,
     "name": "Tariq",
     "filename": "tariq_interview.json",
-    "age": 22,
-    "occupation": "Student",
+    "age": 20,
+    "gender": "male",
+    "race": "unknown",
+    "hometown": "Riyadh, Saudi Arabia",
+    "occupation": "student",
     "country": "United Kingdom",
     "primaryApp": "Duolingo",
     "otherApps": [],
@@ -2213,21 +2390,21 @@
     "usageFrequency": "daily",
     "isPremiumUser": false,
     "personality": [
-      "competitive",
-      "cautious",
       "motivated",
-      "planner",
-      "social"
+      "cautious",
+      "reflective",
+      "social",
+      "goal-oriented"
     ],
     "painPoints": [
-      "Repetitive exercises",
-      "Lack of real-life conversation skills",
-      "Sentences that don't make sense"
+      "repetitive exercises",
+      "lack of real-life conversation skills",
+      "sentences that don't make sense"
     ],
     "valueProps": [
-      "Game-like experience",
-      "Reminders to keep on track",
-      "Ability to learn at own pace"
+      "reminders to keep on track",
+      "game-like experience",
+      "flexibility to learn at own pace"
     ]
   },
   {
@@ -2235,6 +2412,9 @@
     "name": "Tomasz",
     "filename": "tomasz_interview.json",
     "age": 29,
+    "gender": "male",
+    "race": "White/Eastern European",
+    "hometown": "Warsaw, Poland",
     "occupation": "programmer",
     "country": "Netherlands",
     "primaryApp": "Duolingo",
@@ -2245,31 +2425,32 @@
     "learningGoal": "social",
     "sentiments": {
       "overall": "mixed",
-      "streaks": "positive",
+      "streaks": "neutral",
       "gamification": "positive",
       "hearts": "neutral",
       "notifications": "neutral",
       "pricing": "positive",
       "content_quality": "mixed",
-      "progression_speed": "mixed"
+      "progression_speed": "neutral"
     },
-    "usageFrequency": "daily",
+    "usageFrequency": "several_times_week",
     "isPremiumUser": false,
     "personality": [
       "analytical",
-      "disciplined",
       "methodical",
-      "competitive"
+      "curious",
+      "supportive",
+      "goal-oriented"
     ],
     "painPoints": [
-      "repetition of phrases",
       "lack of depth in content",
+      "repetition of phrases",
       "language barrier in real-life situations"
     ],
     "valueProps": [
       "bite-sized lessons",
-      "gamification of learning",
-      "interactive learning experience"
+      "gamification",
+      "interactive learning"
     ]
   },
   {
@@ -2277,7 +2458,10 @@
     "name": "Trevor",
     "filename": "trevor_interview.json",
     "age": 23,
-    "occupation": "Traveler/Backpacker",
+    "gender": "male",
+    "race": "unknown",
+    "hometown": "Brisbane",
+    "occupation": "unknown",
     "country": "Australia",
     "primaryApp": "Duolingo",
     "otherApps": [],
@@ -2293,31 +2477,35 @@
       "content_quality": "mixed",
       "progression_speed": "neutral"
     },
-    "usageFrequency": "several_times_week",
+    "usageFrequency": "daily",
     "isPremiumUser": false,
     "personality": [
       "adventurous",
-      "go-with-the-flow",
+      "open-minded",
+      "laid-back",
       "curious",
-      "social"
+      "sociable"
     ],
     "painPoints": [
-      "Lack of practical phrases",
-      "Repetitive lessons",
-      "Randomness of lesson content"
+      "lack of context in lessons",
+      "randomness of lesson content",
+      "difficulty in stringing words into sentences"
     ],
     "valueProps": [
-      "Pronunciation practice",
-      "Basic vocabulary drilling",
-      "Free access"
+      "pronunciation practice",
+      "basic vocabulary drills",
+      "free access to learning"
     ]
   },
   {
     "id": 56,
     "name": "Tyrone",
     "filename": "tyrone_interview.json",
-    "age": 60,
-    "occupation": "Retired Military",
+    "age": 65,
+    "gender": "male",
+    "race": "Black/African American",
+    "hometown": "Canton, Mississippi",
+    "occupation": "retired",
     "country": "United States",
     "primaryApp": "Duolingo",
     "otherApps": [
@@ -2328,39 +2516,42 @@
     "learningGoal": "travel",
     "sentiments": {
       "overall": "mixed",
-      "streaks": "positive",
-      "gamification": "neutral",
+      "streaks": "neutral",
+      "gamification": "mixed",
       "hearts": "neutral",
       "notifications": "neutral",
-      "pricing": "very_positive",
+      "pricing": "positive",
       "content_quality": "mixed",
-      "progression_speed": "negative"
+      "progression_speed": "neutral"
     },
     "usageFrequency": "daily",
     "isPremiumUser": false,
     "personality": [
+      "determined",
       "disciplined",
-      "planner",
-      "active",
       "curious",
-      "adaptable"
+      "reflective",
+      "organized"
     ],
     "painPoints": [
       "repetitive content",
-      "too game-like",
+      "too much gamification",
       "lack of real-world context"
     ],
     "valueProps": [
-      "free access",
-      "mobile convenience",
-      "speaking exercises"
+      "speaking exercises",
+      "mobile accessibility",
+      "free to use"
     ]
   },
   {
     "id": 57,
     "name": "Valentina",
     "filename": "valentina_interview.json",
-    "age": 28,
+    "age": 30,
+    "gender": "female",
+    "race": "Latina/Hispanic",
+    "hometown": "Envigado, near Medellín, Colombia",
     "occupation": "digital marketing professional",
     "country": "Spain",
     "primaryApp": "Duolingo",
@@ -2368,41 +2559,44 @@
     "learningLanguage": "Catalan",
     "learningGoal": "career",
     "sentiments": {
-      "overall": "mixed",
+      "overall": "positive",
       "streaks": "positive",
       "gamification": "positive",
       "hearts": "neutral",
       "notifications": "neutral",
-      "pricing": "positive",
-      "content_quality": "mixed",
+      "pricing": "neutral",
+      "content_quality": "positive",
       "progression_speed": "mixed"
     },
     "usageFrequency": "daily",
     "isPremiumUser": false,
     "personality": [
       "adaptable",
-      "social",
       "curious",
-      "motivated",
+      "social",
+      "determined",
       "reflective"
     ],
     "painPoints": [
       "lack of real conversational practice",
-      "monotonous repetition of exercises",
-      "insufficient pronunciation tips"
+      "repetition of exercises",
+      "pronunciation tips not thorough enough"
     ],
     "valueProps": [
-      "engaging and fun gamified approach",
-      "variety of exercises",
-      "reinforcement of learned material"
+      "gamified approach makes learning fun",
+      "variety of exercises keeps it interesting",
+      "repetition helps with understanding"
     ]
   },
   {
     "id": 58,
     "name": "Viktor",
     "filename": "viktor_interview.json",
-    "age": 35,
-    "occupation": "Truck Driver",
+    "age": 40,
+    "gender": "male",
+    "race": "White/Eastern European",
+    "hometown": "small town near Wrocław, Poland",
+    "occupation": "truck driver",
     "country": "United Kingdom",
     "primaryApp": "Duolingo",
     "otherApps": [],
@@ -2416,33 +2610,36 @@
       "notifications": "neutral",
       "pricing": "positive",
       "content_quality": "mixed",
-      "progression_speed": "negative"
+      "progression_speed": "neutral"
     },
-    "usageFrequency": "daily",
+    "usageFrequency": "several_times_week",
     "isPremiumUser": false,
     "personality": [
-      "determined",
-      "adaptable",
       "reflective",
-      "social",
+      "adaptable",
+      "community-oriented",
+      "motivated",
       "practical"
     ],
     "painPoints": [
       "repetition of basic content",
       "lack of real conversation practice",
-      "too simplistic"
+      "simplistic nature of the app"
     ],
     "valueProps": [
-      "fun and engaging learning",
-      "flexibility during breaks",
-      "repetition helps retention"
+      "fun and engaging learning experience",
+      "repetition helps retention",
+      "flexibility to learn during breaks"
     ]
   },
   {
     "id": 59,
     "name": "Yuki",
     "filename": "yuki_interview.json",
-    "age": 50,
+    "age": 60,
+    "gender": "female",
+    "race": "Asian",
+    "hometown": "Matsumoto, Japan",
     "occupation": "housewife",
     "country": "Japan",
     "primaryApp": "Duolingo",
@@ -2462,21 +2659,21 @@
     "usageFrequency": "daily",
     "isPremiumUser": false,
     "personality": [
-      "cautious",
       "supportive",
-      "nurturing",
-      "planner",
-      "flexible"
+      "cautious",
+      "thoughtful",
+      "adaptable",
+      "community-oriented"
     ],
     "painPoints": [
-      "pacing issue with new material",
-      "lack of interactivity in old methods",
-      "pressure to keep up with lessons"
+      "pacing issue",
+      "feeling overwhelmed",
+      "lack of interactivity in old methods"
     ],
     "valueProps": [
-      "instant feedback on exercises",
+      "instant feedback",
       "variety of exercises",
-      "gamification features"
+      "gamification"
     ]
   },
   {
@@ -2484,8 +2681,11 @@
     "name": "Zara",
     "filename": "zara_interview.json",
     "age": 25,
+    "gender": "female",
+    "race": "Asian/Pakistani",
+    "hometown": "Birmingham",
     "occupation": "fashion influencer",
-    "country": "UK",
+    "country": "United Kingdom",
     "primaryApp": "Duolingo",
     "otherApps": [
       "Memrise"
@@ -2505,20 +2705,21 @@
     "usageFrequency": "daily",
     "isPremiumUser": false,
     "personality": [
-      "competitive",
       "creative",
+      "authentic",
       "flexible",
-      "authentic"
+      "determined",
+      "social"
     ],
     "painPoints": [
-      "lack of clear grammar explanations",
-      "repetitiveness of exercises",
-      "need for more conversation practice"
+      "repetitive exercises",
+      "lack of grammar explanations",
+      "need for deeper context"
     ],
     "valueProps": [
-      "structured bite-sized lessons",
-      "engaging gamification elements",
-      "helpful listening exercises"
+      "structured lessons",
+      "listening exercises",
+      "streak motivation"
     ]
   }
 ]

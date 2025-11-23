@@ -14,6 +14,9 @@ interface Filter {
 // Agent metadata type (will be populated from extracted data)
 interface AgentMetadata {
   age?: number;
+  gender?: string;
+  race?: string;
+  hometown?: string;
   occupation?: string;
   country?: string;
   primaryApp?: string;
@@ -99,6 +102,12 @@ import danteData from '../../demo/transcripts/dante_interview.json';
 import ameliaData from '../../demo/transcripts/amelia_interview.json';
 import tariqData from '../../demo/transcripts/tariq_interview.json';
 
+// Import cluster data
+import clusterData from '../../demo/clusters.json';
+
+// Import agent metadata
+import agentMetadataData from '../../demo/agent_metadata.json';
+
 // All interview data
 const allInterviewData = [
   adrianData, aidenData, ethanData, jasonData, jordanData, lenaData, leoData, mayaData, rileyData, riyaData,
@@ -119,6 +128,92 @@ const agentData = allInterviewData.map((data, i) => ({
   // Metadata will be loaded separately
   metadata: {} as AgentMetadata,
 }));
+
+// Helper function to generate hexagon positions for a cluster
+function generateClusterPositions(count: number): { row: number; col: number }[] {
+  const positions: { row: number; col: number }[] = [];
+
+  if (count <= 0) return positions;
+
+  // Generate honeycomb pattern based on count
+  if (count <= 2) {
+    // Single row
+    for (let i = 0; i < count; i++) {
+      positions.push({ row: 0, col: i });
+    }
+  } else if (count <= 4) {
+    // Two rows
+    positions.push({ row: 0, col: 0 }, { row: 0, col: 1 });
+    for (let i = 2; i < count; i++) {
+      positions.push({ row: 1, col: i - 2 + 0.5 });
+    }
+  } else if (count <= 7) {
+    // Honeycomb small
+    const rows = [
+      [0, 1],
+      [0.5, 1.5, 2.5],
+      [1, 2],
+    ];
+    let idx = 0;
+    for (let r = 0; r < rows.length && idx < count; r++) {
+      for (let c = 0; c < rows[r].length && idx < count; c++) {
+        positions.push({ row: r, col: rows[r][c] });
+        idx++;
+      }
+    }
+  } else if (count <= 12) {
+    // Honeycomb medium
+    const rows = [
+      [0.5, 1.5, 2.5],
+      [0, 1, 2, 3],
+      [0.5, 1.5, 2.5],
+      [1, 2],
+    ];
+    let idx = 0;
+    for (let r = 0; r < rows.length && idx < count; r++) {
+      for (let c = 0; c < rows[r].length && idx < count; c++) {
+        positions.push({ row: r, col: rows[r][c] });
+        idx++;
+      }
+    }
+  } else if (count <= 20) {
+    // Honeycomb large
+    const rows = [
+      [1, 2, 3],
+      [0.5, 1.5, 2.5, 3.5],
+      [0, 1, 2, 3, 4],
+      [0.5, 1.5, 2.5, 3.5],
+      [1, 2, 3],
+    ];
+    let idx = 0;
+    for (let r = 0; r < rows.length && idx < count; r++) {
+      for (let c = 0; c < rows[r].length && idx < count; c++) {
+        positions.push({ row: r, col: rows[r][c] });
+        idx++;
+      }
+    }
+  } else {
+    // Honeycomb extra large
+    const rows = [
+      [1.5, 2.5, 3.5],
+      [1, 2, 3, 4],
+      [0.5, 1.5, 2.5, 3.5, 4.5],
+      [0, 1, 2, 3, 4, 5],
+      [0.5, 1.5, 2.5, 3.5, 4.5],
+      [1, 2, 3, 4],
+      [1.5, 2.5, 3.5],
+    ];
+    let idx = 0;
+    for (let r = 0; r < rows.length && idx < count; r++) {
+      for (let c = 0; c < rows[r].length && idx < count; c++) {
+        positions.push({ row: r, col: rows[r][c] });
+        idx++;
+      }
+    }
+  }
+
+  return positions;
+}
 
 // Filter pill component
 function FilterPill({ filter, onRemove }: { filter: Filter; onRemove: () => void }) {
@@ -199,7 +294,8 @@ function Hexagon({
   top_quotes,
   onShowTranscript,
   row,
-  col
+  col,
+  metadata
 }: {
   selected?: boolean;
   onClick?: () => void;
@@ -209,6 +305,7 @@ function Hexagon({
   onShowTranscript: () => void;
   row: number;
   col: number;
+  metadata?: AgentMetadata;
 }) {
   const [showTooltip, setShowTooltip] = useState(false);
   const [position, setPosition] = useState<'below' | 'above' | 'left' | 'right'>('below');
@@ -257,8 +354,8 @@ function Hexagon({
       onMouseLeave={() => setShowTooltip(false)}
     >
       <svg
-        width="48"
-        height="48"
+        width="38"
+        height="38"
         viewBox="0 0 48 48"
         className={`cursor-pointer transition-all duration-300 hover:scale-110 ${
           selected ? 'drop-shadow-[0_4px_12px_rgba(249,115,22,0.4)]' : 'hover:drop-shadow-md'
@@ -268,7 +365,7 @@ function Hexagon({
         <polygon
           points="24,2 44,14 44,34 24,46 4,34 4,14"
           fill={selected ? '#f97316' : 'transparent'}
-          stroke={selected ? '#f97316' : '#e5e7eb'}
+          stroke={selected ? '#f97316' : '#d1d5db'}
           strokeWidth="1.5"
         />
       </svg>
@@ -277,6 +374,43 @@ function Hexagon({
       {showTooltip && (
         <div className={`absolute z-50 w-64 p-3 bg-white rounded-lg shadow-lg border border-gray-200 pointer-events-auto ${positionClasses[position]}`}>
           <p className="font-medium text-xs text-gray-900 mb-1">{name}</p>
+
+          {/* Demographic Tags */}
+          {metadata && (
+            <div className="flex flex-wrap gap-1 mb-2">
+              {metadata.age && (
+                <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[9px] font-medium bg-blue-100 text-blue-700">
+                  {metadata.age} yo
+                </span>
+              )}
+              {metadata.gender && metadata.gender.toLowerCase() !== 'unknown' && (
+                <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[9px] font-medium bg-blue-100 text-blue-700">
+                  {metadata.gender}
+                </span>
+              )}
+              {metadata.race && metadata.race.toLowerCase() !== 'unknown' && (
+                <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[9px] font-medium bg-blue-100 text-blue-700">
+                  {metadata.race}
+                </span>
+              )}
+              {metadata.hometown && metadata.hometown.toLowerCase() !== 'unknown' && (
+                <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[9px] font-medium bg-blue-100 text-blue-700">
+                  {metadata.hometown}
+                </span>
+              )}
+              {metadata.occupation && metadata.occupation.toLowerCase() !== 'unknown' && (
+                <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[9px] font-medium bg-blue-100 text-blue-700">
+                  {metadata.occupation}
+                </span>
+              )}
+              {metadata.country && metadata.country.toLowerCase() !== 'unknown' && (
+                <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[9px] font-medium bg-blue-100 text-blue-700">
+                  {metadata.country}
+                </span>
+              )}
+            </div>
+          )}
+
           <p className="text-[10px] text-gray-500 mb-2 leading-relaxed">{summary}</p>
 
           {/* Top Quotes */}
@@ -437,18 +571,17 @@ export default function DemoPage() {
   const [isFilterLoading, setIsFilterLoading] = useState(false);
   const [agentMetadata, setAgentMetadata] = useState<Record<number, AgentMetadata>>({});
 
-  // Load metadata on mount
+  // Load metadata on mount - match by name since IDs may differ
   useEffect(() => {
-    fetch('/agent_metadata.json')
-      .then(res => res.json())
-      .then((data: Array<AgentMetadata & { id: number }>) => {
-        const metadataMap: Record<number, AgentMetadata> = {};
-        data.forEach(item => {
-          metadataMap[item.id] = item;
-        });
-        setAgentMetadata(metadataMap);
-      })
-      .catch(err => console.error('Failed to load metadata:', err));
+    const metadataMap: Record<number, AgentMetadata> = {};
+    agentMetadataData.forEach((item: AgentMetadata & { id: number; name: string }) => {
+      // Find the agent in agentData by name and use that index as the key
+      const agentIndex = agentData.findIndex(a => a.name === item.name);
+      if (agentIndex !== -1) {
+        metadataMap[agentIndex] = item;
+      }
+    });
+    setAgentMetadata(metadataMap);
   }, []);
 
   // Update agent data with metadata
@@ -565,41 +698,14 @@ export default function DemoPage() {
     setMemoryInput('');
   };
 
-  // Agent positions in a symmetrical hexagon shape (61 hexagons)
-  const agentPositions: { id: number; row: number; col: number }[] = [];
-  let id = 0;
-
-  // Hexagonal shape pattern
-  const rowConfigs = [
-    { count: 5, startCol: 2 },     // Row 0
-    { count: 6, startCol: 1.5 },   // Row 1
-    { count: 7, startCol: 1 },     // Row 2
-    { count: 8, startCol: 0.5 },   // Row 3
-    { count: 9, startCol: 0 },     // Row 4 (center)
-    { count: 8, startCol: 0.5 },   // Row 5
-    { count: 7, startCol: 1 },     // Row 6
-    { count: 6, startCol: 1.5 },   // Row 7
-    { count: 5, startCol: 2 },     // Row 8
-  ];
-
-  rowConfigs.forEach((config, row) => {
-    for (let i = 0; i < config.count; i++) {
-      agentPositions.push({
-        id: id++,
-        row,
-        col: config.startCol + i,
-      });
-    }
-  });
-
-  const hexSpacingX = 50;
-  const hexSpacingY = 42;
+  const hexSpacingX = 34;
+  const hexSpacingY = 29;
 
   return (
-    <div className="h-screen bg-gray-50 text-gray-900 p-4 md:p-6 flex flex-col overflow-hidden">
+    <div className="h-screen bg-gray-50 text-gray-900 p-3 md:p-4 flex flex-col overflow-hidden">
       {/* Header */}
-      <header className="mb-4 flex-shrink-0">
-        <h1 className="text-xl md:text-2xl font-light tracking-tight">
+      <header className="mb-2 flex-shrink-0">
+        <h1 className="text-lg md:text-xl font-light tracking-tight">
           ipg<span style={{ color: '#11766E' }}>.</span>inc
           <span className="text-gray-300 mx-2">×</span>
           <span className="text-green-500 font-normal">Duolingo</span>
@@ -607,36 +713,130 @@ export default function DemoPage() {
       </header>
 
       {/* Main content area */}
-      <div className="flex flex-col lg:flex-row gap-4 flex-1 min-h-0">
-        {/* Left section - Agent cluster */}
-        <div className="flex-1 bg-white rounded-2xl shadow-sm border border-gray-100 p-6 flex items-center justify-center">
-          <div className="relative">
-            {agentPositions.map((pos) => {
-              const agent = agentData.find((a) => a.id === pos.id)!;
-              return (
-                <div
-                  key={pos.id}
-                  className="absolute"
-                  style={{
-                    left: `${pos.col * hexSpacingX}px`,
-                    top: `${pos.row * hexSpacingY}px`,
-                  }}
-                >
-                  <Hexagon
-                    selected={selectedAgents.has(pos.id)}
-                    onClick={() => toggleAgent(pos.id)}
-                    name={agent.name}
-                    summary={agent.summary}
-                    top_quotes={agent.top_quotes}
-                    onShowTranscript={() => setTranscriptAgent(agent)}
-                    row={pos.row}
-                    col={pos.col}
-                  />
-                </div>
-              );
-            })}
-            {/* Spacer to maintain container size */}
-            <div style={{ width: '500px', height: '430px' }} />
+      <div className="flex flex-col lg:flex-row gap-3 flex-1 min-h-0">
+        {/* Left section - Clustered agents */}
+        <div className="flex-1 bg-white rounded-xl shadow-sm border border-gray-100 p-6 flex items-center justify-center">
+          {/* Cluster grid - staggered layout */}
+          <div className="flex flex-col w-full">
+            {/* Top row - 3 clusters (A, B, C) */}
+            <div className="flex justify-around items-end">
+              {clusterData.clusters.slice(0, 3).map((cluster) => {
+                const positions = generateClusterPositions(cluster.count);
+                const maxCol = Math.max(...positions.map(p => p.col), 0);
+                const maxRow = Math.max(...positions.map(p => p.row), 0);
+                const clusterWidth = (maxCol + 1) * hexSpacingX + 38;
+                const clusterHeight = (maxRow + 1) * hexSpacingY + 38;
+
+                return (
+                  <div key={cluster.group} className="flex flex-col items-center">
+                    {/* Hexagon cluster */}
+                    <div className="relative" style={{ width: clusterWidth, height: clusterHeight }}>
+                      {cluster.members.map((member, idx) => {
+                        const pos = positions[idx];
+                        if (!pos) return null;
+
+                        // Find the agent data for this member
+                        const agent = agentData.find(a => a.name === member.user_name);
+                        if (!agent) return null;
+
+                        return (
+                          <div
+                            key={member.user_name}
+                            className="absolute"
+                            style={{
+                              left: `${pos.col * hexSpacingX}px`,
+                              top: `${pos.row * hexSpacingY}px`,
+                            }}
+                          >
+                            <Hexagon
+                              selected={selectedAgents.has(agent.id)}
+                              onClick={() => toggleAgent(agent.id)}
+                              name={agent.name}
+                              summary={agent.summary}
+                              top_quotes={agent.top_quotes}
+                              onShowTranscript={() => setTranscriptAgent(agent)}
+                              row={pos.row}
+                              col={pos.col}
+                              metadata={agentMetadata[agent.id]}
+                            />
+                          </div>
+                        );
+                      })}
+                    </div>
+
+                    {/* Cluster label */}
+                    <div className="text-center -mt-1">
+                      <p className="text-sm font-medium text-gray-900">
+                        Group {cluster.group} ({cluster.percentage}%)
+                      </p>
+                      <p className="text-xs text-gray-500 italic max-w-[140px]">
+                        &ldquo;{cluster.quote}&rdquo;
+                      </p>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+
+            {/* Bottom row - 2 clusters (D between A&B, E between B&C) */}
+            <div className="flex justify-around items-start -mt-4 pl-[18%] pr-[8%]">
+              {clusterData.clusters.slice(3).map((cluster) => {
+                const positions = generateClusterPositions(cluster.count);
+                const maxCol = Math.max(...positions.map(p => p.col), 0);
+                const maxRow = Math.max(...positions.map(p => p.row), 0);
+                const clusterWidth = (maxCol + 1) * hexSpacingX + 38;
+                const clusterHeight = (maxRow + 1) * hexSpacingY + 38;
+
+                return (
+                  <div key={cluster.group} className="flex flex-col items-center">
+                    {/* Hexagon cluster */}
+                    <div className="relative" style={{ width: clusterWidth, height: clusterHeight }}>
+                      {cluster.members.map((member, idx) => {
+                        const pos = positions[idx];
+                        if (!pos) return null;
+
+                        // Find the agent data for this member
+                        const agent = agentData.find(a => a.name === member.user_name);
+                        if (!agent) return null;
+
+                        return (
+                          <div
+                            key={member.user_name}
+                            className="absolute"
+                            style={{
+                              left: `${pos.col * hexSpacingX}px`,
+                              top: `${pos.row * hexSpacingY}px`,
+                            }}
+                          >
+                            <Hexagon
+                              selected={selectedAgents.has(agent.id)}
+                              onClick={() => toggleAgent(agent.id)}
+                              name={agent.name}
+                              summary={agent.summary}
+                              top_quotes={agent.top_quotes}
+                              onShowTranscript={() => setTranscriptAgent(agent)}
+                              row={pos.row}
+                              col={pos.col}
+                              metadata={agentMetadata[agent.id]}
+                            />
+                          </div>
+                        );
+                      })}
+                    </div>
+
+                    {/* Cluster label */}
+                    <div className="text-center -mt-1">
+                      <p className="text-sm font-medium text-gray-900">
+                        Group {cluster.group} ({cluster.percentage}%)
+                      </p>
+                      <p className="text-xs text-gray-500 italic max-w-[140px]">
+                        &ldquo;{cluster.quote}&rdquo;
+                      </p>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
           </div>
         </div>
 
