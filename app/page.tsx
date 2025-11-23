@@ -12,10 +12,10 @@ export default function Home() {
         Login
       </Link>
 
-      <div className="max-w-2xl w-full bg-black md:bg-black/50 md:backdrop-blur-sm md:rounded-lg p-8 md:p-16 md:shadow-2xl min-h-screen md:min-h-0">
+      <div className="max-w-2xl w-full bg-black md:bg-black/50 md:backdrop-blur-sm md:rounded-lg p-8 md:p-12 md:shadow-2xl min-h-screen md:min-h-0">
         {/* Hero Section */}
-        <section className="mb-12 md:mb-16 text-left">
-          <h1 className="text-4xl sm:text-5xl md:text-6xl font-light mb-4 md:mb-6 font-serif">
+        <section className="mb-12 md:mb-10 text-left">
+          <h1 className="text-4xl sm:text-5xl md:text-6xl font-light mb-4 md:mb-4 font-serif">
             ipg<span style={{ color: '#11766E' }}>.</span>inc
           </h1>
           <p className="text-gray-400 italic text-sm md:text-base font-serif">
@@ -24,34 +24,44 @@ export default function Home() {
         </section>
 
         {/* What We Do Section */}
-        <section className="mb-10 md:mb-12">
-          <h2 className="text-xs font-medium mb-3 md:mb-4 tracking-[0.2em] text-gray-300 font-sans">
+        <section className="mb-10 md:mb-6">
+          <h2 className="text-xs font-medium mb-3 md:mb-3 tracking-[0.2em] text-gray-300 font-sans">
             WHAT WE DO
           </h2>
           <p className="text-sm md:text-base leading-relaxed text-gray-300 font-serif">
-            We're building the future of market research with AI-moderated interview agents that capture authentic human insights in minutes. Our platform conducts dynamic interviews, identifies key audience patterns, and creates generative-agent representations of your customers—so you can engage with them continuously and make faster, more informed decisions.
+            We're building AI simulations of real users, so fast moving product teams can validate product decisions in minutes instead of weeks.
+          </p>
+        </section>
+
+        {/* How It Works Section */}
+        <section className="mb-10 md:mb-6">
+          <h2 className="text-xs font-medium mb-3 md:mb-3 tracking-[0.2em] text-gray-300 font-sans">
+            HOW IT WORKS
+          </h2>
+          <p className="text-sm md:text-base leading-relaxed text-gray-300 font-serif">
+            AI-moderated interview agents capture authentic human insights in minutes. We create generative-agent representations of your customers—so you can engage with them continuously and make faster, more informed decisions.
           </p>
         </section>
 
         {/* Who We Are Section */}
-        <section className="mb-10 md:mb-12">
-          <h2 className="text-xs font-medium mb-3 md:mb-4 tracking-[0.2em] text-gray-300 font-sans">
+        <section className="mb-10 md:mb-6">
+          <h2 className="text-xs font-medium mb-3 md:mb-3 tracking-[0.2em] text-gray-300 font-sans">
             WHO WE ARE
           </h2>
           <p className="text-sm md:text-base leading-relaxed text-gray-300 font-serif">
-            We're two UCLA students on a mission to predict everything.
+            We're three UCLA students on a mission to make every company user obsessed.
           </p>
         </section>
 
         {/* Early Access / Careers Section */}
-        <section className="mb-16">
-          <h2 className="text-xs font-medium mb-3 md:mb-4 tracking-[0.2em] text-gray-300 font-sans">
+        <section className="mb-16 md:mb-8">
+          <h2 className="text-xs font-medium mb-3 md:mb-3 tracking-[0.2em] text-gray-300 font-sans">
             EARLY ACCESS / CAREERS
           </h2>
           <p className="text-sm md:text-base leading-relaxed text-gray-300 font-serif">
             Join the future of decision-making. Please reach out: {' '}
-            <a 
-              href="mailto:contact@ipg.inc" 
+            <a
+              href="mailto:contact@ipg.inc"
               className="text-blue-400 hover:text-blue-300 underline"
             >
               contact@ipg.inc
@@ -60,7 +70,7 @@ export default function Home() {
         </section>
 
         {/* Footer */}
-        <footer className="pt-8 border-t border-gray-800 mt-auto">
+        <footer className="pt-6 border-t border-gray-800 mt-auto">
           <div className="flex justify-between items-center">
             <p className="text-xs md:text-sm text-gray-500">
               © 2025 ipg.inc

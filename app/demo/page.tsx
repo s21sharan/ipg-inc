@@ -1,6 +1,40 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+
+// Filter type
+interface Filter {
+  id: string;
+  field: string;
+  operator: string;
+  value: string | number | [number, number];
+  label: string;
+}
+
+// Agent metadata type (will be populated from extracted data)
+interface AgentMetadata {
+  age?: number;
+  occupation?: string;
+  country?: string;
+  primaryApp?: string;
+  learningLanguage?: string;
+  learningGoal?: string;
+  sentiments?: {
+    overall?: string;
+    streaks?: string;
+    gamification?: string;
+    hearts?: string;
+    notifications?: string;
+    pricing?: string;
+    content_quality?: string;
+    progression_speed?: string;
+  };
+  usageFrequency?: string;
+  isPremiumUser?: boolean;
+  personality?: string[];
+  painPoints?: string[];
+  valueProps?: string[];
+}
 
 // Import all interview data
 import adrianData from '../../demo/transcripts/adrian_interview.json';
@@ -82,7 +116,79 @@ const agentData = allInterviewData.map((data, i) => ({
   summary: data.summary,
   top_quotes: data.top_quotes,
   interview_script: data.interview_script,
+  // Metadata will be loaded separately
+  metadata: {} as AgentMetadata,
 }));
+
+// Filter pill component
+function FilterPill({ filter, onRemove }: { filter: Filter; onRemove: () => void }) {
+  return (
+    <div className="inline-flex items-center gap-1 bg-orange-100 text-orange-800 px-2 py-1 rounded-full text-[10px] font-medium">
+      <span>{filter.label}</span>
+      <button
+        onClick={onRemove}
+        className="hover:bg-orange-200 rounded-full p-0.5 transition-colors"
+      >
+        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
+          <path d="M18 6L6 18M6 6l12 12" />
+        </svg>
+      </button>
+    </div>
+  );
+}
+
+// Function to check if an agent matches a filter
+function matchesFilter(agent: typeof agentData[0], filter: Filter): boolean {
+  // Get the value from the agent using the field path
+  const getNestedValue = (obj: Record<string, unknown>, path: string): unknown => {
+    return path.split('.').reduce((acc: unknown, part) => {
+      if (acc && typeof acc === 'object') {
+        return (acc as Record<string, unknown>)[part];
+      }
+      return undefined;
+    }, obj);
+  };
+
+  const agentValue = getNestedValue(agent.metadata as Record<string, unknown>, filter.field);
+
+  if (agentValue === undefined) return false;
+
+  switch (filter.operator) {
+    case '<':
+      return typeof agentValue === 'number' && agentValue < (filter.value as number);
+    case '>':
+      return typeof agentValue === 'number' && agentValue > (filter.value as number);
+    case '<=':
+      return typeof agentValue === 'number' && agentValue <= (filter.value as number);
+    case '>=':
+      return typeof agentValue === 'number' && agentValue >= (filter.value as number);
+    case '=':
+      if (typeof agentValue === 'string' && typeof filter.value === 'string') {
+        return agentValue.toLowerCase() === filter.value.toLowerCase();
+      }
+      return agentValue === filter.value;
+    case '!=':
+      return agentValue !== filter.value;
+    case 'contains':
+      if (Array.isArray(agentValue)) {
+        return agentValue.some(v =>
+          typeof v === 'string' &&
+          v.toLowerCase().includes((filter.value as string).toLowerCase())
+        );
+      }
+      if (typeof agentValue === 'string') {
+        return agentValue.toLowerCase().includes((filter.value as string).toLowerCase());
+      }
+      return false;
+    case 'range':
+      if (typeof agentValue === 'number' && Array.isArray(filter.value)) {
+        return agentValue >= filter.value[0] && agentValue <= filter.value[1];
+      }
+      return false;
+    default:
+      return false;
+  }
+}
 
 // Hexagon shape component with tooltip
 function Hexagon({
@@ -241,9 +347,11 @@ function ChatMessage({ message, isUser }: { message: string; isUser: boolean }) 
 // Transcript Modal Component
 function TranscriptModal({
   agent,
+  metadata,
   onClose
 }: {
   agent: typeof agentData[0] | null;
+  metadata?: AgentMetadata;
   onClose: () => void;
 }) {
   if (!agent) return null;
@@ -255,19 +363,57 @@ function TranscriptModal({
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="p-4 border-b border-gray-100 flex justify-between items-center">
-          <div>
-            <h2 className="text-lg font-medium text-gray-900">{agent.name}&apos;s Interview</h2>
-            <p className="text-xs text-gray-500">{agent.summary}</p>
+        <div className="p-4 border-b border-gray-100">
+          <div className="flex justify-between items-start mb-3">
+            <div>
+              <h2 className="text-lg font-medium text-gray-900">{agent.name}&apos;s Interview</h2>
+              <p className="text-xs text-gray-500">{agent.summary}</p>
+            </div>
+            <button
+              onClick={onClose}
+              className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+            >
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M18 6L6 18M6 6l12 12" />
+              </svg>
+            </button>
           </div>
-          <button
-            onClick={onClose}
-            className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
-          >
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <path d="M18 6L6 18M6 6l12 12" />
-            </svg>
-          </button>
+
+          {/* Demographics */}
+          {metadata && (metadata.age || metadata.occupation || metadata.country) && (
+            <div className="flex flex-wrap gap-2">
+              {metadata.age && (
+                <span className="inline-flex items-center px-2 py-1 rounded-full text-[10px] font-medium bg-gray-100 text-gray-700">
+                  {metadata.age} years old
+                </span>
+              )}
+              {metadata.occupation && (
+                <span className="inline-flex items-center px-2 py-1 rounded-full text-[10px] font-medium bg-blue-50 text-blue-700">
+                  {metadata.occupation}
+                </span>
+              )}
+              {metadata.country && (
+                <span className="inline-flex items-center px-2 py-1 rounded-full text-[10px] font-medium bg-green-50 text-green-700">
+                  {metadata.country}
+                </span>
+              )}
+              {metadata.learningLanguage && (
+                <span className="inline-flex items-center px-2 py-1 rounded-full text-[10px] font-medium bg-purple-50 text-purple-700">
+                  Learning {metadata.learningLanguage}
+                </span>
+              )}
+              {metadata.learningGoal && (
+                <span className="inline-flex items-center px-2 py-1 rounded-full text-[10px] font-medium bg-orange-50 text-orange-700">
+                  Goal: {metadata.learningGoal}
+                </span>
+              )}
+              {metadata.primaryApp && metadata.primaryApp !== 'Duolingo' && (
+                <span className="inline-flex items-center px-2 py-1 rounded-full text-[10px] font-medium bg-red-50 text-red-700">
+                  Prefers {metadata.primaryApp}
+                </span>
+              )}
+            </div>
+          )}
         </div>
 
         {/* Transcript */}
@@ -287,6 +433,47 @@ function TranscriptModal({
 export default function DemoPage() {
   const [selectedAgents, setSelectedAgents] = useState<Set<number>>(new Set([1, 5]));
   const [transcriptAgent, setTranscriptAgent] = useState<typeof agentData[0] | null>(null);
+  const [activeFilters, setActiveFilters] = useState<Filter[]>([]);
+  const [isFilterLoading, setIsFilterLoading] = useState(false);
+  const [agentMetadata, setAgentMetadata] = useState<Record<number, AgentMetadata>>({});
+
+  // Load metadata on mount
+  useEffect(() => {
+    fetch('/agent_metadata.json')
+      .then(res => res.json())
+      .then((data: Array<AgentMetadata & { id: number }>) => {
+        const metadataMap: Record<number, AgentMetadata> = {};
+        data.forEach(item => {
+          metadataMap[item.id] = item;
+        });
+        setAgentMetadata(metadataMap);
+      })
+      .catch(err => console.error('Failed to load metadata:', err));
+  }, []);
+
+  // Update agent data with metadata
+  const agentsWithMetadata = agentData.map(agent => ({
+    ...agent,
+    metadata: agentMetadata[agent.id] || {},
+  }));
+
+  // Update selected agents when filters change
+  useEffect(() => {
+    if (activeFilters.length === 0) {
+      // No filters, keep current selection
+      return;
+    }
+
+    const matchingAgents = new Set<number>();
+    agentsWithMetadata.forEach(agent => {
+      const matchesAll = activeFilters.every(filter => matchesFilter(agent, filter));
+      if (matchesAll) {
+        matchingAgents.add(agent.id);
+      }
+    });
+
+    setSelectedAgents(matchingAgents);
+  }, [activeFilters, agentMetadata]);
 
   // Filter chat state
   const [filterMessages, setFilterMessages] = useState<Array<{ text: string; isUser: boolean }>>([
@@ -312,14 +499,60 @@ export default function DemoPage() {
     });
   };
 
-  const handleFilterSend = () => {
-    if (!filterInput.trim()) return;
-    setFilterMessages((prev) => [
-      ...prev,
-      { text: filterInput, isUser: true },
-      { text: 'I\'ll help you filter based on that criteria.', isUser: false },
-    ]);
+  const handleFilterSend = async () => {
+    if (!filterInput.trim() || isFilterLoading) return;
+
+    const userMessage = filterInput;
     setFilterInput('');
+    setFilterMessages((prev) => [...prev, { text: userMessage, isUser: true }]);
+    setIsFilterLoading(true);
+
+    try {
+      const response = await fetch('/api/parse-filter', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ query: userMessage }),
+      });
+
+      const data = await response.json();
+
+      if (data.filters && data.filters.length > 0) {
+        // Add new filters (avoid duplicates by id)
+        setActiveFilters((prev) => {
+          const existingIds = new Set(prev.map(f => f.id));
+          const newFilters = data.filters.filter((f: Filter) => !existingIds.has(f.id));
+          return [...prev, ...newFilters];
+        });
+
+        const filterLabels = data.filters.map((f: Filter) => f.label).join(', ');
+        setFilterMessages((prev) => [
+          ...prev,
+          { text: `Applied filters: ${filterLabels}`, isUser: false },
+        ]);
+      } else {
+        setFilterMessages((prev) => [
+          ...prev,
+          { text: 'I couldn\'t understand that filter. Try something like "under 30" or "negative about streaks".', isUser: false },
+        ]);
+      }
+    } catch (error) {
+      console.error('Filter error:', error);
+      setFilterMessages((prev) => [
+        ...prev,
+        { text: 'Something went wrong. Please try again.', isUser: false },
+      ]);
+    } finally {
+      setIsFilterLoading(false);
+    }
+  };
+
+  const removeFilter = (filterId: string) => {
+    setActiveFilters((prev) => prev.filter(f => f.id !== filterId));
+  };
+
+  const clearAllFilters = () => {
+    setActiveFilters([]);
+    setSelectedAgents(new Set([1, 5])); // Reset to default selection
   };
 
   const handleMemorySend = () => {
@@ -411,11 +644,37 @@ export default function DemoPage() {
         <div className="w-full lg:w-72 bg-white rounded-2xl shadow-sm border border-gray-100 p-4 flex flex-col">
           <h2 className="text-sm font-medium mb-3 text-gray-500 uppercase tracking-wider">Filter</h2>
 
+          {/* Active filters */}
+          {activeFilters.length > 0 && (
+            <div className="mb-3 flex flex-wrap gap-1">
+              {activeFilters.map((filter) => (
+                <FilterPill
+                  key={filter.id}
+                  filter={filter}
+                  onRemove={() => removeFilter(filter.id)}
+                />
+              ))}
+              <button
+                onClick={clearAllFilters}
+                className="text-[10px] text-gray-400 hover:text-gray-600 px-1"
+              >
+                Clear all
+              </button>
+            </div>
+          )}
+
           {/* Chat messages area */}
           <div className="flex-1 overflow-y-auto mb-3">
             {filterMessages.map((msg, idx) => (
               <ChatMessage key={idx} message={msg.text} isUser={msg.isUser} />
             ))}
+            {isFilterLoading && (
+              <div className="flex justify-start mb-2">
+                <div className="bg-gray-100 text-gray-600 px-3 py-2 rounded-xl text-xs">
+                  Analyzing...
+                </div>
+              </div>
+            )}
           </div>
 
           {/* Chat input */}
@@ -489,6 +748,7 @@ export default function DemoPage() {
       {/* Transcript Modal */}
       <TranscriptModal
         agent={transcriptAgent}
+        metadata={transcriptAgent ? agentMetadata[transcriptAgent.id] : undefined}
         onClose={() => setTranscriptAgent(null)}
       />
     </div>

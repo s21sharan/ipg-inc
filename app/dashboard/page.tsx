@@ -114,6 +114,7 @@ export default function Dashboard() {
 
       // Create a campaign object from the drafted data
       const drafted: Campaign = {
+        id: crypto.randomUUID(),
         name: data.basicDetails.name,
         title: data.basicDetails.title,
         caption: data.basicDetails.caption,
