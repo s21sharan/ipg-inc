@@ -29,6 +29,21 @@ interface Campaign {
   workspace_id: string;
 }
 
+interface PersonalityScores {
+  extroversion: number;
+  agreeableness: number;
+  conscientiousness: number;
+  neuroticism: number;
+  openness: number;
+}
+
+interface PersonalityData {
+  scores?: PersonalityScores;
+  responses?: any[];
+  rawProjections?: any;
+  generated_at?: string;
+}
+
 interface Interview {
   id: string;
   workspace_id: string;
@@ -46,7 +61,7 @@ interface Interview {
   learning_goal: string | null;
   usage_frequency: string | null;
   is_premium_user: boolean;
-  personality: string[];
+  personality: PersonalityData | string[] | null;
   pain_points: string[];
   value_props: string[];
   created_at: string;
@@ -73,6 +88,8 @@ function DashboardContent() {
   const [interviews, setInterviews] = useState<Interview[]>([]);
   const [loadingInterviews, setLoadingInterviews] = useState(false);
   const [selectedInterview, setSelectedInterview] = useState<Interview | null>(null);
+  const [personalityInterview, setPersonalityInterview] = useState<Interview | null>(null);
+  const [selectedTraitKey, setSelectedTraitKey] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [expandedRows, setExpandedRows] = useState<Set<string>>(new Set());
@@ -1132,7 +1149,7 @@ function DashboardContent() {
                         {/* Personality Button */}
                         <td className="px-2 py-3 whitespace-nowrap">
                           <button
-                            onClick={() => {/* TODO: Open personality modal */}}
+                            onClick={() => { setPersonalityInterview(interview); setSelectedTraitKey(null); }}
                             className="inline-flex items-center gap-1 px-2 py-1 text-xs font-medium text-purple-600 bg-purple-50 hover:bg-purple-100 rounded-md transition-colors"
                           >
                             <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -1397,6 +1414,313 @@ function DashboardContent() {
                   </p>
                 </div>
               ))}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Personality Modal */}
+      {personalityInterview && (
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4" onClick={() => setPersonalityInterview(null)}>
+          <div
+            className="bg-white rounded-2xl max-w-md w-full max-h-[90vh] overflow-hidden flex flex-col"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Modal Header */}
+            <div className="p-4 border-b border-gray-100">
+              <div className="flex justify-between items-start">
+                <div>
+                  <h2 className="text-lg font-medium text-gray-900">{personalityInterview.name}&apos;s Personality</h2>
+                  <p className="text-xs text-gray-500 mt-1">Big Five Personality Traits (0-5 scale)</p>
+                </div>
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setPersonalityInterview(null);
+                  }}
+                  className="p-2 hover:bg-gray-100 rounded-lg transition-colors text-gray-500 hover:text-gray-700"
+                >
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path d="M18 6L6 18M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+
+            {/* Personality Scores */}
+            <div className="p-4 overflow-y-auto flex-1">
+              {(() => {
+                const personality = personalityInterview.personality as PersonalityData | null;
+                const scores = personality?.scores;
+
+                if (!scores) {
+                  return (
+                    <div className="text-center py-8">
+                      <svg className="w-12 h-12 mx-auto text-gray-300 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                      </svg>
+                      <p className="text-sm text-gray-500">No personality data available</p>
+                      <p className="text-xs text-gray-400 mt-1">Run the personality batch script to generate scores</p>
+                    </div>
+                  );
+                }
+
+                // Trait definitions with descriptions, communication tips, and advertising recommendations
+                const traitDefinitions: Record<string, { label: string; description: string; communication: string; advertising: string }> = {
+                  openness: {
+                    label: 'Openness',
+                    description: 'Creativity, curiosity, and openness to new experiences',
+                    communication: 'Use imaginative, future-oriented language and invite them to explore new ideas, features, or possibilities. Emphasize learning, discovery, and novelty rather than routine. Offer context and "why" behind decisions, and be transparent about experiments or iterations. Encourage their input on new concepts and give them room to customize or play with options.',
+                    advertising: 'Highlight innovation, originality, and exploration. Use storytelling, rich visuals, and scenarios that showcase trying new things, traveling, learning, or personal growth. Position the product as a way to discover new experiences or unlock new perspectives. Campaigns can feature behind-the-scenes content, beta access, or "early adopter" angles that make them feel part of something new and evolving.'
+                  },
+                  conscientiousness: {
+                    label: 'Conscientiousness',
+                    description: 'Organization, reliability, and goal-driven self-discipline',
+                    communication: 'Be clear, structured, and precise. Provide timelines, expectations, and concrete next steps. Emphasize reliability, follow-through, and measurable outcomes. Avoid last-minute changes when possible, and explain the rationale when plans shift. Respect their time with concise messages and organized documentation.',
+                    advertising: 'Focus on productivity, dependability, and long-term value. Show how the product helps them stay organized, hit goals, and reduce chaos. Use messages around planning, efficiency, checklists, and progress tracking. Testimonials that emphasize consistency ("this helped me stay on track every week") and ROI will resonate. Visuals can include calendars, dashboards, or before/after productivity stories.'
+                  },
+                  extroversion: {
+                    label: 'Extraversion',
+                    description: 'Sociability, assertiveness, and emotional expressiveness',
+                    communication: 'Use an energetic, engaging tone and invite interaction. Encourage live discussions, feedback, and collaborative sessions. Give them chances to speak, share opinions, and connect with others. Use examples that involve social situations, community, or group activities. Acknowledge their enthusiasm and validate their contributions publicly when appropriate.',
+                    advertising: 'Highlight social connection, excitement, and shared experiences. Show the product in group settings—events, parties, meet-ups, or teams working together. Use dynamic visuals, video, and emotionally expressive stories. Emphasize features that enable connection (sharing, referrals, co-creation, communities). Campaigns with social challenges, events, or influencer collaborations are especially effective.'
+                  },
+                  agreeableness: {
+                    label: 'Agreeableness',
+                    description: 'Trust, altruism, kindness, and cooperation',
+                    communication: 'Use a warm, friendly tone, show empathy through active listening, and avoid unnecessary confrontation. Involve them in collaborative decisions, seek consensus, and highlight win–win outcomes. Acknowledge their efforts to support others and express appreciation openly. Provide reassurance and clarity, and avoid overly aggressive or competitive framing.',
+                    advertising: 'Emphasize empathy, community, and positive social impact. Position the product as helping others, strengthening relationships, or supporting fairness and inclusion. Use testimonials, human stories, and imagery that highlight kindness, cooperation, and shared benefit. Lean into cause-based or values-driven messaging (sustainability, charity, inclusivity) and show how choosing this brand "does good" beyond the individual.'
+                  },
+                  neuroticism: {
+                    label: 'Neuroticism',
+                    description: 'Sensitivity to stress, moodiness, and emotional reactivity',
+                    communication: 'Be reassuring, predictable, and transparent. Offer clear information, set realistic expectations, and proactively address common worries or risks. Avoid overly aggressive deadlines or pressure tactics. Provide safety nets—easy support access, clear refund or cancellation policies, and step-by-step guidance. Acknowledge their concerns and validate their need for security and control.',
+                    advertising: 'Highlight comfort, safety, and peace of mind. Focus on reducing stress, simplifying decisions, and preventing problems. Emphasize reliability, guarantees, and strong customer support. Use calming visuals and straightforward copy rather than high-intensity hype. Campaigns can showcase how the product removes friction, protects against loss, or "takes one thing off your plate," helping them feel more secure and in control.'
+                  },
+                };
+
+                // Radar chart configuration
+                const traits = [
+                  { key: 'openness', label: 'Openness' },
+                  { key: 'conscientiousness', label: 'Conscientiousness' },
+                  { key: 'extroversion', label: 'Extraversion' },
+                  { key: 'agreeableness', label: 'Agreeableness' },
+                  { key: 'neuroticism', label: 'Neuroticism' },
+                ];
+
+                // Get top 3 traits sorted by score
+                const sortedTraits = Object.entries(scores)
+                  .map(([key, value]) => ({ key, score: value, ...traitDefinitions[key] }))
+                  .sort((a, b) => b.score - a.score)
+                  .slice(0, 3);
+
+                const rankLabels = ['Primary', 'Secondary', 'Tertiary'];
+
+                const centerX = 120;
+                const centerY = 105;
+                const maxRadius = 70;
+                const levels = 5; // Grid levels
+
+                // Calculate point position on pentagon
+                const getPoint = (index: number, value: number, max: number = 5) => {
+                  const angle = (Math.PI * 2 * index) / 5 - Math.PI / 2; // Start from top
+                  const radius = (value / max) * maxRadius;
+                  return {
+                    x: centerX + radius * Math.cos(angle),
+                    y: centerY + radius * Math.sin(angle),
+                  };
+                };
+
+                // Generate pentagon path for grid levels
+                const getPentagonPath = (radius: number) => {
+                  const points = [];
+                  for (let i = 0; i < 5; i++) {
+                    const angle = (Math.PI * 2 * i) / 5 - Math.PI / 2;
+                    points.push(`${centerX + radius * Math.cos(angle)},${centerY + radius * Math.sin(angle)}`);
+                  }
+                  return `M${points.join('L')}Z`;
+                };
+
+                // Get score values
+                const scoreValues = traits.map(t => scores[t.key as keyof PersonalityScores] || 0);
+
+                // Generate data polygon path
+                const dataPoints = scoreValues.map((score, i) => {
+                  const point = getPoint(i, score);
+                  return `${point.x},${point.y}`;
+                });
+                const dataPath = `M${dataPoints.join('L')}Z`;
+
+                // Label positions (slightly outside the chart)
+                const labelPositions = traits.map((_, i) => {
+                  const point = getPoint(i, 6.2);
+                  return point;
+                });
+
+                return (
+                  <div className="flex flex-col items-center">
+                    {/* Radar Chart */}
+                    <svg width="240" height="220" className="overflow-visible">
+                      {/* Grid levels */}
+                      {[1, 2, 3, 4, 5].map((level) => (
+                        <path
+                          key={level}
+                          d={getPentagonPath((level / levels) * maxRadius)}
+                          fill="none"
+                          stroke="#e5e7eb"
+                          strokeWidth="1"
+                        />
+                      ))}
+
+                      {/* Axis lines */}
+                      {traits.map((_, i) => {
+                        const point = getPoint(i, 5);
+                        return (
+                          <line
+                            key={i}
+                            x1={centerX}
+                            y1={centerY}
+                            x2={point.x}
+                            y2={point.y}
+                            stroke="#e5e7eb"
+                            strokeWidth="1"
+                          />
+                        );
+                      })}
+
+                      {/* Data polygon */}
+                      <path
+                        d={dataPath}
+                        fill="rgba(59, 130, 246, 0.2)"
+                        stroke="#3b82f6"
+                        strokeWidth="2"
+                      />
+
+                      {/* Data points */}
+                      {scoreValues.map((score, i) => {
+                        const point = getPoint(i, score);
+                        return (
+                          <circle
+                            key={i}
+                            cx={point.x}
+                            cy={point.y}
+                            r="5"
+                            fill="#3b82f6"
+                          />
+                        );
+                      })}
+
+                      {/* Labels */}
+                      {traits.map((trait, i) => {
+                        const pos = labelPositions[i];
+                        const score = scoreValues[i];
+                        // Adjust text anchor based on position
+                        let textAnchor = 'middle';
+                        let dx = 0;
+                        if (i === 1) { textAnchor = 'start'; dx = 3; }
+                        if (i === 2) { textAnchor = 'start'; dx = 3; }
+                        if (i === 3) { textAnchor = 'end'; dx = -3; }
+                        if (i === 4) { textAnchor = 'end'; dx = -3; }
+
+                        return (
+                          <g key={trait.key}>
+                            <text
+                              x={pos.x + dx}
+                              y={pos.y}
+                              textAnchor={textAnchor}
+                              className="text-[11px] font-medium fill-gray-700"
+                              dy={i === 0 ? -4 : (i === 2 || i === 3) ? 10 : 3}
+                            >
+                              {trait.label}
+                            </text>
+                            <text
+                              x={pos.x + dx}
+                              y={pos.y}
+                              textAnchor={textAnchor}
+                              className="text-[10px] fill-gray-400"
+                              dy={i === 0 ? 7 : (i === 2 || i === 3) ? 21 : 14}
+                            >
+                              {score.toFixed(2)}
+                            </text>
+                          </g>
+                        );
+                      })}
+                    </svg>
+
+                    {/* Top 3 Traits - Selectable Horizontal Cards */}
+                    <div className="w-full mt-3 pt-3 border-t border-gray-100">
+                      <div className="grid grid-cols-3 gap-1.5">
+                        {sortedTraits.map((trait, index) => {
+                          const isSelected = (selectedTraitKey || sortedTraits[0]?.key) === trait.key;
+                          return (
+                            <button
+                              key={trait.key}
+                              onClick={() => setSelectedTraitKey(trait.key)}
+                              className={`rounded-lg px-2 py-2 text-center transition-all duration-200 ${
+                                isSelected
+                                  ? 'bg-blue-50 border-2 border-blue-500'
+                                  : 'bg-gray-50 border-2 border-transparent hover:bg-gray-100'
+                              }`}
+                            >
+                              <span className={`text-[8px] font-semibold uppercase tracking-wider ${
+                                isSelected ? 'text-blue-500' : 'text-gray-400'
+                              }`}>
+                                {rankLabels[index]}
+                              </span>
+                              <p className={`text-[11px] font-semibold mt-0.5 truncate ${
+                                isSelected ? 'text-blue-900' : 'text-gray-900'
+                              }`}>{trait.label}</p>
+                              <p className={`text-base font-bold ${
+                                isSelected ? 'text-blue-600' : 'text-gray-600'
+                              }`}>{trait.score.toFixed(2)}</p>
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </div>
+
+                    {/* Selected Trait Details */}
+                    {(() => {
+                      const activeKey = selectedTraitKey || sortedTraits[0]?.key;
+                      const activeTrait = traitDefinitions[activeKey];
+                      if (!activeTrait) return null;
+
+                      return (
+                        <div className="w-full mt-3 space-y-2.5">
+                          {/* Trait Header */}
+                          <div className="text-center pb-2 border-b border-gray-100">
+                            <h3 className="text-sm font-semibold text-gray-900">{activeTrait.label}</h3>
+                            <p className="text-[10px] text-gray-500 mt-0.5">{activeTrait.description}</p>
+                          </div>
+
+                          {/* Communication Tips */}
+                          <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-lg p-3">
+                            <div className="flex items-center gap-1.5 mb-1.5">
+                              <svg className="w-3.5 h-3.5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                              </svg>
+                              <h4 className="text-xs font-semibold text-blue-900">Communication Tips</h4>
+                            </div>
+                            <p className="text-[11px] text-blue-800 leading-relaxed">{activeTrait.communication}</p>
+                          </div>
+
+                          {/* Advertising Recommendations */}
+                          <div className="bg-gradient-to-br from-purple-50 to-pink-50 rounded-lg p-3">
+                            <div className="flex items-center gap-1.5 mb-1.5">
+                              <svg className="w-3.5 h-3.5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z" />
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z" />
+                              </svg>
+                              <h4 className="text-xs font-semibold text-purple-900">Advertising Recommendations</h4>
+                            </div>
+                            <p className="text-[11px] text-purple-800 leading-relaxed">{activeTrait.advertising}</p>
+                          </div>
+                        </div>
+                      );
+                    })()}
+                  </div>
+                );
+              })()}
             </div>
           </div>
         </div>

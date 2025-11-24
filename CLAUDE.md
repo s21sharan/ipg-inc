@@ -240,3 +240,60 @@ Converted Interviews tab from card grid to sortable table with toolbar, search, 
 
 ### #Background
 Interviews table provides data-grid UX with expandable rows for long content. Three-dot menu on hover follows Notion-style column actions. URL persistence allows sharing specific workspace views and maintains state on refresh. Suspense wrapper required for Next.js useSearchParams hook.
+
+## 2025-11-23 – Compact Session (Part 2)
+
+### #CurrentFocus
+Added follow-up questions to 196 Duolingo interviews using GPT-4o-mini Batch API and Personality column to table.
+
+### #SessionChanges
+- Added Personality column to interviews table with purple "View" button (graph icon)
+- Made table columns more compact: reduced padding, auto-width Demographics, minimal button columns
+- Created `demo/scripts/create_followup_batch.js` for OpenAI Batch API submission
+- Created `demo/scripts/process_followup_batch.js` to process batch results and update Supabase
+- Generated 4-5 follow-up moments per interview with 1-2 questions each (~8-10 new Q&As per person)
+- Follow-ups stored with `is_followup: true` and `followup_to_index` fields for frontend styling
+- Successfully processed 196 interviews, added ~1,700 follow-up Q&As total
+- Updated transcript modal to style follow-ups: indented, orange border, orange text, ↳ arrow prefix
+- Used GPT-4o-mini Batch API for 50% cost savings (~$1-2 total vs $25-35 regular)
+
+### #NextSteps
+- Implement Personality modal with Big Five or custom personality analysis #Deprecated
+- Add personality analysis generation script using batch API #Deprecated
+- Consider adding follow-up indicator badge to transcript button
+
+### #BugsAndTheories
+- None identified this session
+
+### #Background
+Follow-up questions enrich interviews by probing 4-5 key moments deeper. Batch API processes all 200 interviews async within 24hrs at 50% cost. Transcript notation (`is_followup`, `followup_to_index`) enables frontend to render follow-ups distinctly (indented + orange). Personality column UI ready, backend TBD.
+
+## 2025-11-23 – Compact Session (Part 3)
+
+### #CurrentFocus
+Implemented Big Five personality analysis using GPT-4o Batch API with embedding-based scoring and radar chart visualization.
+
+### #SessionChanges
+- Created `demo/scripts/create_personality_batch.js` for GPT-4o batch submission (50 BFPT questions)
+- Created `demo/scripts/process_personality_batch.js` with two-pass normalization and embedding projection
+- Implemented dimensional projection: embed responses → project onto trait axes → normalize to 0-5 scale
+- Used polar opposite anchor texts (HIGH/LOW) for each Big Five trait to create axis vectors
+- Fixed normalization clustering issue: changed from hardcoded range to two-pass observed min/max
+- Scores saved directly in 0-5 scale (rounded to 2 decimal places) in Supabase `personality` JSONB
+- Added personality modal with radar/spider chart visualization (SVG pentagon)
+- Replaced bar graph with radar chart showing all 5 traits with labels and scores
+- Made radar chart compact (240×220px, 70px radius) to fit modal better
+- Created `demo/scripts/verify_personality_data.js` to verify Supabase data matches frontend
+- Created `supabase/migrations/003_cleanup_interviews_table.sql` for removing unused columns
+
+### #NextSteps
+- Run cleanup SQL to drop `participant_name` and `participant_email` columns
+- Add hover tooltips to radar chart points showing trait descriptions
+- Consider adding personality comparison view across multiple interviews
+
+### #BugsAndTheories
+- All scores clustering around 20 ⇒ Hardcoded normalization range too wide (fixed: two-pass normalization)
+- Frontend conversion mismatch ⇒ Was converting 0-40 to 0-5 (fixed: backend now saves 0-5 directly)
+
+### #Background
+Big Five personality scoring uses embedding-based dimensional projection instead of arbitrary GPT numeric outputs. GPT-4o answers 50 BFPT questions as free-text based on interview transcript. Responses embedded with text-embedding-3-small, projected onto trait axes defined by polar opposite anchor texts. Two-pass normalization finds actual min/max across all interviews for proper 0-5 distribution. Radar chart matches standard OCEAN visualization style.
