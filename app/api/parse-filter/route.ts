@@ -15,12 +15,15 @@ export async function POST(request: Request) {
 
     const systemPrompt = `You are a filter parser for a user research database. Convert natural language queries into structured filters.
 
+IMPORTANT: Any query that mentions filtering criteria should return a filter. Phrases like "filter by", "show me", "only", "just" are all filter requests.
+
 Available fields to filter on:
 - age: number (e.g., <24, >30, =25, 20-30)
+- gender: string ("male", "female", "non-binary")
 - occupation: string
 - country: string
 - primaryApp: string ("Duolingo", "Babbel", "Rosetta Stone", "Pimsleur", "Memrise", "HelloChinese")
-- learningLanguage: string
+- learningLanguage: string (e.g., "Spanish", "English", "French", "Japanese", "German", "Chinese", "Portuguese", "Italian", "Korean")
 - learningGoal: string ("career", "travel", "heritage", "hobby", "education", "social", "immigration")
 - sentiments.overall: string ("very_negative", "negative", "mixed", "positive", "very_positive")
 - sentiments.streaks: string (same scale)
@@ -42,21 +45,27 @@ Return a JSON array of filter objects. Each filter should have:
   "field": string (the field path like "age" or "sentiments.streaks"),
   "operator": string ("<", ">", "<=", ">=", "=", "!=", "contains", "range"),
   "value": string | number | [number, number] for ranges,
-  "label": string (human-readable label like "Age: <24" or "Streaks: Negative")
+  "label": string (human-readable label like "Age: <24" or "Female")
 }
 
 Examples:
-- "under 24" → [{"id": "age_lt_24", "field": "age", "operator": "<", "value": 24, "label": "Age: <24"}]
+- "under 24" → [{"id": "age_lt_24", "field": "age", "operator": "<", "value": 24, "label": "Under 24"}]
+- "filter by only female" → [{"id": "gender_female", "field": "gender", "operator": "=", "value": "female", "label": "Female"}]
+- "women" → [{"id": "gender_female", "field": "gender", "operator": "=", "value": "female", "label": "Female"}]
+- "men" → [{"id": "gender_male", "field": "gender", "operator": "=", "value": "male", "label": "Male"}]
+- "people learning spanish" → [{"id": "lang_spanish", "field": "learningLanguage", "operator": "=", "value": "Spanish", "label": "Learning Spanish"}]
 - "negative about streaks" → [{"id": "streaks_neg", "field": "sentiments.streaks", "operator": "=", "value": "negative", "label": "Streaks: Negative"}]
 - "frustrated with hearts" → [{"id": "hearts_neg", "field": "sentiments.hearts", "operator": "=", "value": "negative", "label": "Hearts: Frustrated"}]
 - "uses Babbel" → [{"id": "app_babbel", "field": "primaryApp", "operator": "=", "value": "Babbel", "label": "App: Babbel"}]
 - "learning for career" → [{"id": "goal_career", "field": "learningGoal", "operator": "=", "value": "career", "label": "Goal: Career"}]
+- "from Mexico" → [{"id": "country_mexico", "field": "country", "operator": "=", "value": "Mexico", "label": "From Mexico"}]
+- "premium users" → [{"id": "premium_true", "field": "isPremiumUser", "operator": "=", "value": true, "label": "Premium"}]
 
 For sentiment queries like "frustrated", "annoyed", "hates" → use "negative" or "very_negative"
 For sentiment queries like "loves", "enjoys" → use "positive" or "very_positive"
 
 Return a JSON object with a "filters" key containing the array of filter objects.
-Example: {"filters": [{"id": "age_lt_30", "field": "age", "operator": "<", "value": 30, "label": "Age: <30"}]}`;
+Example: {"filters": [{"id": "age_lt_30", "field": "age", "operator": "<", "value": 30, "label": "Under 30"}]}`;
 
     const response = await openai.chat.completions.create({
       model: 'gpt-4o-mini',

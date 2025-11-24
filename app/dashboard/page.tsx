@@ -1,9 +1,18 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useState, useEffect, Suspense } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { supabase } from '../../lib/supabase';
 import CreateCampaignForm from './create-campaign';
+
+interface Workspace {
+  id: string;
+  name: string;
+  owner_id: string;
+}
+
+// Duolingo Demo workspace ID (fixed UUID)
+const DUOLINGO_DEMO_WORKSPACE_ID = '00000000-0000-0000-0000-000000000001';
 
 interface Campaign {
   id: string;
@@ -16,13 +25,40 @@ interface Campaign {
   completion_logic: any;
   created_at: string;
   updated_at: string;
+  workspace: string;
+  workspace_id: string;
 }
 
-export default function Dashboard() {
+interface Interview {
+  id: string;
+  workspace_id: string;
+  name: string;
+  summary: string;
+  top_quotes: string[];
+  transcript: { question: string; answer: string }[];
+  age: number | null;
+  gender: string | null;
+  race: string | null;
+  hometown: string | null;
+  occupation: string | null;
+  country: string | null;
+  learning_language: string | null;
+  learning_goal: string | null;
+  usage_frequency: string | null;
+  is_premium_user: boolean;
+  personality: string[];
+  pain_points: string[];
+  value_props: string[];
+  created_at: string;
+}
+
+function DashboardContent() {
   const [user, setUser] = useState<any>(null);
-  const [activeTab, setActiveTab] = useState('campaigns');
   const [showUserMenu, setShowUserMenu] = useState(false);
   const [showWorkspaceMenu, setShowWorkspaceMenu] = useState(false);
+  const [workspaces, setWorkspaces] = useState<Workspace[]>([]);
+  const [currentWorkspace, setCurrentWorkspace] = useState<Workspace | null>(null);
+  const [personalWorkspaceId, setPersonalWorkspaceId] = useState<string | null>(null);
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [showCreateForm, setShowCreateForm] = useState(false);
   const [showPromptBox, setShowPromptBox] = useState(false);
@@ -34,29 +70,151 @@ export default function Dashboard() {
   const [editingCampaign, setEditingCampaign] = useState<Campaign | null>(null);
   const [viewingCampaign, setViewingCampaign] = useState<Campaign | null>(null);
   const [campaignViewTab, setCampaignViewTab] = useState<'summary' | 'conversations' | 'share' | 'analyze'>('summary');
+  const [interviews, setInterviews] = useState<Interview[]>([]);
+  const [loadingInterviews, setLoadingInterviews] = useState(false);
+  const [selectedInterview, setSelectedInterview] = useState<Interview | null>(null);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [isFullscreen, setIsFullscreen] = useState(false);
+  const [expandedRows, setExpandedRows] = useState<Set<string>>(new Set());
+  const [sortColumn, setSortColumn] = useState<string | null>(null);
+  const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
+  const [showSortDropdown, setShowSortDropdown] = useState<string | null>(null);
+  const [demographicSortField, setDemographicSortField] = useState<string>('age');
+  const [isInitialized, setIsInitialized] = useState(false);
   const router = useRouter();
+  const searchParams = useSearchParams();
+
+  // Get URL params
+  const workspaceIdFromUrl = searchParams.get('workspace');
+  const tabFromUrl = searchParams.get('tab');
+  const [activeTab, setActiveTab] = useState(tabFromUrl || 'campaigns');
+
+  // Update URL when workspace or tab changes
+  const updateUrl = (workspaceId: string, tab: string) => {
+    const params = new URLSearchParams();
+    params.set('workspace', workspaceId);
+    params.set('tab', tab);
+    router.replace(`/dashboard?${params.toString()}`, { scroll: false });
+  };
+
+  // Handle workspace change
+  const handleWorkspaceChange = (workspace: Workspace) => {
+    setCurrentWorkspace(workspace);
+    setShowWorkspaceMenu(false);
+    updateUrl(workspace.id, activeTab);
+  };
+
+  // Handle tab change
+  const handleTabChange = (tab: string) => {
+    setActiveTab(tab);
+    if (currentWorkspace) {
+      updateUrl(currentWorkspace.id, tab);
+    }
+  };
 
   useEffect(() => {
-    // Get current user
-    const getCurrentUser = async () => {
+    // Get current user and set up workspaces
+    const initialize = async () => {
       const { data: { user } } = await supabase.auth.getUser();
       setUser(user);
 
-      // Fetch campaigns for this user
       if (user) {
-        fetchCampaigns();
+        // Fetch user's workspaces
+        const { data: memberWorkspaces } = await supabase
+          .from('workspace_members')
+          .select('workspace_id, workspaces(id, name, owner_id)')
+          .eq('user_id', user.id);
+
+        // Also fetch the Duolingo Demo workspace (accessible to all)
+        const { data: duolingoWorkspace } = await supabase
+          .from('workspaces')
+          .select('*')
+          .eq('id', DUOLINGO_DEMO_WORKSPACE_ID)
+          .single();
+
+        // Find or create personal workspace
+        let personalWs = memberWorkspaces?.find(
+          (m: any) => m.workspaces?.name === 'Personal Workspace'
+        );
+
+        if (!personalWs) {
+          // Create personal workspace for this user
+          const { data: newWorkspace } = await supabase
+            .from('workspaces')
+            .insert({ name: 'Personal Workspace', owner_id: user.id })
+            .select()
+            .single();
+
+          if (newWorkspace) {
+            // Add user as member
+            await supabase
+              .from('workspace_members')
+              .insert({ workspace_id: newWorkspace.id, user_id: user.id, role: 'owner' });
+
+            personalWs = { workspace_id: newWorkspace.id, workspaces: newWorkspace };
+          }
+        }
+
+        // Build workspaces list
+        const allWorkspaces: Workspace[] = [];
+
+        if (personalWs?.workspaces) {
+          allWorkspaces.push(personalWs.workspaces as Workspace);
+          setPersonalWorkspaceId(personalWs.workspaces.id);
+        }
+
+        if (duolingoWorkspace) {
+          allWorkspaces.push(duolingoWorkspace);
+        }
+
+        // Add other workspaces the user is a member of
+        memberWorkspaces?.forEach((m: any) => {
+          if (m.workspaces && m.workspaces.name !== 'Personal Workspace') {
+            allWorkspaces.push(m.workspaces);
+          }
+        });
+
+        setWorkspaces(allWorkspaces);
+
+        // Check if workspace ID is in URL
+        if (workspaceIdFromUrl) {
+          const workspaceFromUrl = allWorkspaces.find(ws => ws.id === workspaceIdFromUrl);
+          if (workspaceFromUrl) {
+            setCurrentWorkspace(workspaceFromUrl);
+            setIsInitialized(true);
+            return;
+          }
+        }
+
+        // Set default workspace to personal
+        if (personalWs?.workspaces) {
+          setCurrentWorkspace(personalWs.workspaces as Workspace);
+          // Update URL with default workspace
+          updateUrl(personalWs.workspaces.id, tabFromUrl || 'campaigns');
+        } else if (allWorkspaces.length > 0) {
+          setCurrentWorkspace(allWorkspaces[0]);
+          updateUrl(allWorkspaces[0].id, tabFromUrl || 'campaigns');
+        }
+        setIsInitialized(true);
       }
     };
 
-    getCurrentUser();
-  }, []);
+    initialize();
+  }, [workspaceIdFromUrl, tabFromUrl]);
 
-  const fetchCampaigns = async () => {
+  const fetchCampaigns = async (workspaceId?: string) => {
     setLoadingCampaigns(true);
     try {
+      const wsId = workspaceId || currentWorkspace?.id;
+      if (!wsId) {
+        setCampaigns([]);
+        return;
+      }
+
       const { data, error } = await supabase
         .from('campaigns')
         .select('*')
+        .eq('workspace_id', wsId)
         .order('created_at', { ascending: false });
 
       if (error) throw error;
@@ -68,6 +226,39 @@ export default function Dashboard() {
       setLoadingCampaigns(false);
     }
   };
+
+  const fetchInterviews = async (workspaceId?: string) => {
+    setLoadingInterviews(true);
+    try {
+      const wsId = workspaceId || currentWorkspace?.id;
+      if (!wsId) {
+        setInterviews([]);
+        return;
+      }
+
+      const { data, error } = await supabase
+        .from('interviews')
+        .select('*')
+        .eq('workspace_id', wsId)
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+
+      setInterviews(data || []);
+    } catch (error) {
+      console.error('Error fetching interviews:', error);
+    } finally {
+      setLoadingInterviews(false);
+    }
+  };
+
+  // Refetch campaigns and interviews when workspace changes
+  useEffect(() => {
+    if (user && currentWorkspace) {
+      fetchCampaigns(currentWorkspace.id);
+      fetchInterviews(currentWorkspace.id);
+    }
+  }, [currentWorkspace, user]);
 
   const deleteCampaign = async (id: string) => {
     if (!confirm('Are you sure you want to delete this campaign?')) return;
@@ -112,9 +303,9 @@ export default function Dashboard() {
 
       const data = await response.json();
 
-      // Create a campaign object from the drafted data
+      // Create a campaign object from the drafted data (without id so it gets inserted as new)
       const drafted: Campaign = {
-        id: crypto.randomUUID(),
+        id: '', // Empty id so it creates a new campaign instead of updating
         name: data.basicDetails.name,
         title: data.basicDetails.title,
         caption: data.basicDetails.caption,
@@ -124,6 +315,8 @@ export default function Dashboard() {
         completion_logic: data.completionLogic,
         created_at: new Date().toISOString(),
         updated_at: new Date().toISOString(),
+        workspace: currentWorkspace?.name || 'personal',
+        workspace_id: currentWorkspace?.id || '',
       };
 
       setDraftedCampaign(drafted);
@@ -479,6 +672,7 @@ export default function Dashboard() {
     if (showCreateForm || editingCampaign || draftedCampaign) {
       return <CreateCampaignForm
         campaign={editingCampaign || draftedCampaign || undefined}
+        workspaceId={currentWorkspace?.id || ''}
         onClose={() => {
           setShowCreateForm(false);
           setEditingCampaign(null);
@@ -586,22 +780,372 @@ export default function Dashboard() {
             )}
           </div>
         );
-      case 'simulated-agents':
+      case 'interviews':
+        // Filter interviews based on search query
+        const filteredInterviews = interviews.filter(interview => {
+          if (!searchQuery.trim()) return true;
+          const query = searchQuery.toLowerCase();
+          return (
+            interview.name?.toLowerCase().includes(query) ||
+            interview.summary?.toLowerCase().includes(query) ||
+            interview.country?.toLowerCase().includes(query) ||
+            interview.occupation?.toLowerCase().includes(query) ||
+            interview.learning_language?.toLowerCase().includes(query) ||
+            interview.top_quotes?.some(q => q.toLowerCase().includes(query))
+          );
+        });
+
+        // Sort interviews
+        const sortedInterviews = [...filteredInterviews].sort((a, b) => {
+          if (!sortColumn) return 0;
+
+          let aVal: any, bVal: any;
+
+          if (sortColumn === 'name') {
+            aVal = a.name?.toLowerCase() || '';
+            bVal = b.name?.toLowerCase() || '';
+          } else if (sortColumn === 'demographics') {
+            // Sort by the selected demographic field
+            switch (demographicSortField) {
+              case 'age':
+                aVal = a.age || 0;
+                bVal = b.age || 0;
+                break;
+              case 'gender':
+                aVal = a.gender?.toLowerCase() || '';
+                bVal = b.gender?.toLowerCase() || '';
+                break;
+              case 'country':
+                aVal = a.country?.toLowerCase() || '';
+                bVal = b.country?.toLowerCase() || '';
+                break;
+              case 'occupation':
+                aVal = a.occupation?.toLowerCase() || '';
+                bVal = b.occupation?.toLowerCase() || '';
+                break;
+              case 'learning_language':
+                aVal = a.learning_language?.toLowerCase() || '';
+                bVal = b.learning_language?.toLowerCase() || '';
+                break;
+              default:
+                aVal = a.age || 0;
+                bVal = b.age || 0;
+            }
+          } else {
+            return 0;
+          }
+
+          if (aVal < bVal) return sortDirection === 'asc' ? -1 : 1;
+          if (aVal > bVal) return sortDirection === 'asc' ? 1 : -1;
+          return 0;
+        });
+
+        // Handle sort
+        const handleSort = (column: string, direction: 'asc' | 'desc', demoField?: string) => {
+          setSortColumn(column);
+          setSortDirection(direction);
+          if (demoField) {
+            setDemographicSortField(demoField);
+          }
+          setShowSortDropdown(null);
+        };
+
+        // CSV download function
+        const downloadCSV = () => {
+          const headers = ['Name', 'Age', 'Gender', 'Country', 'Occupation', 'Learning Language', 'Summary', 'Top Quote'];
+          const rows = filteredInterviews.map(i => [
+            i.name || '',
+            i.age?.toString() || '',
+            i.gender || '',
+            i.country || '',
+            i.occupation || '',
+            i.learning_language || '',
+            (i.summary || '').replace(/"/g, '""'),
+            (i.top_quotes?.[0] || '').replace(/"/g, '""')
+          ]);
+
+          const csvContent = [
+            headers.join(','),
+            ...rows.map(row => row.map(cell => `"${cell}"`).join(','))
+          ].join('\n');
+
+          const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+          const link = document.createElement('a');
+          link.href = URL.createObjectURL(blob);
+          link.download = `interviews_${currentWorkspace?.name || 'export'}_${new Date().toISOString().split('T')[0]}.csv`;
+          link.click();
+        };
+
+        // Toggle fullscreen
+        const toggleFullscreen = () => {
+          if (!isFullscreen) {
+            document.documentElement.requestFullscreen?.();
+          } else {
+            document.exitFullscreen?.();
+          }
+          setIsFullscreen(!isFullscreen);
+        };
+
+        // Toggle row expansion
+        const toggleRowExpansion = (id: string) => {
+          setExpandedRows(prev => {
+            const newSet = new Set(prev);
+            if (newSet.has(id)) {
+              newSet.delete(id);
+            } else {
+              newSet.add(id);
+            }
+            return newSet;
+          });
+        };
+
         return (
-          <div className="p-6">
-            <h1 className="text-lg font-light text-gray-800 mb-3">Simulated Agents</h1>
-            <div className="bg-gray-50 rounded border-2 border-dashed border-gray-300 p-8 text-center">
-              <p className="text-sm text-gray-500">No simulated agents created yet. Create campaigns to generate simulated agents!</p>
+          <div className={`flex-1 flex flex-col overflow-hidden bg-white ${isFullscreen ? 'fixed inset-0 z-50' : ''}`}>
+            {/* Toolbar */}
+            <div className="flex items-center justify-between px-4 py-2 border-b border-gray-200 bg-gray-50">
+              {/* Search Bar - Left Side */}
+              <div className="relative">
+                <svg className="w-4 h-4 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+                <input
+                  type="text"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder="Search interviews..."
+                  className="pl-9 pr-8 py-1.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent w-72 text-gray-900 bg-white"
+                />
+                {searchQuery && (
+                  <button
+                    onClick={() => setSearchQuery('')}
+                    className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                  >
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                  </button>
+                )}
+              </div>
+
+              {/* Action Buttons - Right Side */}
+              <div className="flex items-center gap-1 bg-white border border-gray-200 rounded-lg px-2 py-1">
+                <button
+                  onClick={downloadCSV}
+                  className="p-1.5 hover:bg-gray-100 rounded transition-colors"
+                  title="Download CSV"
+                >
+                  <svg className="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                  </svg>
+                </button>
+                <button
+                  onClick={toggleFullscreen}
+                  className={`p-1.5 hover:bg-gray-100 rounded transition-colors ${isFullscreen ? 'bg-blue-50' : ''}`}
+                  title={isFullscreen ? "Exit Fullscreen" : "Fullscreen"}
+                >
+                  <svg className={`w-4 h-4 ${isFullscreen ? 'text-blue-600' : 'text-gray-500'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    {isFullscreen ? (
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 9V4.5M9 9H4.5M9 9L3.75 3.75M9 15v4.5M9 15H4.5M9 15l-5.25 5.25M15 9h4.5M15 9V4.5M15 9l5.25-5.25M15 15h4.5M15 15v4.5m0-4.5l5.25 5.25" />
+                    ) : (
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
+                    )}
+                  </svg>
+                </button>
+              </div>
             </div>
-          </div>
-        );
-      case 'conversations':
-        return (
-          <div className="p-6">
-            <h1 className="text-lg font-light text-gray-800 mb-3">Conversations</h1>
-            <div className="bg-gray-50 rounded border-2 border-dashed border-gray-300 p-8 text-center">
-              <p className="text-sm text-gray-500">No conversations yet. Start a campaign to begin conversations!</p>
-            </div>
+
+            {loadingInterviews ? (
+              <div className="flex items-center justify-center h-full">
+                <svg className="animate-spin h-8 w-8 text-blue-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+              </div>
+            ) : interviews.length === 0 ? (
+              <div className="flex-1 flex items-center justify-center">
+                <div className="text-center max-w-md mx-auto">
+                  <div className="w-12 h-12 bg-gray-200 rounded-full mx-auto mb-3 flex items-center justify-center">
+                    <svg className="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+                    </svg>
+                  </div>
+                  <p className="text-gray-600 text-sm">No interviews yet in this workspace.</p>
+                </div>
+              </div>
+            ) : filteredInterviews.length === 0 ? (
+              <div className="flex-1 flex items-center justify-center">
+                <div className="text-center max-w-md mx-auto">
+                  <div className="w-12 h-12 bg-gray-200 rounded-full mx-auto mb-3 flex items-center justify-center">
+                    <svg className="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                    </svg>
+                  </div>
+                  <p className="text-gray-600 text-sm">No interviews match &ldquo;{searchQuery}&rdquo;</p>
+                  <button
+                    onClick={() => setSearchQuery('')}
+                    className="text-blue-600 hover:text-blue-700 text-sm mt-2"
+                  >
+                    Clear search
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <div className="flex-1 overflow-auto" onClick={() => setShowSortDropdown(null)}>
+                <table className="w-full">
+                  <thead className="bg-gray-50 sticky top-0 z-10">
+                    <tr className="border-b border-gray-200">
+                      {/* Name Header with Sort */}
+                      <th className="text-left px-4 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider relative group/name">
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-1.5">
+                            {sortColumn === 'name' && (
+                              <svg className="w-3 h-3 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d={sortDirection === 'asc' ? "M5 15l7-7 7 7" : "M19 9l-7 7-7-7"} />
+                              </svg>
+                            )}
+                            <span>Name</span>
+                          </div>
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setShowSortDropdown(showSortDropdown === 'name' ? null : 'name');
+                            }}
+                            className="p-1 rounded hover:bg-gray-200 opacity-0 group-hover/name:opacity-100 transition-opacity"
+                          >
+                            <svg className="w-4 h-4 text-gray-500" fill="currentColor" viewBox="0 0 24 24">
+                              <circle cx="12" cy="5" r="2" />
+                              <circle cx="12" cy="12" r="2" />
+                              <circle cx="12" cy="19" r="2" />
+                            </svg>
+                          </button>
+                        </div>
+                        {showSortDropdown === 'name' && (
+                          <div className="absolute left-0 top-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg py-1 min-w-[160px] z-20" onClick={(e) => e.stopPropagation()}>
+                            <button
+                              onClick={() => handleSort('name', 'asc')}
+                              className={`w-full px-3 py-2 text-left text-sm flex items-center gap-2 hover:bg-gray-50 ${sortColumn === 'name' && sortDirection === 'asc' ? 'text-blue-600 bg-blue-50' : 'text-gray-700'}`}
+                            >
+                              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 15l7-7 7 7" />
+                              </svg>
+                              Sort ascending
+                            </button>
+                            <button
+                              onClick={() => handleSort('name', 'desc')}
+                              className={`w-full px-3 py-2 text-left text-sm flex items-center gap-2 hover:bg-gray-50 ${sortColumn === 'name' && sortDirection === 'desc' ? 'text-blue-600 bg-blue-50' : 'text-gray-700'}`}
+                            >
+                              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+                              </svg>
+                              Sort descending
+                            </button>
+                          </div>
+                        )}
+                      </th>
+
+                      {/* Demographics Header */}
+                      <th className="text-left px-4 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Demographics
+                      </th>
+
+                      <th className="text-left px-4 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">Summary</th>
+                      <th className="text-left px-4 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">Quotes</th>
+                      <th className="text-left px-4 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">Transcript</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-gray-100">
+                    {sortedInterviews.map((interview) => (
+                      <tr key={interview.id} className="hover:bg-gray-50 transition-colors">
+                        {/* Name */}
+                        <td className="px-4 py-3 whitespace-nowrap">
+                          <span className="text-sm font-medium text-gray-900">{interview.name}</span>
+                        </td>
+
+                        {/* Demographics */}
+                        <td className="px-4 py-3">
+                          <div className="flex flex-wrap gap-1 max-w-xs">
+                            {interview.age && (
+                              <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-medium bg-gray-100 text-gray-700">
+                                {interview.age} yo
+                              </span>
+                            )}
+                            {interview.gender && interview.gender.toLowerCase() !== 'unknown' && (
+                              <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-medium bg-blue-50 text-blue-700">
+                                {interview.gender}
+                              </span>
+                            )}
+                            {interview.country && interview.country.toLowerCase() !== 'unknown' && (
+                              <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-medium bg-green-50 text-green-700">
+                                {interview.country}
+                              </span>
+                            )}
+                            {interview.occupation && interview.occupation.toLowerCase() !== 'unknown' && (
+                              <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-medium bg-purple-50 text-purple-700">
+                                {interview.occupation}
+                              </span>
+                            )}
+                            {interview.learning_language && interview.learning_language.toLowerCase() !== 'unknown' && (
+                              <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-medium bg-orange-50 text-orange-700">
+                                {interview.learning_language}
+                              </span>
+                            )}
+                          </div>
+                        </td>
+
+                        {/* Summary */}
+                        <td className="px-4 py-3">
+                          {interview.summary ? (
+                            <div
+                              onClick={() => toggleRowExpansion(interview.id)}
+                              className={`text-xs text-gray-600 max-w-sm cursor-pointer hover:text-gray-900 ${
+                                expandedRows.has(interview.id) ? '' : 'line-clamp-2'
+                              }`}
+                              title={expandedRows.has(interview.id) ? 'Click to collapse' : 'Click to expand'}
+                            >
+                              {interview.summary}
+                            </div>
+                          ) : (
+                            <span className="text-xs text-gray-400">—</span>
+                          )}
+                        </td>
+
+                        {/* Quotes */}
+                        <td className="px-4 py-3">
+                          {interview.top_quotes && interview.top_quotes.length > 0 ? (
+                            <div
+                              onClick={() => toggleRowExpansion(interview.id)}
+                              className={`text-xs text-gray-600 italic max-w-xs cursor-pointer hover:text-gray-900 ${
+                                expandedRows.has(interview.id) ? '' : 'line-clamp-2'
+                              }`}
+                              title={expandedRows.has(interview.id) ? 'Click to collapse' : 'Click to expand'}
+                            >
+                              &ldquo;{expandedRows.has(interview.id)
+                                ? interview.top_quotes.join('" "')
+                                : interview.top_quotes[0]}&rdquo;
+                            </div>
+                          ) : (
+                            <span className="text-xs text-gray-400">—</span>
+                          )}
+                        </td>
+
+                        {/* Transcript Button */}
+                        <td className="px-4 py-3">
+                          <button
+                            onClick={() => setSelectedInterview(interview)}
+                            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-blue-600 bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors"
+                          >
+                            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                            </svg>
+                            View
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
           </div>
         );
       default:
@@ -610,7 +1154,7 @@ export default function Dashboard() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex" style={{ fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif' }}>
+    <div className="h-screen bg-gray-50 flex overflow-hidden" style={{ fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif' }}>
       {/* Sidebar */}
       <div className="w-64 bg-white border-r border-gray-200 flex flex-col">
         {/* Logo */}
@@ -623,12 +1167,12 @@ export default function Dashboard() {
               onClick={() => setShowWorkspaceMenu(!showWorkspaceMenu)}
               className="flex items-center justify-between w-full bg-gray-50 hover:bg-gray-100 border border-gray-200 rounded px-2 py-1 text-xs text-gray-700 transition-colors"
             >
-              <span>Personal Workspace</span>
+              <span>{currentWorkspace?.name || 'Select Workspace'}</span>
               <svg className={`w-3 h-3 text-gray-400 transition-transform ${showWorkspaceMenu ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
               </svg>
             </button>
-            
+
             {/* Workspace Dropdown Menu */}
             {showWorkspaceMenu && (
               <div className="absolute top-full left-0 right-0 bg-white border border-gray-200 rounded-lg shadow-lg mt-1 overflow-hidden z-10">
@@ -636,10 +1180,20 @@ export default function Dashboard() {
                   <div className="px-3 py-2 text-xs text-gray-500 uppercase tracking-wide font-medium border-b border-gray-100">
                     Workspaces
                   </div>
-                  <button className="w-full px-3 py-2 text-left text-sm text-gray-700 hover:bg-gray-50 transition-colors flex items-center gap-2">
-                    <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
-                    Personal Workspace
-                  </button>
+                  {workspaces.map((ws) => (
+                    <button
+                      key={ws.id}
+                      onClick={() => handleWorkspaceChange(ws)}
+                      className={`w-full px-3 py-2 text-left text-sm text-gray-700 hover:bg-gray-50 transition-colors flex items-center gap-2 ${
+                        currentWorkspace?.id === ws.id ? 'bg-blue-50' : ''
+                      }`}
+                    >
+                      <div className={`w-2 h-2 rounded-full ${
+                        ws.id === DUOLINGO_DEMO_WORKSPACE_ID ? 'bg-green-500' : 'bg-blue-500'
+                      }`}></div>
+                      {ws.name}
+                    </button>
+                  ))}
                   <button className="w-full px-3 py-2 text-left text-sm text-blue-600 hover:bg-blue-50 transition-colors flex items-center gap-2 border-t border-gray-100">
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
@@ -657,7 +1211,21 @@ export default function Dashboard() {
           <div className="space-y-1">
 
             <button
-              onClick={() => setActiveTab('campaigns')}
+              onClick={() => handleTabChange('interviews')}
+              className={`w-full flex items-center gap-3 px-3 py-2.5 text-sm font-medium rounded transition-colors ${
+                activeTab === 'interviews'
+                  ? 'bg-blue-50 text-blue-600'
+                  : 'text-gray-700 hover:bg-gray-100'
+              }`}
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+              </svg>
+              Interviews
+            </button>
+
+            <button
+              onClick={() => handleTabChange('campaigns')}
               className={`w-full flex items-center gap-3 px-3 py-2.5 text-sm font-medium rounded transition-colors ${
                 activeTab === 'campaigns'
                   ? 'bg-blue-50 text-blue-600'
@@ -670,33 +1238,6 @@ export default function Dashboard() {
               Campaigns
             </button>
 
-            <button
-              onClick={() => setActiveTab('conversations')}
-              className={`w-full flex items-center gap-3 px-3 py-2.5 text-sm font-medium rounded transition-colors ${
-                activeTab === 'conversations'
-                  ? 'bg-blue-50 text-blue-600'
-                  : 'text-gray-700 hover:bg-gray-100'
-              }`}
-            >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
-              </svg>
-              Conversations
-            </button>
-
-            <button
-              onClick={() => setActiveTab('simulated-agents')}
-              className={`w-full flex items-center gap-3 px-3 py-2.5 text-sm font-medium rounded transition-colors ${
-                activeTab === 'simulated-agents'
-                  ? 'bg-blue-50 text-blue-600'
-                  : 'text-gray-700 hover:bg-gray-100'
-              }`}
-            >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-              </svg>
-              Simulated Agents
-            </button>
           </div>
         </nav>
 
@@ -747,7 +1288,7 @@ export default function Dashboard() {
         {!showCreateModal && !showCreateForm && !editingCampaign && !showPromptBox && !viewingCampaign && (
           <header className="bg-white border-b border-gray-200 px-6 py-3">
             <div className="flex items-center justify-between">
-              <h2 className="text-lg font-light text-gray-800">Personal Workspace</h2>
+              <h2 className="text-lg font-light text-gray-800">{currentWorkspace?.name || 'Workspace'}</h2>
               <button
                 onClick={() => setShowCreateModal(true)}
                 className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 rounded text-sm transition-colors flex items-center gap-1"
@@ -766,6 +1307,94 @@ export default function Dashboard() {
           {renderMainContent()}
         </main>
       </div>
+
+      {/* Interview Transcript Modal */}
+      {selectedInterview && (
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4" onClick={() => setSelectedInterview(null)}>
+          <div
+            className="bg-white rounded-2xl max-w-2xl w-full max-h-[80vh] overflow-hidden flex flex-col"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Modal Header */}
+            <div className="p-4 border-b border-gray-100">
+              <div className="flex justify-between items-start mb-3">
+                <div>
+                  <h2 className="text-lg font-medium text-gray-900">{selectedInterview.name}&apos;s Interview</h2>
+                  {selectedInterview.summary && (
+                    <p className="text-xs text-gray-500 mt-1">{selectedInterview.summary}</p>
+                  )}
+                </div>
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setSelectedInterview(null);
+                  }}
+                  className="p-2 hover:bg-gray-100 rounded-lg transition-colors text-gray-500 hover:text-gray-700"
+                >
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path d="M18 6L6 18M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+
+              {/* Demographics in modal */}
+              <div className="flex flex-wrap gap-2">
+                {selectedInterview.age && (
+                  <span className="inline-flex items-center px-2 py-1 rounded-full text-[10px] font-medium bg-gray-100 text-gray-700">
+                    {selectedInterview.age} years old
+                  </span>
+                )}
+                {selectedInterview.occupation && selectedInterview.occupation.toLowerCase() !== 'unknown' && (
+                  <span className="inline-flex items-center px-2 py-1 rounded-full text-[10px] font-medium bg-blue-50 text-blue-700">
+                    {selectedInterview.occupation}
+                  </span>
+                )}
+                {selectedInterview.country && selectedInterview.country.toLowerCase() !== 'unknown' && (
+                  <span className="inline-flex items-center px-2 py-1 rounded-full text-[10px] font-medium bg-green-50 text-green-700">
+                    {selectedInterview.country}
+                  </span>
+                )}
+                {selectedInterview.learning_language && selectedInterview.learning_language.toLowerCase() !== 'unknown' && (
+                  <span className="inline-flex items-center px-2 py-1 rounded-full text-[10px] font-medium bg-purple-50 text-purple-700">
+                    Learning {selectedInterview.learning_language}
+                  </span>
+                )}
+                {selectedInterview.learning_goal && selectedInterview.learning_goal.toLowerCase() !== 'unknown' && (
+                  <span className="inline-flex items-center px-2 py-1 rounded-full text-[10px] font-medium bg-orange-50 text-orange-700">
+                    Goal: {selectedInterview.learning_goal}
+                  </span>
+                )}
+              </div>
+            </div>
+
+            {/* Transcript Content */}
+            <div className="flex-1 overflow-y-auto p-4 space-y-4">
+              {selectedInterview.transcript && selectedInterview.transcript.map((item, idx) => (
+                <div key={idx} className="space-y-1">
+                  <p className="text-xs font-medium text-gray-500">{item.question}</p>
+                  <p className="text-sm text-gray-700 leading-relaxed">{item.answer}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
+  );
+}
+
+// Wrapper component with Suspense for useSearchParams
+export default function Dashboard() {
+  return (
+    <Suspense fallback={
+      <div className="h-screen bg-gray-50 flex items-center justify-center">
+        <svg className="animate-spin h-8 w-8 text-blue-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+        </svg>
+      </div>
+    }>
+      <DashboardContent />
+    </Suspense>
   );
 }

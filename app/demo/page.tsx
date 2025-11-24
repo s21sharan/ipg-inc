@@ -215,22 +215,6 @@ function generateClusterPositions(count: number): { row: number; col: number }[]
   return positions;
 }
 
-// Filter pill component
-function FilterPill({ filter, onRemove }: { filter: Filter; onRemove: () => void }) {
-  return (
-    <div className="inline-flex items-center gap-1 bg-orange-100 text-orange-800 px-2 py-1 rounded-full text-[10px] font-medium">
-      <span>{filter.label}</span>
-      <button
-        onClick={onRemove}
-        className="hover:bg-orange-200 rounded-full p-0.5 transition-colors"
-      >
-        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
-          <path d="M18 6L6 18M6 6l12 12" />
-        </svg>
-      </button>
-    </div>
-  );
-}
 
 // Function to check if an agent matches a filter
 function matchesFilter(agent: typeof agentData[0], filter: Filter): boolean {
@@ -309,6 +293,31 @@ function Hexagon({
 }) {
   const [showTooltip, setShowTooltip] = useState(false);
   const [position, setPosition] = useState<'below' | 'above' | 'left' | 'right'>('below');
+  const [isShiftHeld, setIsShiftHeld] = useState(false);
+  const [isHoveringTooltip, setIsHoveringTooltip] = useState(false);
+
+  // Track shift key
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Shift') setIsShiftHeld(true);
+    };
+    const handleKeyUp = (e: KeyboardEvent) => {
+      if (e.key === 'Shift') {
+        setIsShiftHeld(false);
+        // Hide tooltip when shift is released if not hovering
+        if (!isHoveringTooltip) {
+          setShowTooltip(false);
+        }
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    window.addEventListener('keyup', handleKeyUp);
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+      window.removeEventListener('keyup', handleKeyUp);
+    };
+  }, [isHoveringTooltip]);
 
   // Calculate best position based on available space
   const calculatePosition = (element: HTMLDivElement) => {
@@ -351,7 +360,11 @@ function Hexagon({
         calculatePosition(e.currentTarget);
         setShowTooltip(true);
       }}
-      onMouseLeave={() => setShowTooltip(false)}
+      onMouseLeave={() => {
+        if (!isShiftHeld && !isHoveringTooltip) {
+          setShowTooltip(false);
+        }
+      }}
     >
       <svg
         width="38"
@@ -372,7 +385,16 @@ function Hexagon({
 
       {/* Tooltip */}
       {showTooltip && (
-        <div className={`absolute z-50 w-64 p-3 bg-white rounded-lg shadow-lg border border-gray-200 pointer-events-auto ${positionClasses[position]}`}>
+        <div
+          className={`absolute z-50 w-64 p-3 bg-white rounded-lg shadow-lg border border-gray-200 pointer-events-auto ${positionClasses[position]}`}
+          onMouseEnter={() => setIsHoveringTooltip(true)}
+          onMouseLeave={() => {
+            setIsHoveringTooltip(false);
+            if (!isShiftHeld) {
+              setShowTooltip(false);
+            }
+          }}
+        >
           <p className="font-medium text-xs text-gray-900 mb-1">{name}</p>
 
           {/* Demographic Tags */}
@@ -461,22 +483,6 @@ function Hexagon({
   );
 }
 
-// Chat message component
-function ChatMessage({ message, isUser }: { message: string; isUser: boolean }) {
-  return (
-    <div className={`flex ${isUser ? 'justify-end' : 'justify-start'} mb-2`}>
-      <div
-        className={`max-w-[85%] px-3 py-2 rounded-xl text-xs ${
-          isUser
-            ? 'bg-black text-white'
-            : 'bg-gray-100 text-gray-600'
-        }`}
-      >
-        {message}
-      </div>
-    </div>
-  );
-}
 
 // Transcript Modal Component
 function TranscriptModal({
@@ -565,11 +571,15 @@ function TranscriptModal({
 }
 
 export default function DemoPage() {
-  const [selectedAgents, setSelectedAgents] = useState<Set<number>>(new Set([1, 5]));
+  const [selectedAgents, setSelectedAgents] = useState<Set<number>>(new Set());
   const [transcriptAgent, setTranscriptAgent] = useState<typeof agentData[0] | null>(null);
   const [activeFilters, setActiveFilters] = useState<Filter[]>([]);
   const [isFilterLoading, setIsFilterLoading] = useState(false);
   const [agentMetadata, setAgentMetadata] = useState<Record<number, AgentMetadata>>({});
+  const [chatInput, setChatInput] = useState('');
+  const [isShaking, setIsShaking] = useState(false);
+  const [showGroupDropdown, setShowGroupDropdown] = useState(false);
+  const [selectedGroups, setSelectedGroups] = useState<Set<string>>(new Set());
 
   // Load metadata on mount - match by name since IDs may differ
   useEffect(() => {
@@ -584,16 +594,132 @@ export default function DemoPage() {
     setAgentMetadata(metadataMap);
   }, []);
 
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (showGroupDropdown && !(event.target as Element).closest('.group-dropdown-container')) {
+        setShowGroupDropdown(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [showGroupDropdown]);
+
   // Update agent data with metadata
   const agentsWithMetadata = agentData.map(agent => ({
     ...agent,
     metadata: agentMetadata[agent.id] || {},
   }));
 
-  // Update selected agents when filters change
+
+  // Total agent count
+  const totalAgents = agentData.length;
+
+  const toggleAgent = (id: number) => {
+    setSelectedAgents((prev) => {
+      const newSet = new Set(prev);
+      if (newSet.has(id)) {
+        newSet.delete(id);
+      } else {
+        newSet.add(id);
+      }
+      return newSet;
+    });
+  };
+
+  const handleChatSend = async () => {
+    if (!chatInput.trim()) return;
+
+    const query = chatInput.trim();
+    setIsFilterLoading(true);
+
+    try {
+      const response = await fetch('/api/parse-filter', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ query }),
+      });
+
+      const data = await response.json();
+
+      if (data.filters && data.filters.length > 0) {
+        // Add filters with unique IDs
+        const newFilters = data.filters.map((f: Filter) => ({
+          ...f,
+          id: f.id || `${f.field}-${Date.now()}-${Math.random()}`
+        }));
+        setActiveFilters(prev => [...prev, ...newFilters]);
+        setChatInput('');
+      } else {
+        // Not a valid filter - shake the input
+        setIsShaking(true);
+        setTimeout(() => setIsShaking(false), 500);
+      }
+    } catch (error) {
+      console.error('Filter error:', error);
+      setIsShaking(true);
+      setTimeout(() => setIsShaking(false), 500);
+    } finally {
+      setIsFilterLoading(false);
+    }
+  };
+
+  const removeFilter = (filterId: string) => {
+    setActiveFilters(prev => prev.filter(f => f.id !== filterId));
+  };
+
+  // Toggle group selection
+  const toggleGroupSelection = (groupName: string) => {
+    const cluster = clusterData.clusters.find(c => c.group === groupName);
+    if (!cluster) return;
+
+    const groupAgentIds = cluster.members
+      .map(member => agentData.find(a => a.name === member.user_name)?.id)
+      .filter((id): id is number => id !== undefined);
+
+    setSelectedGroups(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(groupName)) {
+        newSet.delete(groupName);
+        // Remove agents from this group
+        setSelectedAgents(prevAgents => {
+          const newAgents = new Set(prevAgents);
+          groupAgentIds.forEach(id => newAgents.delete(id));
+          return newAgents;
+        });
+      } else {
+        newSet.add(groupName);
+        // Add agents from this group
+        setSelectedAgents(prevAgents => {
+          const newAgents = new Set(prevAgents);
+          groupAgentIds.forEach(id => newAgents.add(id));
+          return newAgents;
+        });
+      }
+      return newSet;
+    });
+  };
+
+  // Select all agents
+  const selectAllAgents = () => {
+    const allIds = agentData.map(a => a.id);
+    setSelectedAgents(new Set(allIds));
+    setSelectedGroups(new Set(clusterData.clusters.map(c => c.group)));
+    setShowGroupDropdown(false);
+  };
+
+  // Clear all selections
+  const clearAllSelections = () => {
+    setSelectedAgents(new Set());
+    setSelectedGroups(new Set());
+    setShowGroupDropdown(false);
+  };
+
+  // Apply filters to select matching agents
   useEffect(() => {
     if (activeFilters.length === 0) {
-      // No filters, keep current selection
+      setSelectedAgents(new Set());
       return;
     }
 
@@ -608,340 +734,323 @@ export default function DemoPage() {
     setSelectedAgents(matchingAgents);
   }, [activeFilters, agentMetadata]);
 
-  // Filter chat state
-  const [filterMessages, setFilterMessages] = useState<Array<{ text: string; isUser: boolean }>>([
-    { text: 'What type of customers do you want to talk to? I\'ll automatically filter the agents for you.', isUser: false },
-  ]);
-  const [filterInput, setFilterInput] = useState('');
-
-  // Collective memory chat state
-  const [memoryMessages, setMemoryMessages] = useState<Array<{ text: string; isUser: boolean }>>([
-    { text: 'Ask me anything about the selected agents\' collective insights.', isUser: false },
-  ]);
-  const [memoryInput, setMemoryInput] = useState('');
-
-  const toggleAgent = (id: number) => {
-    setSelectedAgents((prev) => {
-      const newSet = new Set(prev);
-      if (newSet.has(id)) {
-        newSet.delete(id);
-      } else {
-        newSet.add(id);
-      }
-      return newSet;
-    });
-  };
-
-  const handleFilterSend = async () => {
-    if (!filterInput.trim() || isFilterLoading) return;
-
-    const userMessage = filterInput;
-    setFilterInput('');
-    setFilterMessages((prev) => [...prev, { text: userMessage, isUser: true }]);
-    setIsFilterLoading(true);
-
-    try {
-      const response = await fetch('/api/parse-filter', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ query: userMessage }),
-      });
-
-      const data = await response.json();
-
-      if (data.filters && data.filters.length > 0) {
-        // Add new filters (avoid duplicates by id)
-        setActiveFilters((prev) => {
-          const existingIds = new Set(prev.map(f => f.id));
-          const newFilters = data.filters.filter((f: Filter) => !existingIds.has(f.id));
-          return [...prev, ...newFilters];
-        });
-
-        const filterLabels = data.filters.map((f: Filter) => f.label).join(', ');
-        setFilterMessages((prev) => [
-          ...prev,
-          { text: `Applied filters: ${filterLabels}`, isUser: false },
-        ]);
-      } else {
-        setFilterMessages((prev) => [
-          ...prev,
-          { text: 'I couldn\'t understand that filter. Try something like "under 30" or "negative about streaks".', isUser: false },
-        ]);
-      }
-    } catch (error) {
-      console.error('Filter error:', error);
-      setFilterMessages((prev) => [
-        ...prev,
-        { text: 'Something went wrong. Please try again.', isUser: false },
-      ]);
-    } finally {
-      setIsFilterLoading(false);
-    }
-  };
-
-  const removeFilter = (filterId: string) => {
-    setActiveFilters((prev) => prev.filter(f => f.id !== filterId));
-  };
-
-  const clearAllFilters = () => {
-    setActiveFilters([]);
-    setSelectedAgents(new Set([1, 5])); // Reset to default selection
-  };
-
-  const handleMemorySend = () => {
-    if (!memoryInput.trim()) return;
-    setMemoryMessages((prev) => [
-      ...prev,
-      { text: memoryInput, isUser: true },
-      { text: 'Based on the collective memory of the selected agents...', isUser: false },
-    ]);
-    setMemoryInput('');
-  };
-
   const hexSpacingX = 34;
   const hexSpacingY = 29;
 
   return (
-    <div className="h-screen bg-gray-50 text-gray-900 p-3 md:p-4 flex flex-col overflow-hidden">
-      {/* Header */}
-      <header className="mb-2 flex-shrink-0">
-        <h1 className="text-lg md:text-xl font-light tracking-tight">
-          ipg<span style={{ color: '#11766E' }}>.</span>inc
-          <span className="text-gray-300 mx-2">×</span>
-          <span className="text-green-500 font-normal">Duolingo</span>
-        </h1>
-      </header>
+    <div className="h-screen bg-white text-gray-900 flex overflow-hidden">
+      {/* Left Sidebar */}
+      <div className="w-16 bg-white border-r border-gray-200 flex flex-col items-center py-4 flex-shrink-0">
+        {/* Logo */}
+        <div className="text-sm font-bold mb-6">ipg<span style={{ color: '#11766E' }}>.</span>inc</div>
 
-      {/* Main content area */}
-      <div className="flex flex-col lg:flex-row gap-3 flex-1 min-h-0">
-        {/* Left section - Clustered agents */}
-        <div className="flex-1 bg-white rounded-xl shadow-sm border border-gray-100 p-6 flex items-center justify-center">
-          {/* Cluster grid - staggered layout */}
-          <div className="flex flex-col w-full">
-            {/* Top row - 3 clusters (A, B, C) */}
-            <div className="flex justify-around items-end">
-              {clusterData.clusters.slice(0, 3).map((cluster) => {
-                const positions = generateClusterPositions(cluster.count);
-                const maxCol = Math.max(...positions.map(p => p.col), 0);
-                const maxRow = Math.max(...positions.map(p => p.row), 0);
-                const clusterWidth = (maxCol + 1) * hexSpacingX + 38;
-                const clusterHeight = (maxRow + 1) * hexSpacingY + 38;
-
-                return (
-                  <div key={cluster.group} className="flex flex-col items-center">
-                    {/* Hexagon cluster */}
-                    <div className="relative" style={{ width: clusterWidth, height: clusterHeight }}>
-                      {cluster.members.map((member, idx) => {
-                        const pos = positions[idx];
-                        if (!pos) return null;
-
-                        // Find the agent data for this member
-                        const agent = agentData.find(a => a.name === member.user_name);
-                        if (!agent) return null;
-
-                        return (
-                          <div
-                            key={member.user_name}
-                            className="absolute"
-                            style={{
-                              left: `${pos.col * hexSpacingX}px`,
-                              top: `${pos.row * hexSpacingY}px`,
-                            }}
-                          >
-                            <Hexagon
-                              selected={selectedAgents.has(agent.id)}
-                              onClick={() => toggleAgent(agent.id)}
-                              name={agent.name}
-                              summary={agent.summary}
-                              top_quotes={agent.top_quotes}
-                              onShowTranscript={() => setTranscriptAgent(agent)}
-                              row={pos.row}
-                              col={pos.col}
-                              metadata={agentMetadata[agent.id]}
-                            />
-                          </div>
-                        );
-                      })}
-                    </div>
-
-                    {/* Cluster label */}
-                    <div className="text-center -mt-1">
-                      <p className="text-sm font-medium text-gray-900">
-                        Group {cluster.group} ({cluster.percentage}%)
-                      </p>
-                      <p className="text-xs text-gray-500 italic max-w-[140px]">
-                        &ldquo;{cluster.quote}&rdquo;
-                      </p>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-
-            {/* Bottom row - 2 clusters (D between A&B, E between B&C) */}
-            <div className="flex justify-around items-start -mt-4 pl-[18%] pr-[8%]">
-              {clusterData.clusters.slice(3).map((cluster) => {
-                const positions = generateClusterPositions(cluster.count);
-                const maxCol = Math.max(...positions.map(p => p.col), 0);
-                const maxRow = Math.max(...positions.map(p => p.row), 0);
-                const clusterWidth = (maxCol + 1) * hexSpacingX + 38;
-                const clusterHeight = (maxRow + 1) * hexSpacingY + 38;
-
-                return (
-                  <div key={cluster.group} className="flex flex-col items-center">
-                    {/* Hexagon cluster */}
-                    <div className="relative" style={{ width: clusterWidth, height: clusterHeight }}>
-                      {cluster.members.map((member, idx) => {
-                        const pos = positions[idx];
-                        if (!pos) return null;
-
-                        // Find the agent data for this member
-                        const agent = agentData.find(a => a.name === member.user_name);
-                        if (!agent) return null;
-
-                        return (
-                          <div
-                            key={member.user_name}
-                            className="absolute"
-                            style={{
-                              left: `${pos.col * hexSpacingX}px`,
-                              top: `${pos.row * hexSpacingY}px`,
-                            }}
-                          >
-                            <Hexagon
-                              selected={selectedAgents.has(agent.id)}
-                              onClick={() => toggleAgent(agent.id)}
-                              name={agent.name}
-                              summary={agent.summary}
-                              top_quotes={agent.top_quotes}
-                              onShowTranscript={() => setTranscriptAgent(agent)}
-                              row={pos.row}
-                              col={pos.col}
-                              metadata={agentMetadata[agent.id]}
-                            />
-                          </div>
-                        );
-                      })}
-                    </div>
-
-                    {/* Cluster label */}
-                    <div className="text-center -mt-1">
-                      <p className="text-sm font-medium text-gray-900">
-                        Group {cluster.group} ({cluster.percentage}%)
-                      </p>
-                      <p className="text-xs text-gray-500 italic max-w-[140px]">
-                        &ldquo;{cluster.quote}&rdquo;
-                      </p>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-        </div>
-
-        {/* Right section - Filter chatbot */}
-        <div className="w-full lg:w-72 bg-white rounded-2xl shadow-sm border border-gray-100 p-4 flex flex-col">
-          <h2 className="text-sm font-medium mb-3 text-gray-500 uppercase tracking-wider">Filter</h2>
-
-          {/* Active filters */}
-          {activeFilters.length > 0 && (
-            <div className="mb-3 flex flex-wrap gap-1">
-              {activeFilters.map((filter) => (
-                <FilterPill
-                  key={filter.id}
-                  filter={filter}
-                  onRemove={() => removeFilter(filter.id)}
-                />
-              ))}
-              <button
-                onClick={clearAllFilters}
-                className="text-[10px] text-gray-400 hover:text-gray-600 px-1"
-              >
-                Clear all
-              </button>
-            </div>
-          )}
-
-          {/* Chat messages area */}
-          <div className="flex-1 overflow-y-auto mb-3">
-            {filterMessages.map((msg, idx) => (
-              <ChatMessage key={idx} message={msg.text} isUser={msg.isUser} />
-            ))}
-            {isFilterLoading && (
-              <div className="flex justify-start mb-2">
-                <div className="bg-gray-100 text-gray-600 px-3 py-2 rounded-xl text-xs">
-                  Analyzing...
-                </div>
-              </div>
-            )}
-          </div>
-
-          {/* Chat input */}
-          <div className="flex gap-2 items-end">
-            <textarea
-              value={filterInput}
-              onChange={(e) => {
-                setFilterInput(e.target.value);
-                e.target.style.height = 'auto';
-                e.target.style.height = Math.min(e.target.scrollHeight, 120) + 'px';
-              }}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter' && !e.shiftKey) {
-                  e.preventDefault();
-                  handleFilterSend();
-                }
-              }}
-              placeholder="Filter by..."
-              rows={1}
-              className="flex-1 bg-gray-50 border-0 rounded-lg px-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-gray-200 resize-none overflow-hidden"
-              style={{ minHeight: '36px' }}
-            />
-            <button
-              onClick={handleFilterSend}
-              className="px-3 py-2 bg-black text-white rounded-lg text-xs hover:bg-gray-800 transition-colors"
-            >
-              Send
-            </button>
-          </div>
-
-          <div className="mt-3 pt-3 border-t border-gray-100">
-            <p className="text-xs text-gray-400">
-              <span className="text-gray-600 font-medium">{selectedAgents.size}</span> agents selected
-            </p>
-          </div>
+        {/* Nav icons */}
+        <div className="flex flex-col gap-2">
+          <button className="p-2 hover:bg-gray-100 rounded-lg">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+            </svg>
+          </button>
+          <button className="p-2 bg-blue-500 text-white rounded-lg">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />
+            </svg>
+          </button>
         </div>
       </div>
 
-      {/* Bottom section - Chat with collective memory */}
-      <div className="mt-4 bg-white rounded-2xl shadow-sm border border-gray-100 p-4 flex-shrink-0">
-        <h3 className="text-xs text-gray-400 mb-3 uppercase tracking-wider font-medium">
-          Chat with Collective Memory
-        </h3>
-
-        {/* Chat messages area */}
-        <div className="overflow-y-auto mb-3 h-24 rounded-lg p-3 bg-gray-50">
-          {memoryMessages.map((msg, idx) => (
-            <ChatMessage key={idx} message={msg.text} isUser={msg.isUser} />
-          ))}
+      {/* Middle content area */}
+      <div className="flex-1 flex flex-col overflow-hidden">
+        {/* Breadcrumb */}
+        <div className="px-6 pt-4 pb-2 text-xs text-gray-400">
+          Personal Workspace <span className="mx-1">/</span> New Campaign
         </div>
 
-        {/* Chat input */}
-        <div className="flex gap-3">
-          <input
-            type="text"
-            value={memoryInput}
-            onChange={(e) => setMemoryInput(e.target.value)}
-            onKeyDown={(e) => e.key === 'Enter' && handleMemorySend()}
-            placeholder="Ask something about the selected agents..."
-            className="flex-1 bg-gray-50 border-0 rounded-lg px-4 py-2.5 text-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-200"
-          />
-          <button
-            onClick={handleMemorySend}
-            className="px-5 py-2.5 bg-black text-white rounded-lg text-sm font-medium hover:bg-gray-800 transition-colors"
-          >
-            Ask
-          </button>
+        {/* Header with back button and title */}
+        <div className="px-6 pb-4">
+          <div className="flex items-center gap-3 mb-2">
+            <button className="p-2 hover:bg-gray-100 rounded-lg">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M19 12H5M12 19l-7-7 7-7" />
+              </svg>
+            </button>
+            <h1 className="text-2xl font-semibold">Improve Duolingo retention and engagement</h1>
+          </div>
+          <div className="flex items-center gap-6 text-xs text-gray-500 ml-11">
+            <span><span className="font-medium">Date:</span> 11/22/25</span>
+            <span><span className="font-medium">Accuracy:</span> 82%</span>
+            <span><span className="font-medium">N=</span> {totalAgents}</span>
+          </div>
+        </div>
+
+        {/* Clusters section */}
+        <div className="flex-1 px-6 py-4 overflow-hidden">
+            {/* Cluster grid - 2 top, 3 bottom layout */}
+            <div className="flex flex-col gap-8">
+              {/* Top row - 2 clusters (A, B) */}
+              <div className="flex justify-around items-end">
+                {clusterData.clusters.slice(0, 2).map((cluster) => {
+                  const positions = generateClusterPositions(cluster.count);
+                  const maxCol = Math.max(...positions.map(p => p.col), 0);
+                  const maxRow = Math.max(...positions.map(p => p.row), 0);
+                  const clusterWidth = (maxCol + 1) * hexSpacingX + 38;
+                  const clusterHeight = (maxRow + 1) * hexSpacingY + 38;
+
+                  return (
+                    <div key={cluster.group} className="flex flex-col items-center">
+                      {/* Hexagon cluster */}
+                      <div className="relative" style={{ width: clusterWidth, height: clusterHeight }}>
+                        {cluster.members.map((member, idx) => {
+                          const pos = positions[idx];
+                          if (!pos) return null;
+
+                          const agent = agentData.find(a => a.name === member.user_name);
+                          if (!agent) return null;
+
+                          return (
+                            <div
+                              key={member.user_name}
+                              className="absolute"
+                              style={{
+                                left: `${pos.col * hexSpacingX}px`,
+                                top: `${pos.row * hexSpacingY}px`,
+                              }}
+                            >
+                              <Hexagon
+                                selected={selectedAgents.has(agent.id)}
+                                onClick={() => toggleAgent(agent.id)}
+                                name={agent.name}
+                                summary={agent.summary}
+                                top_quotes={agent.top_quotes}
+                                onShowTranscript={() => setTranscriptAgent(agent)}
+                                row={pos.row}
+                                col={pos.col}
+                                metadata={agentMetadata[agent.id]}
+                              />
+                            </div>
+                          );
+                        })}
+                      </div>
+
+                      {/* Cluster label */}
+                      <div className="text-center mt-2">
+                        <p className="text-sm font-semibold text-gray-900">
+                          Group {cluster.group} ({cluster.percentage}%)
+                        </p>
+                        <p className="text-xs text-gray-500 italic max-w-[160px]">
+                          &ldquo;{cluster.quote}&rdquo;
+                        </p>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+
+              {/* Bottom row - 3 clusters (C, D, E) */}
+              <div className="flex justify-around items-start">
+                {clusterData.clusters.slice(2).map((cluster) => {
+                  const positions = generateClusterPositions(cluster.count);
+                  const maxCol = Math.max(...positions.map(p => p.col), 0);
+                  const maxRow = Math.max(...positions.map(p => p.row), 0);
+                  const clusterWidth = (maxCol + 1) * hexSpacingX + 38;
+                  const clusterHeight = (maxRow + 1) * hexSpacingY + 38;
+
+                  return (
+                    <div key={cluster.group} className="flex flex-col items-center">
+                      {/* Hexagon cluster */}
+                      <div className="relative" style={{ width: clusterWidth, height: clusterHeight }}>
+                        {cluster.members.map((member, idx) => {
+                          const pos = positions[idx];
+                          if (!pos) return null;
+
+                          const agent = agentData.find(a => a.name === member.user_name);
+                          if (!agent) return null;
+
+                          return (
+                            <div
+                              key={member.user_name}
+                              className="absolute"
+                              style={{
+                                left: `${pos.col * hexSpacingX}px`,
+                                top: `${pos.row * hexSpacingY}px`,
+                              }}
+                            >
+                              <Hexagon
+                                selected={selectedAgents.has(agent.id)}
+                                onClick={() => toggleAgent(agent.id)}
+                                name={agent.name}
+                                summary={agent.summary}
+                                top_quotes={agent.top_quotes}
+                                onShowTranscript={() => setTranscriptAgent(agent)}
+                                row={pos.row}
+                                col={pos.col}
+                                metadata={agentMetadata[agent.id]}
+                              />
+                            </div>
+                          );
+                        })}
+                      </div>
+
+                      {/* Cluster label */}
+                      <div className="text-center mt-2">
+                        <p className="text-sm font-semibold text-gray-900">
+                          Group {cluster.group} ({cluster.percentage}%)
+                        </p>
+                        <p className="text-xs text-gray-500 italic max-w-[160px]">
+                          &ldquo;{cluster.quote}&rdquo;
+                        </p>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Bottom chat section */}
+            <div className="mt-8 pt-6 border-t border-gray-200">
+              {/* You are talking to */}
+              <div className="flex items-center gap-3 mb-4">
+                <span className="text-sm text-gray-700">You are talking to:</span>
+                <div className="relative group-dropdown-container">
+                  <button
+                    onClick={() => setShowGroupDropdown(!showGroupDropdown)}
+                    className="inline-flex items-center gap-2 px-3 py-1.5 rounded-md text-sm font-semibold bg-blue-100 text-blue-800 hover:bg-blue-200 transition-colors"
+                  >
+                    {selectedAgents.size === 0
+                      ? `All users (N=${totalAgents})`
+                      : `${selectedAgents.size} selected (N=${selectedAgents.size})`}
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <path d="M6 9l6 6 6-6" />
+                    </svg>
+                  </button>
+
+                  {/* Group selection dropdown */}
+                  {showGroupDropdown && (
+                    <div className="absolute bottom-full mb-2 left-0 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-1 z-50">
+                      {/* All users option */}
+                      <button
+                        onClick={selectAllAgents}
+                        className={`w-full text-left px-4 py-2 text-sm hover:bg-gray-50 transition-colors ${
+                          selectedAgents.size === totalAgents ? 'bg-gray-100 font-medium' : ''
+                        }`}
+                      >
+                        All users
+                      </button>
+
+                      <div className="border-t border-gray-100 my-1"></div>
+
+                      {/* Group options */}
+                      {clusterData.clusters.map((cluster) => (
+                        <button
+                          key={cluster.group}
+                          onClick={() => toggleGroupSelection(cluster.group)}
+                          className={`w-full text-left px-4 py-2 text-sm hover:bg-gray-50 transition-colors ${
+                            selectedGroups.has(cluster.group) ? 'bg-gray-100 font-medium' : ''
+                          }`}
+                        >
+                          Group {cluster.group}
+                        </button>
+                      ))}
+
+                      <div className="border-t border-gray-100 my-1"></div>
+
+                      {/* Clear option */}
+                      <button
+                        onClick={clearAllSelections}
+                        className="w-full text-left px-4 py-2 text-sm text-gray-500 hover:bg-gray-50 transition-colors"
+                      >
+                        Clear selection
+                      </button>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* Chat input */}
+              <div
+                className={`flex items-center gap-3 bg-gray-100 rounded-xl px-4 py-3 transition-all ${
+                  isShaking
+                    ? 'animate-shake shadow-[0_0_15px_rgba(239,68,68,0.5)] border-2 border-red-400'
+                    : ''
+                }`}
+                style={{
+                  animation: isShaking ? 'shake 0.5s ease-in-out' : 'none'
+                }}
+              >
+                <button className="p-1 hover:bg-gray-200 rounded">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path d="M12 5v14M5 12h14" />
+                  </svg>
+                </button>
+                <input
+                  type="text"
+                  value={chatInput}
+                  onChange={(e) => setChatInput(e.target.value)}
+                  onKeyDown={(e) => e.key === 'Enter' && handleChatSend()}
+                  placeholder="Filter or ask anything to the selected agents..."
+                  className="flex-1 bg-transparent border-0 text-sm placeholder-gray-400 focus:outline-none"
+                />
+                <button className="p-1 hover:bg-gray-200 rounded">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z" />
+                    <path d="M19 10v2a7 7 0 0 1-14 0v-2" />
+                    <line x1="12" y1="19" x2="12" y2="23" />
+                    <line x1="8" y1="23" x2="16" y2="23" />
+                  </svg>
+                </button>
+              </div>
+
+              {/* Shake animation styles */}
+              <style jsx>{`
+                @keyframes shake {
+                  0%, 100% { transform: translateX(0); }
+                  10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+                  20%, 40%, 60%, 80% { transform: translateX(5px); }
+                }
+              `}</style>
+            </div>
+          </div>
+        </div>
+
+      {/* Right sidebar - Summary (full height) */}
+      <div className="w-80 border-l border-gray-200 p-6 bg-gray-50 flex-shrink-0 overflow-hidden">
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-lg font-semibold">Summary</h2>
+          <span className="text-xs text-gray-500">
+            {selectedAgents.size === 0
+              ? `All users (N=${totalAgents})`
+              : `${selectedAgents.size} selected (N=${selectedAgents.size})`}
+          </span>
+        </div>
+
+        {/* Active filters */}
+        {activeFilters.length > 0 && (
+          <div className="mb-4 flex flex-wrap gap-2">
+            {activeFilters.map((filter) => (
+              <span
+                key={filter.id}
+                className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-xs font-medium bg-blue-100 text-blue-800"
+              >
+                {filter.label}
+                <button
+                  onClick={() => removeFilter(filter.id)}
+                  className="ml-0.5 hover:bg-blue-200 rounded-full p-0.5 transition-colors"
+                >
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
+                    <path d="M18 6L6 18M6 6l12 12" />
+                  </svg>
+                </button>
+              </span>
+            ))}
+          </div>
+        )}
+
+        {/* Placeholder boxes for summary content */}
+        <div className="space-y-4">
+          <div className="bg-gray-200 rounded-lg h-32"></div>
+          <div className="bg-gray-200 rounded-lg h-32"></div>
+          <div className="bg-gray-200 rounded-lg h-32"></div>
+          <div className="bg-gray-200 rounded-lg h-32"></div>
         </div>
       </div>
 

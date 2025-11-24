@@ -171,3 +171,72 @@ Built demo page with clustered hexagon UI, interview clustering script, and demo
 
 ### #Background
 Demo page shows Duolingo user interview clusters visualized as hexagon groups. Each cluster represents users with similar pain points (e.g., "lacks depth", "streak anxiety"). Metadata extraction uses GPT to pull demographics from interview transcripts. Clustering uses OpenAI embeddings on summary + frustration answers.
+
+## 2025-11-22 – Compact Session (Part 2)
+
+### #CurrentFocus
+Implemented workspace-based interviews system with Supabase integration and dashboard Interviews tab for Duolingo Demo.
+
+### #SessionChanges
+- Created SQL migration `002_create_interviews_table.sql` with workspace_id foreign key
+- Added columns to existing interviews table: workspace_id, name, summary, transcript, demographics
+- Created Duolingo Demo workspace with fixed UUID `00000000-0000-0000-0000-000000000001`
+- Added RLS policies for workspace-based interview access (all users can view duolingo-demo)
+- Updated dashboard to use workspace_id instead of text workspace field
+- Added Workspace interface and dynamic workspace selector fetching from Supabase
+- Built Interviews tab UI with card grid, demographic tags, and transcript modal
+- Fixed scrollbar positioning: outer container `h-screen overflow-hidden`, inner cards `overflow-y-auto`
+- Fixed transcript modal X button not working by adding `e.stopPropagation()`
+- Updated CreateCampaignForm to accept workspaceId prop instead of workspace string
+- Created `demo/scripts/seed_duolingo_interviews.js` to populate interviews from transcripts
+- Created `demo/scripts/generate_more_interviews.js` to generate 139 new interviews with GPT-4o
+- Changed completion logic button from "Save" to "Create Campaign" for new campaigns
+
+### #NextSteps
+- Run generate_more_interviews.js to create 139 additional Duolingo interviews
+- Add workspace creation functionality from dashboard
+- Implement interview filtering/search in Interviews tab
+
+### #BugsAndTheories
+- "column workspace does not exist" ⇒ interviews table missing columns (fixed: ALTER TABLE)
+- Duolingo Demo not visible to all users ⇒ Missing RLS policy on workspaces table (fixed)
+- Scrollbar in wrong position ⇒ padding inside scrollable container (fixed: moved padding to inner div)
+- X button not closing modal ⇒ Event propagation issue (fixed: added stopPropagation)
+
+### #Background
+Workspace system uses UUID-based workspace_id linking to workspaces table. Duolingo Demo workspace is globally accessible via special RLS policy. Personal workspaces are auto-created for new users. Interview generation uses same prompts/questions as original generate_interviews.js for consistency.
+
+## 2025-11-23 – Compact Session
+
+### #CurrentFocus
+Converted Interviews tab from card grid to sortable table with toolbar, search, and URL-based workspace persistence.
+
+### #SessionChanges
+- Converted Interviews from card grid to table format with columns: Name, Demographics, Summary, Quotes, Transcript
+- Added toolbar with Download CSV, Search, and Fullscreen buttons
+- Implemented CSV download exporting filtered interview data with workspace name in filename
+- Added permanent search bar on left side filtering by name, summary, country, occupation, language, quotes
+- Implemented fullscreen toggle for interviews table
+- Made Summary and Quotes columns expandable on click (removes line-clamp when clicked)
+- Added sorting for Name column with three-dot menu on hover showing asc/desc options
+- Sort indicator (arrow) appears left of column title when sorted
+- Removed Demographics sorting per user request
+- Fixed transcript modal X button visibility by adding `text-gray-500` color class
+- Fixed sort dropdown positioning from `right-0` to `left-0` to stay within viewport
+- Implemented URL-based workspace/tab persistence using `useSearchParams`
+- URLs now include `?workspace=<id>&tab=<tab>` for refresh persistence
+- Wrapped DashboardContent in Suspense boundary for useSearchParams compatibility
+- Added `handleWorkspaceChange` and `handleTabChange` functions to update URL on changes
+
+### #NextSteps
+- Run generate_more_interviews.js to create 139 additional Duolingo interviews #Deprecated
+- Add workspace creation functionality from dashboard
+- Consider adding more sortable columns (Summary, Quotes)
+
+### #BugsAndTheories
+- X button not visible in modal ⇒ Missing text color on button (fixed: added text-gray-500)
+- Sort dropdown going off-screen ⇒ Positioned from right edge (fixed: changed to left-0)
+- Workspace not persisting on refresh ⇒ No URL state (fixed: added useSearchParams)
+
+### #Background
+Interviews table provides data-grid UX with expandable rows for long content. Three-dot menu on hover follows Notion-style column actions. URL persistence allows sharing specific workspace views and maintains state on refresh. Suspense wrapper required for Next.js useSearchParams hook.
