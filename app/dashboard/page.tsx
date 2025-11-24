@@ -205,9 +205,9 @@ function DashboardContent() {
 
         // Set default workspace to personal
         if (personalWs?.workspaces) {
-          setCurrentWorkspace(personalWs.workspaces as Workspace);
+          setCurrentWorkspace(personalWs.workspaces as unknown as Workspace);
           // Update URL with default workspace
-          updateUrl(personalWs.workspaces.id, tabFromUrl || 'campaigns');
+          updateUrl((personalWs.workspaces as unknown as Workspace).id, tabFromUrl || 'campaigns');
         } else if (allWorkspaces.length > 0) {
           setCurrentWorkspace(allWorkspaces[0]);
           updateUrl(allWorkspaces[0].id, tabFromUrl || 'campaigns');
@@ -1615,7 +1615,7 @@ function DashboardContent() {
                         const pos = labelPositions[i];
                         const score = scoreValues[i];
                         // Adjust text anchor based on position
-                        let textAnchor = 'middle';
+                        let textAnchor: 'middle' | 'start' | 'end' = 'middle';
                         let dx = 0;
                         if (i === 1) { textAnchor = 'start'; dx = 3; }
                         if (i === 2) { textAnchor = 'start'; dx = 3; }
