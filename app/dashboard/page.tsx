@@ -176,8 +176,8 @@ function DashboardContent() {
         const allWorkspaces: Workspace[] = [];
 
         if (personalWs?.workspaces) {
-          allWorkspaces.push(personalWs.workspaces as Workspace);
-          setPersonalWorkspaceId(personalWs.workspaces.id);
+          allWorkspaces.push(personalWs.workspaces as unknown as Workspace);
+          setPersonalWorkspaceId((personalWs.workspaces as unknown as Workspace).id);
         }
 
         if (duolingoWorkspace) {
