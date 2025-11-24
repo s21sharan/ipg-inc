@@ -1383,10 +1383,18 @@ function DashboardContent() {
 
             {/* Transcript Content */}
             <div className="flex-1 overflow-y-auto p-4 space-y-4">
-              {selectedInterview.transcript && selectedInterview.transcript.map((item, idx) => (
-                <div key={idx} className="space-y-1">
-                  <p className="text-xs font-medium text-gray-500">{item.question}</p>
-                  <p className="text-sm text-gray-700 leading-relaxed">{item.answer}</p>
+              {selectedInterview.transcript && selectedInterview.transcript.map((item: any, idx: number) => (
+                <div
+                  key={idx}
+                  className={`space-y-1 ${item.is_followup ? 'ml-6 pl-3 border-l-2 border-orange-300' : ''}`}
+                >
+                  <p className={`text-xs font-medium ${item.is_followup ? 'text-orange-600' : 'text-gray-500'}`}>
+                    {item.is_followup && <span className="text-orange-400 mr-1">↳</span>}
+                    {item.question}
+                  </p>
+                  <p className={`text-sm leading-relaxed ${item.is_followup ? 'text-orange-700' : 'text-gray-700'}`}>
+                    {item.answer}
+                  </p>
                 </div>
               ))}
             </div>
