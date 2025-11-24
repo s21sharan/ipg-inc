@@ -1044,13 +1044,14 @@ function DashboardContent() {
                       </th>
 
                       {/* Demographics Header */}
-                      <th className="text-left px-4 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      <th className="text-left px-3 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">
                         Demographics
                       </th>
 
-                      <th className="text-left px-4 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">Summary</th>
-                      <th className="text-left px-4 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">Quotes</th>
-                      <th className="text-left px-4 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">Transcript</th>
+                      <th className="text-left px-3 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">Summary</th>
+                      <th className="text-left px-3 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">Quotes</th>
+                      <th className="text-left px-2 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">Personality</th>
+                      <th className="text-left px-2 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">Transcript</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-gray-100">
@@ -1062,8 +1063,8 @@ function DashboardContent() {
                         </td>
 
                         {/* Demographics */}
-                        <td className="px-4 py-3">
-                          <div className="flex flex-wrap gap-1 max-w-xs">
+                        <td className="px-3 py-3">
+                          <div className="flex flex-wrap gap-1">
                             {interview.age && (
                               <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-medium bg-gray-100 text-gray-700">
                                 {interview.age} yo
@@ -1093,11 +1094,11 @@ function DashboardContent() {
                         </td>
 
                         {/* Summary */}
-                        <td className="px-4 py-3">
+                        <td className="px-3 py-3">
                           {interview.summary ? (
                             <div
                               onClick={() => toggleRowExpansion(interview.id)}
-                              className={`text-xs text-gray-600 max-w-sm cursor-pointer hover:text-gray-900 ${
+                              className={`text-xs text-gray-600 cursor-pointer hover:text-gray-900 ${
                                 expandedRows.has(interview.id) ? '' : 'line-clamp-2'
                               }`}
                               title={expandedRows.has(interview.id) ? 'Click to collapse' : 'Click to expand'}
@@ -1110,11 +1111,11 @@ function DashboardContent() {
                         </td>
 
                         {/* Quotes */}
-                        <td className="px-4 py-3">
+                        <td className="px-3 py-3">
                           {interview.top_quotes && interview.top_quotes.length > 0 ? (
                             <div
                               onClick={() => toggleRowExpansion(interview.id)}
-                              className={`text-xs text-gray-600 italic max-w-xs cursor-pointer hover:text-gray-900 ${
+                              className={`text-xs text-gray-600 italic cursor-pointer hover:text-gray-900 ${
                                 expandedRows.has(interview.id) ? '' : 'line-clamp-2'
                               }`}
                               title={expandedRows.has(interview.id) ? 'Click to collapse' : 'Click to expand'}
@@ -1128,13 +1129,26 @@ function DashboardContent() {
                           )}
                         </td>
 
+                        {/* Personality Button */}
+                        <td className="px-2 py-3 whitespace-nowrap">
+                          <button
+                            onClick={() => {/* TODO: Open personality modal */}}
+                            className="inline-flex items-center gap-1 px-2 py-1 text-xs font-medium text-purple-600 bg-purple-50 hover:bg-purple-100 rounded-md transition-colors"
+                          >
+                            <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                            </svg>
+                            View
+                          </button>
+                        </td>
+
                         {/* Transcript Button */}
-                        <td className="px-4 py-3">
+                        <td className="px-2 py-3 whitespace-nowrap">
                           <button
                             onClick={() => setSelectedInterview(interview)}
-                            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-blue-600 bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors"
+                            className="inline-flex items-center gap-1 px-2 py-1 text-xs font-medium text-blue-600 bg-blue-50 hover:bg-blue-100 rounded-md transition-colors"
                           >
-                            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                             </svg>
                             View
