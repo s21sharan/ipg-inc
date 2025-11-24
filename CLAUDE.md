@@ -287,8 +287,8 @@ Implemented Big Five personality analysis using GPT-4o Batch API with embedding-
 - Created `supabase/migrations/003_cleanup_interviews_table.sql` for removing unused columns
 
 ### #NextSteps
-- Run cleanup SQL to drop `participant_name` and `participant_email` columns
-- Add hover tooltips to radar chart points showing trait descriptions
+- Run cleanup SQL to drop `participant_name` and `participant_email` columns #Deprecated
+- Add hover tooltips to radar chart points showing trait descriptions #Deprecated
 - Consider adding personality comparison view across multiple interviews
 
 ### #BugsAndTheories
@@ -297,3 +297,36 @@ Implemented Big Five personality analysis using GPT-4o Batch API with embedding-
 
 ### #Background
 Big Five personality scoring uses embedding-based dimensional projection instead of arbitrary GPT numeric outputs. GPT-4o answers 50 BFPT questions as free-text based on interview transcript. Responses embedded with text-embedding-3-small, projected onto trait axes defined by polar opposite anchor texts. Two-pass normalization finds actual min/max across all interviews for proper 0-5 distribution. Radar chart matches standard OCEAN visualization style.
+
+## 2025-11-23 – Compact Session (Part 4)
+
+### #CurrentFocus
+Enhanced personality modal with selectable top 3 traits, Communication Tips, and Advertising Recommendations.
+
+### #SessionChanges
+- Added `selectedTraitKey` state to track which trait card is selected in personality modal
+- Added trait definitions with `communication` and `advertising` fields for all 5 Big Five traits
+- Implemented selectable horizontal cards for Primary/Secondary/Tertiary traits with blue border on selection
+- Primary trait selected by default; clicking any card switches displayed content
+- Added Communication Tips section with blue gradient background and chat icon
+- Added Advertising Recommendations section with purple gradient background and chart icon
+- Made trait cards more compact: smaller fonts (`text-[8px]`, `text-[11px]`), reduced padding, `truncate` for overflow
+- Made detail section more compact: `p-3` padding, `text-[11px]` content, `space-y-2.5` gaps
+- Removed generated date from personality modal
+- Reset `selectedTraitKey` to null when opening new personality modal
+- Added scrollable modal content with `max-h-[90vh] overflow-y-auto flex-1`
+- Fixed TypeScript: added `as unknown as Workspace` casts for Supabase join results (lines 179, 180, 208, 210)
+- Fixed TypeScript: added union type `'middle' | 'start' | 'end'` for SVG textAnchor variable
+
+### #NextSteps
+- Run cleanup SQL to drop unused columns in interviews table
+- Consider adding smooth transitions when switching between trait cards
+- Add personality export/share functionality
+
+### #BugsAndTheories
+- "Conscientiousness" text overflow ⇒ Card too narrow (fixed: added `truncate` class)
+- TypeScript `Workspace` cast error ⇒ Supabase returns array type (fixed: cast through `unknown`)
+- TypeScript `textAnchor` type error ⇒ `string` not assignable to union (fixed: explicit union type)
+
+### #Background
+Personality modal now displays actionable insights for marketing/UX. Top 3 traits shown as selectable cards. Each trait includes Communication Tips (how to talk to this persona) and Advertising Recommendations (campaign strategies). Content sourced from Big Five personality research for practical application in market research context.
