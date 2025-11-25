@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, Suspense } from 'react';
+import { useState, useEffect, Suspense, useCallback } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { supabase } from '../../lib/supabase';
 import CreateCampaignForm from './create-campaign';
@@ -97,6 +97,11 @@ function DashboardContent() {
   const [showSortDropdown, setShowSortDropdown] = useState<string | null>(null);
   const [demographicSortField, setDemographicSortField] = useState<string>('age');
   const [isInitialized, setIsInitialized] = useState(false);
+  const [isSimulating, setIsSimulating] = useState(false);
+  const [showSimulationModal, setShowSimulationModal] = useState(false);
+  const [simulationStatus, setSimulationStatus] = useState<any>(null);
+  const [conversations, setConversations] = useState<any[]>([]);
+  const [selectedConversations, setSelectedConversations] = useState<Set<string>>(new Set());
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -125,6 +130,218 @@ function DashboardContent() {
     setActiveTab(tab);
     if (currentWorkspace) {
       updateUrl(currentWorkspace.id, tab);
+    }
+  };
+
+  // Handle simulation
+  const handleSimulate = async () => {
+    if (!viewingCampaign) return;
+
+    // If already simulating, just show the modal and refresh status
+    if (isSimulating) {
+      setShowSimulationModal(true);
+      // Refresh status immediately to show current progress
+      await checkSimulationStatus();
+      return;
+    }
+
+    setIsSimulating(true);
+    setShowSimulationModal(true);
+
+    // Set initial status so modal shows immediately
+    setSimulationStatus({
+      total: 0,
+      completed: 0,
+      in_progress: 0,
+      failed: 0,
+      pending: 0,
+      simulation_status: 'running',
+      conversations: []
+    });
+
+    // Start polling immediately to get the total count
+    pollSimulationStatus();
+
+    try {
+      // Get auth session
+      const { data: { session } } = await supabase.auth.getSession();
+
+      if (!session?.access_token) {
+        throw new Error('No active session. Please log in again.');
+      }
+
+      // Kick off the simulation (don't await - let it run in background)
+      const response = await fetch(`/api/campaigns/${viewingCampaign.id}/simulate`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${session.access_token}`,
+          'Content-Type': 'application/json'
+        }
+      });
+
+      const data = await response.json();
+      if (!response.ok) {
+        console.error('Simulation API error:', data);
+        setIsSimulating(false);
+        alert(data.error || 'Simulation failed');
+      }
+
+    } catch (error) {
+      console.error('Simulation error:', error);
+      alert(error instanceof Error ? error.message : 'Simulation failed');
+      setIsSimulating(false);
+      setShowSimulationModal(false);
+      setSimulationStatus(null);
+    }
+  };
+
+  // Handle stop simulation
+  const handleStopSimulation = async () => {
+    if (!viewingCampaign) return;
+
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+
+      if (!session?.access_token) {
+        throw new Error('No active session. Please log in again.');
+      }
+
+      const response = await fetch(`/api/campaigns/${viewingCampaign.id}/stop-simulation`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${session.access_token}`,
+          'Content-Type': 'application/json'
+        }
+      });
+
+      const data = await response.json();
+      if (!response.ok) {
+        console.error('Stop simulation error:', data);
+        alert(data.error || 'Failed to stop simulation');
+      } else {
+        // Refresh status immediately
+        await checkSimulationStatus();
+      }
+
+    } catch (error) {
+      console.error('Stop simulation error:', error);
+      alert(error instanceof Error ? error.message : 'Failed to stop simulation');
+    }
+  };
+
+  // Check simulation status once
+  const checkSimulationStatus = async () => {
+    if (!viewingCampaign) return null;
+
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+
+      const response = await fetch(`/api/campaigns/${viewingCampaign.id}/simulation-status`, {
+        headers: session?.access_token ? {
+          'Authorization': `Bearer ${session.access_token}`
+        } : {}
+      });
+      const data = await response.json();
+
+      setSimulationStatus(data);
+
+      // Update isSimulating based on backend status
+      const isRunning = data.simulation_status === 'running';
+      setIsSimulating(isRunning);
+
+      return data;
+    } catch (error) {
+      console.error('Status check error:', error);
+      return null;
+    }
+  };
+
+  // Poll simulation status
+  const pollSimulationStatus = () => {
+    if (!viewingCampaign) return;
+
+    const pollInterval = setInterval(async () => {
+      try {
+        const data = await checkSimulationStatus();
+
+        if (!data) return;
+
+        // Always refresh conversations list while simulation is running
+        // This ensures the list updates regardless of which tab you're viewing
+        await fetchConversations();
+
+        // Stop polling if simulation is no longer running
+        if (data.simulation_status !== 'running') {
+          clearInterval(pollInterval);
+          setIsSimulating(false);
+
+          // Final refresh of conversations
+          await fetchConversations();
+        }
+      } catch (error) {
+        console.error('Status poll error:', error);
+      }
+    }, 2000); // Poll every 2 seconds
+
+    return pollInterval;
+  };
+
+  // Fetch conversations for current campaign
+  const fetchConversations = useCallback(async () => {
+    if (!viewingCampaign) return;
+
+    const { data, error } = await supabase
+      .from('conversations')
+      .select('*')
+      .eq('campaign_id', viewingCampaign.id)
+      .order('created_at', { ascending: false });
+
+    if (!error && data) {
+      setConversations(data);
+    }
+  }, [viewingCampaign]);
+
+  // Delete selected conversations
+  const deleteSelectedConversations = async () => {
+    if (selectedConversations.size === 0) return;
+
+    const confirmMessage = `Are you sure you want to delete ${selectedConversations.size} conversation${selectedConversations.size > 1 ? 's' : ''}?`;
+    if (!confirm(confirmMessage)) return;
+
+    try {
+      const { error } = await supabase
+        .from('conversations')
+        .delete()
+        .in('id', Array.from(selectedConversations));
+
+      if (error) throw error;
+
+      // Update local state
+      setConversations(conversations.filter(c => !selectedConversations.has(c.id)));
+      setSelectedConversations(new Set());
+    } catch (error) {
+      console.error('Error deleting conversations:', error);
+      alert('Failed to delete conversations');
+    }
+  };
+
+  // Toggle conversation selection
+  const toggleConversationSelection = (id: string) => {
+    const newSelected = new Set(selectedConversations);
+    if (newSelected.has(id)) {
+      newSelected.delete(id);
+    } else {
+      newSelected.add(id);
+    }
+    setSelectedConversations(newSelected);
+  };
+
+  // Toggle select all conversations
+  const toggleSelectAllConversations = () => {
+    if (selectedConversations.size === conversations.length) {
+      setSelectedConversations(new Set());
+    } else {
+      setSelectedConversations(new Set(conversations.map(c => c.id)));
     }
   };
 
@@ -218,6 +435,26 @@ function DashboardContent() {
     initialize();
   }, [workspaceIdFromUrl, tabFromUrl]);
 
+  // Check for existing simulation when campaign is opened
+  useEffect(() => {
+    const checkExistingSimulation = async () => {
+      if (!viewingCampaign) return;
+
+      const status = await checkSimulationStatus();
+
+      // If simulation is running, start polling
+      if (status?.simulation_status === 'running') {
+        setIsSimulating(true);
+        pollSimulationStatus();
+      }
+
+      // Fetch conversations
+      fetchConversations();
+    };
+
+    checkExistingSimulation();
+  }, [viewingCampaign?.id]);
+
   const fetchCampaigns = async (workspaceId?: string) => {
     setLoadingCampaigns(true);
     try {
@@ -275,6 +512,13 @@ function DashboardContent() {
       fetchInterviews(currentWorkspace.id);
     }
   }, [currentWorkspace, user]);
+
+  // Fetch conversations when viewing a campaign
+  useEffect(() => {
+    if (viewingCampaign) {
+      fetchConversations();
+    }
+  }, [viewingCampaign, fetchConversations]);
 
   const deleteCampaign = async (id: string) => {
     if (!confirm('Are you sure you want to delete this campaign?')) return;
@@ -378,7 +622,9 @@ function DashboardContent() {
                   {/* Conversations */}
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1.5">Conversations</label>
-                    <p className="text-base text-gray-900">0 completed (0 total)</p>
+                    <p className="text-base text-gray-900">
+                      {conversations.filter(c => c.status === 'completed').length} completed ({conversations.length} total)
+                    </p>
                   </div>
                 </div>
               </div>
@@ -387,13 +633,124 @@ function DashboardContent() {
           case 'conversations':
             return (
               <div className="p-8">
-                <div className="bg-gray-50 rounded-lg border-2 border-dashed border-gray-300 p-16 text-center">
-                  <svg className="w-12 h-12 mx-auto mb-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
-                  </svg>
-                  <p className="text-sm text-gray-500">No conversations yet</p>
-                  <p className="text-xs text-gray-400 mt-2">Share your campaign link to start collecting responses</p>
-                </div>
+                {conversations.length === 0 ? (
+                  <div className="bg-gray-50 rounded-lg border-2 border-dashed border-gray-300 p-16 text-center">
+                    <svg className="w-12 h-12 mx-auto mb-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                    </svg>
+                    <p className="text-sm text-gray-500">No conversations yet</p>
+                    <p className="text-xs text-gray-400 mt-2">Click "Simulate Conversations" to generate AI interviews</p>
+                  </div>
+                ) : (
+                  <div className="space-y-4">
+                    {/* Toolbar */}
+                    {selectedConversations.size > 0 && (
+                      <div className="bg-purple-50 border border-purple-200 rounded-lg p-3 flex items-center justify-between">
+                        <span className="text-sm text-purple-700 font-medium">
+                          {selectedConversations.size} conversation{selectedConversations.size > 1 ? 's' : ''} selected
+                        </span>
+                        <button
+                          onClick={deleteSelectedConversations}
+                          className="bg-red-600 hover:bg-red-700 text-white px-4 py-1.5 rounded-lg text-sm font-medium transition-colors flex items-center gap-2"
+                        >
+                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                          </svg>
+                          Delete Selected
+                        </button>
+                      </div>
+                    )}
+
+                    <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
+                      <table className="min-w-full divide-y divide-gray-200">
+                        <thead className="bg-gray-50">
+                          <tr>
+                            <th className="px-6 py-3 text-left">
+                              <input
+                                type="checkbox"
+                                checked={selectedConversations.size === conversations.length && conversations.length > 0}
+                                onChange={toggleSelectAllConversations}
+                                className="w-4 h-4 text-purple-600 bg-gray-100 border-gray-300 rounded focus:ring-purple-500"
+                              />
+                            </th>
+                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                              Participant Name
+                            </th>
+                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                              Topics Covered
+                            </th>
+                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                              Q&As
+                            </th>
+                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                              Status
+                            </th>
+                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                              Transcript
+                            </th>
+                          </tr>
+                        </thead>
+                        <tbody className="bg-white divide-y divide-gray-200">
+                          {conversations.map((conversation: any) => (
+                            <tr key={conversation.id} className="hover:bg-gray-50">
+                              <td className="px-6 py-4 whitespace-nowrap">
+                                <input
+                                  type="checkbox"
+                                  checked={selectedConversations.has(conversation.id)}
+                                  onChange={() => toggleConversationSelection(conversation.id)}
+                                  className="w-4 h-4 text-purple-600 bg-gray-100 border-gray-300 rounded focus:ring-purple-500"
+                                />
+                              </td>
+                              <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                                {conversation.participant_name}
+                              </td>
+                              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                {conversation.topics_covered?.length || 0} / {viewingCampaign?.topics?.length || 0}
+                              </td>
+                              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                {conversation.transcript?.length || 0}
+                              </td>
+                              <td className="px-6 py-4 whitespace-nowrap">
+                                {conversation.status === 'completed' && (
+                                  <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                    Completed
+                                  </span>
+                                )}
+                                {conversation.status === 'failed' && (
+                                  <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
+                                    Failed
+                                  </span>
+                                )}
+                                {conversation.status === 'in_progress' && (
+                                  <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                                    In Progress
+                                  </span>
+                                )}
+                              </td>
+                              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                <button
+                                  onClick={() => {
+                                    setSelectedInterview({
+                                      ...conversation,
+                                      name: conversation.participant_name
+                                    } as any);
+                                  }}
+                                  className="text-purple-600 hover:text-purple-800 font-medium flex items-center gap-1"
+                                >
+                                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                  </svg>
+                                  View
+                                </button>
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                )}
               </div>
             );
 
@@ -434,15 +791,39 @@ function DashboardContent() {
                 </button>
                 <h1 className="text-xl font-light text-gray-900">{viewingCampaign.title}</h1>
               </div>
-              <button
-                onClick={() => {
-                  setViewingCampaign(null);
-                  setEditingCampaign(viewingCampaign);
-                }}
-                className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-1.5 rounded-lg text-sm font-medium transition-colors"
-              >
-                Edit Campaign
-              </button>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={handleSimulate}
+                  className={`${isSimulating ? 'bg-purple-500 hover:bg-purple-600' : 'bg-purple-600 hover:bg-purple-700'} text-white px-4 py-1.5 rounded-lg text-sm font-medium transition-colors flex items-center gap-2`}
+                >
+                  {isSimulating ? (
+                    <>
+                      <svg className="animate-spin h-4 w-4" fill="none" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                      </svg>
+                      Simulating...
+                    </>
+                  ) : (
+                    <>
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                      Simulate Conversations
+                    </>
+                  )}
+                </button>
+                <button
+                  onClick={() => {
+                    setViewingCampaign(null);
+                    setEditingCampaign(viewingCampaign);
+                  }}
+                  className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-1.5 rounded-lg text-sm font-medium transition-colors"
+                >
+                  Edit Campaign
+                </button>
+              </div>
             </div>
 
             {/* Tabs */}
@@ -1639,6 +2020,115 @@ function DashboardContent() {
                   </div>
                 );
               })()}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Simulation Progress Modal */}
+      {showSimulationModal && simulationStatus && (
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-2xl max-w-2xl w-full max-h-[80vh] overflow-hidden flex flex-col">
+            {/* Modal Header */}
+            <div className="p-6 border-b border-gray-100">
+              <div className="flex justify-between items-start">
+                <div>
+                  <h2 className="text-lg font-medium text-gray-900">Simulating Conversations</h2>
+                  <p className="text-sm text-gray-500 mt-1">
+                    {simulationStatus.completed} of {simulationStatus.total} completed
+                    {simulationStatus.failed > 0 && ` (${simulationStatus.failed} failed)`}
+                  </p>
+                </div>
+                <button
+                  onClick={() => setShowSimulationModal(false)}
+                  className="p-2 hover:bg-gray-100 rounded-lg transition-colors text-gray-500 hover:text-gray-700"
+                >
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path d="M18 6L6 18M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+
+              {/* Progress Bar */}
+              <div className="mt-4 bg-gray-200 rounded-full h-2 overflow-hidden">
+                <div
+                  className="bg-purple-600 h-full transition-all duration-300"
+                  style={{
+                    width: `${(simulationStatus.completed / simulationStatus.total) * 100}%`
+                  }}
+                />
+              </div>
+            </div>
+
+            {/* Participants List */}
+            <div className="flex-1 overflow-y-auto p-6">
+              <div className="space-y-2">
+                {simulationStatus.conversations?.map((conv: any, idx: number) => (
+                  <div
+                    key={idx}
+                    className="flex items-center justify-between p-3 bg-gray-50 rounded-lg"
+                  >
+                    <span className="text-sm text-gray-700">{conv.participant_name}</span>
+                    <div className="flex items-center gap-2">
+                      {conv.status === 'completed' && (
+                        <span className="flex items-center gap-1 text-xs text-green-600">
+                          <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                            <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                          </svg>
+                          Completed
+                        </span>
+                      )}
+                      {conv.status === 'in_progress' && (
+                        <span className="flex items-center gap-1 text-xs text-blue-600">
+                          <svg className="animate-spin h-4 w-4" fill="none" viewBox="0 0 24 24">
+                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                          </svg>
+                          Processing...
+                        </span>
+                      )}
+                      {conv.status === 'failed' && (
+                        <span className="flex items-center gap-1 text-xs text-red-600">
+                          <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                            <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                          </svg>
+                          Failed
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Footer */}
+            <div className="p-6 border-t border-gray-100">
+              {isSimulating ? (
+                <div className="flex gap-3">
+                  <button
+                    onClick={handleStopSimulation}
+                    className="flex-1 bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center justify-center gap-2"
+                  >
+                    <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8 7a1 1 0 00-1 1v4a1 1 0 001 1h4a1 1 0 001-1V8a1 1 0 00-1-1H8z" clipRule="evenodd" />
+                    </svg>
+                    Stop Simulation
+                  </button>
+                  <button
+                    onClick={() => setShowSimulationModal(false)}
+                    className="flex-1 bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors"
+                  >
+                    Close (Running in Background)
+                  </button>
+                </div>
+              ) : (
+                <button
+                  onClick={() => setShowSimulationModal(false)}
+                  className="w-full bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors"
+                >
+                  Done
+                </button>
+              )}
             </div>
           </div>
         </div>

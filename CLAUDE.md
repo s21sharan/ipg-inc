@@ -330,3 +330,40 @@ Enhanced personality modal with selectable top 3 traits, Communication Tips, and
 
 ### #Background
 Personality modal now displays actionable insights for marketing/UX. Top 3 traits shown as selectable cards. Each trait includes Communication Tips (how to talk to this persona) and Advertising Recommendations (campaign strategies). Content sourced from Big Five personality research for practical application in market research context.
+
+## 2025-11-24 – Compact Session
+
+### #CurrentFocus
+Built complete campaign conversation simulation system with generative AI agents, real-time progress tracking, and conversation management.
+
+### #SessionChanges
+- Extracted reflection memory from 196 interviews (personality, goals, pain points, product attitudes) using GPT-4o-mini
+- Created `supabase/migrations/006_create_conversations_table.sql` with campaign/interview links and status tracking
+- Built `lib/simulation-engine.ts` with agent context builder, dynamic probing, and full transcript memory
+- Created `/api/campaigns/[id]/simulate` endpoint processing interviews in batches of 10 with rate limiting
+- Created `/api/campaigns/[id]/simulation-status` endpoint returning real-time counts (total, completed, in_progress, failed, pending)
+- Added purple "Simulate Conversations" button to campaign detail header with loading states
+- Built simulation progress modal with live progress bar, participant list, and status indicators (completed/in_progress/failed)
+- Implemented Conversations tab table with checkboxes, bulk delete, and real-time updates during simulation
+- Configured shorter responses (max 150 tokens, 2-4 sentences) with conversational tone guidelines
+- Tuned AI interviewer to bias toward probing (2-3 follow-ups per question) for natural back-and-forth dialogue
+- Fixed Next.js 16 async params issue by awaiting `params` Promise in API routes
+- Fixed authentication by passing Bearer token from frontend via Authorization header
+- Fixed modal visibility by setting initial simulationStatus on button click
+- Enabled modal close/reopen while simulation runs in background with "Close (Running in Background)" button
+- Added real-time conversations list refresh every 2 seconds when on Conversations tab during active simulation
+
+### #NextSteps
+- Test simulation with full 196-interview workspace
+- Monitor token usage and costs for large-scale simulations
+- Add conversation export/download functionality
+- Consider adding conversation comparison or analysis features
+
+### #BugsAndTheories
+- 401 Unauthorized on simulate ⇒ Cookie-based auth not working (fixed: pass Bearer token in Authorization header)
+- Modal not showing "0 of 0" ⇒ simulationStatus null on first render (fixed: set initial status object immediately)
+- Progress bar stuck at "0 of 0" ⇒ Polling not starting (fixed: start polling immediately, fetch total from workspace interview count)
+- Paragraph-long responses ⇒ max_tokens too high (fixed: reduced from 500 to 150, added conversational guidelines)
+
+### #Background
+Simulation system creates authentic AI interviews by combining reflection memory, personality scores, and recent Q&A context. Uses full conversation memory approach (passes entire transcript each turn) for coherent multi-turn dialogue. AI interviewer dynamically selects probe questions based on response depth. Conversations stored in separate table linked to campaigns and source interviews. Progress modal updates live via 2-second polling. Can close modal and continue simulation in background. Conversations tab refreshes automatically during simulation. Designed for 196-interview Duolingo Demo workspace with ~8-12 Q&As per conversation targeting conversational tone over essay responses.
