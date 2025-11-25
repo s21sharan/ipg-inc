@@ -34,7 +34,6 @@ interface Campaign {
   name: string;
   title: string;
   caption: string;
-  modality: string;
   time_estimate: string;
   topics: Topic[];
   completion_logic: CompletionLogic;
@@ -55,7 +54,6 @@ export default function CreateCampaignForm({ onClose, onBack, campaign, workspac
     name: campaign?.name || '',
     title: campaign?.title || '',
     caption: campaign?.caption || '',
-    modality: campaign?.modality || 'Audio + Video',
     timeEstimate: campaign?.time_estimate || ''
   });
 
@@ -363,12 +361,13 @@ export default function CreateCampaignForm({ onClose, onBack, campaign, workspac
         name: formData.name,
         title: formData.title,
         caption: formData.caption,
-        modality: formData.modality,
         time_estimate: formData.timeEstimate,
         topics: topics,
         completion_logic: completionLogic,
         workspace_id: workspaceId
       };
+
+      const isNewCampaign = !campaign?.id || campaign.id === '';
 
       if (campaign?.id && campaign.id !== '') {
         // Update existing campaign
@@ -391,7 +390,10 @@ export default function CreateCampaignForm({ onClose, onBack, campaign, workspac
         }
       }
 
-      // Success! Stay on the page (don't close the form)
+      // Success! For new campaigns, redirect to dashboard. For edits, stay on page.
+      if (isNewCampaign) {
+        onClose();
+      }
     } catch (error) {
       console.error('Error saving campaign:', error);
       setSaveError(error instanceof Error ? error.message : 'Failed to save campaign');
@@ -543,21 +545,6 @@ export default function CreateCampaignForm({ onClose, onBack, campaign, workspac
                       : 'border-gray-300'
                   } ${triggerWiggle && validationErrors.caption ? 'wiggle' : ''}`}
                 />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Modality <span className="text-gray-400 font-normal">- Choose whether to collect audio and video or audio only</span>
-                </label>
-                <select
-                  name="modality"
-                  value={formData.modality}
-                  onChange={handleInputChange}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 bg-white appearance-none bg-[url('data:image/svg+xml;charset=UTF-8,%3csvg%20xmlns%3d%22http%3a%2f%2fwww.w3.org%2f2000%2fsvg%22%20width%3d%2212%22%20height%3d%2212%22%20viewBox%3d%220%200%2012%2012%22%3e%3cpath%20fill%3d%22%23333%22%20d%3d%22M10.293%203.293%206%207.586%201.707%203.293A1%201%200%200%200%20.293%204.707l5%205a1%201%200%200%200%201.414%200l5-5a1%201%200%201%200-1.414-1.414z%22%2f%3e%3c%2fsvg%3e')] bg-[length:12px] bg-[right_1rem_center] bg-no-repeat pr-10"
-                >
-                  <option value="Audio + Video">Audio + Video</option>
-                  <option value="Audio Only">Audio Only</option>
-                </select>
               </div>
 
               <div>

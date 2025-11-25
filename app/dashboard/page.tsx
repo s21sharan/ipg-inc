@@ -19,7 +19,6 @@ interface Campaign {
   name: string;
   title: string;
   caption: string;
-  modality: string;
   time_estimate: string;
   topics: any[];
   completion_logic: any;
@@ -84,7 +83,7 @@ function DashboardContent() {
   const [loadingCampaigns, setLoadingCampaigns] = useState(true);
   const [editingCampaign, setEditingCampaign] = useState<Campaign | null>(null);
   const [viewingCampaign, setViewingCampaign] = useState<Campaign | null>(null);
-  const [campaignViewTab, setCampaignViewTab] = useState<'summary' | 'conversations' | 'share' | 'analyze'>('summary');
+  const [campaignViewTab, setCampaignViewTab] = useState<'summary' | 'conversations' | 'analyze'>('summary');
   const [interviews, setInterviews] = useState<Interview[]>([]);
   const [loadingInterviews, setLoadingInterviews] = useState(false);
   const [selectedInterview, setSelectedInterview] = useState<Interview | null>(null);
@@ -326,7 +325,6 @@ function DashboardContent() {
         name: data.basicDetails.name,
         title: data.basicDetails.title,
         caption: data.basicDetails.caption,
-        modality: 'Audio + Video',
         time_estimate: data.basicDetails.timeEstimate,
         topics: data.topics,
         completion_logic: data.completionLogic,
@@ -377,32 +375,6 @@ function DashboardContent() {
                     </span>
                   </div>
 
-                  {/* URL */}
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1.5">URL</label>
-                    <div className="flex items-center gap-2 bg-gray-50 border border-gray-200 rounded-lg p-3">
-                      <a
-                        href={`${window.location.origin}/campaign/${viewingCampaign.id}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-sm text-blue-600 hover:text-blue-700 underline break-all flex-1"
-                      >
-                        {`${window.location.origin}/campaign/${viewingCampaign.id}`}
-                      </a>
-                      <button
-                        onClick={() => {
-                          navigator.clipboard.writeText(`${window.location.origin}/campaign/${viewingCampaign.id}`);
-                        }}
-                        className="text-gray-400 hover:text-gray-600 flex-shrink-0 transition-colors"
-                        title="Copy URL"
-                      >
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
-                        </svg>
-                      </button>
-                    </div>
-                  </div>
-
                   {/* Conversations */}
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1.5">Conversations</label>
@@ -421,44 +393,6 @@ function DashboardContent() {
                   </svg>
                   <p className="text-sm text-gray-500">No conversations yet</p>
                   <p className="text-xs text-gray-400 mt-2">Share your campaign link to start collecting responses</p>
-                </div>
-              </div>
-            );
-
-          case 'share':
-            return (
-              <div className="p-8">
-                <div className="max-w-3xl">
-                  <div className="bg-white border border-gray-200 rounded-lg p-8 shadow-sm">
-                    <h3 className="text-lg font-medium text-gray-900 mb-3">Ready to recruit conversations?</h3>
-                    <p className="text-sm text-gray-600 mb-6 leading-relaxed">
-                      Your interview is live — now it's time to start collecting responses. Share this link with
-                      customers, panelists, or teammates to start capturing meaningful feedback.
-                    </p>
-
-                    <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 mb-6">
-                      <div className="flex items-center justify-between gap-3">
-                        <code className="text-sm text-blue-600 break-all flex-1">
-                          {`${window.location.origin}/campaign/${viewingCampaign.id}`}
-                        </code>
-                        <button
-                          onClick={() => {
-                            navigator.clipboard.writeText(`${window.location.origin}/campaign/${viewingCampaign.id}`);
-                          }}
-                          className="flex-shrink-0 text-gray-400 hover:text-gray-600 transition-colors"
-                          title="Copy URL"
-                        >
-                          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
-                          </svg>
-                        </button>
-                      </div>
-                    </div>
-
-                    <p className="text-xs text-gray-500">
-                      Or explore options to embed, leverage research panels, or integrate with CRM tools →
-                    </p>
-                  </div>
                 </div>
               </div>
             );
@@ -507,7 +441,7 @@ function DashboardContent() {
                 }}
                 className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-1.5 rounded-lg text-sm font-medium transition-colors"
               >
-                Edit Pulse
+                Edit Campaign
               </button>
             </div>
 
@@ -532,16 +466,6 @@ function DashboardContent() {
                 }`}
               >
                 Conversations
-              </button>
-              <button
-                onClick={() => setCampaignViewTab('share')}
-                className={`pb-3 text-sm font-medium border-b-2 transition-colors ${
-                  campaignViewTab === 'share'
-                    ? 'border-blue-600 text-blue-600'
-                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-                }`}
-              >
-                Share
               </button>
               <button
                 onClick={() => setCampaignViewTab('analyze')}
@@ -737,7 +661,7 @@ function DashboardContent() {
                     <div className="flex items-start justify-between mb-3">
                       <div className="flex-1">
                         <h3 className="text-base font-medium text-gray-900 mb-1">{campaign.title}</h3>
-                        <p className="text-sm text-gray-500">{campaign.name}</p>
+                        <p className="text-sm text-gray-400 font-light">{campaign.caption}</p>
                       </div>
                       <div className="flex items-center gap-1 flex-shrink-0 ml-2">
                         <button
@@ -768,12 +692,6 @@ function DashboardContent() {
                     </div>
 
                     <div className="flex flex-wrap gap-2 mb-3">
-                      <span className="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-blue-50 text-blue-700">
-                        <svg className="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
-                        </svg>
-                        {campaign.modality}
-                      </span>
                       <span className="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-gray-100 text-gray-700">
                         <svg className="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
