@@ -70,6 +70,7 @@ function DashboardContent() {
   const [user, setUser] = useState<any>(null);
   const [showUserMenu, setShowUserMenu] = useState(false);
   const [showWorkspaceMenu, setShowWorkspaceMenu] = useState(false);
+  const [showSignOutConfirm, setShowSignOutConfirm] = useState(false);
   const [workspaces, setWorkspaces] = useState<Workspace[]>([]);
   const [currentWorkspace, setCurrentWorkspace] = useState<Workspace | null>(null);
   const [personalWorkspaceId, setPersonalWorkspaceId] = useState<string | null>(null);
@@ -540,6 +541,7 @@ function DashboardContent() {
   };
 
   const handleSignOut = async () => {
+    setShowSignOutConfirm(false);
     await supabase.auth.signOut();
     router.push('/');
   };
@@ -792,28 +794,48 @@ function DashboardContent() {
                 <h1 className="text-xl font-light text-gray-900">{viewingCampaign.title}</h1>
               </div>
               <div className="flex items-center gap-2">
-                <button
-                  onClick={handleSimulate}
-                  className={`${isSimulating ? 'bg-purple-500 hover:bg-purple-600' : 'bg-purple-600 hover:bg-purple-700'} text-white px-4 py-1.5 rounded-lg text-sm font-medium transition-colors flex items-center gap-2`}
-                >
-                  {isSimulating ? (
-                    <>
-                      <svg className="animate-spin h-4 w-4" fill="none" viewBox="0 0 24 24">
-                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                      </svg>
-                      Simulating...
-                    </>
-                  ) : (
-                    <>
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                      </svg>
-                      Simulate Conversations
-                    </>
-                  )}
-                </button>
+                {campaignViewTab === 'conversations' && (
+                  <button
+                    onClick={handleSimulate}
+                    disabled={conversations.length > 0 && conversations.every(c => c.status === 'completed')}
+                    className={`${
+                      conversations.length > 0 && conversations.every(c => c.status === 'completed')
+                        ? 'bg-gray-400 cursor-not-allowed'
+                        : isSimulating
+                        ? 'bg-purple-500 hover:bg-purple-600'
+                        : 'bg-purple-600 hover:bg-purple-700'
+                    } text-white px-4 py-1.5 rounded-lg text-sm font-medium transition-colors flex items-center gap-2`}
+                  >
+                    {isSimulating ? (
+                      <>
+                        <svg className="animate-spin h-4 w-4" fill="none" viewBox="0 0 24 24">
+                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        Simulating...
+                      </>
+                    ) : (
+                      <>
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        Simulate Conversations
+                      </>
+                    )}
+                  </button>
+                )}
+                {campaignViewTab === 'analyze' && (
+                  <button
+                    onClick={() => {/* TODO: Add analyze handler */}}
+                    className="bg-green-600 hover:bg-green-700 text-white px-4 py-1.5 rounded-lg text-sm font-medium transition-colors flex items-center gap-2"
+                  >
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                    </svg>
+                    Analyze Conversations
+                  </button>
+                )}
                 <button
                   onClick={() => {
                     setViewingCampaign(null);
@@ -1584,7 +1606,7 @@ function DashboardContent() {
         {/* User Menu */}
         <div className="relative p-3 border-t border-gray-200">
           <button
-            onClick={() => setShowUserMenu(!showUserMenu)}
+            onClick={() => setShowSignOutConfirm(true)}
             className="w-full flex items-center gap-3 px-3 py-2.5 text-sm font-medium text-gray-700 rounded hover:bg-gray-100 transition-colors"
           >
             <div className="w-5 h-5 bg-gray-200 rounded-full flex items-center justify-center flex-shrink-0">
@@ -1593,22 +1615,11 @@ function DashboardContent() {
               </span>
             </div>
             <p className="text-sm text-gray-700 truncate flex-1 text-left">{user?.email}</p>
-            <svg className={`w-3 h-3 text-gray-400 transition-transform flex-shrink-0 ${showUserMenu ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+            {/* Logout icon */}
+            <svg className="w-4 h-4 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
             </svg>
           </button>
-
-          {/* Dropdown Menu */}
-          {showUserMenu && (
-            <div className="absolute bottom-full left-3 right-3 bg-white border border-gray-200 rounded-lg shadow-lg mb-1 overflow-hidden">
-              <button
-                onClick={handleSignOut}
-                className="w-full px-4 py-3 text-left text-sm text-gray-700 hover:bg-gray-50 transition-colors"
-              >
-                Sign out
-              </button>
-            </div>
-          )}
         </div>
       </div>
 
@@ -2129,6 +2140,34 @@ function DashboardContent() {
                   Done
                 </button>
               )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Sign Out Confirmation Modal */}
+      {showSignOutConfirm && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg shadow-xl w-full max-w-md mx-4">
+            <div className="p-6">
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">Confirm Sign Out</h3>
+              <p className="text-sm text-gray-600 mb-6">
+                Are you sure you want to sign out?
+              </p>
+              <div className="flex gap-3">
+                <button
+                  onClick={() => setShowSignOutConfirm(false)}
+                  className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-50 transition-colors"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleSignOut}
+                  className="flex-1 px-4 py-2 bg-red-600 text-white rounded-lg text-sm font-medium hover:bg-red-700 transition-colors"
+                >
+                  Sign Out
+                </button>
+              </div>
             </div>
           </div>
         </div>
