@@ -100,7 +100,7 @@ async function processSimulation(
             await supabase
               .from('conversations')
               .update({ status: 'in_progress' })
-              .eq('id', existing.id);
+              .eq('id', conversationId);
           }
 
           if (!conversationId) continue;
