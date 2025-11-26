@@ -367,3 +367,76 @@ Built complete campaign conversation simulation system with generative AI agents
 
 ### #Background
 Simulation system creates authentic AI interviews by combining reflection memory, personality scores, and recent Q&A context. Uses full conversation memory approach (passes entire transcript each turn) for coherent multi-turn dialogue. AI interviewer dynamically selects probe questions based on response depth. Conversations stored in separate table linked to campaigns and source interviews. Progress modal updates live via 2-second polling. Can close modal and continue simulation in background. Conversations tab refreshes automatically during simulation. Designed for 196-interview Duolingo Demo workspace with ~8-12 Q&As per conversation targeting conversational tone over essay responses.
+
+## 2025-11-25 – Compact Session
+
+### #CurrentFocus
+Built multi-batch analysis system to handle large conversation sets exceeding GPT-4o-mini's 128k token context limit by splitting into batches and merging results.
+
+### #SessionChanges
+- Replaced profile dropdown arrow with logout icon, added sign-out confirmation modal
+- Created `008_create_campaign_analyses.sql` migration with versioned analysis storage and RLS policies
+- Built `lib/analysis-engine.ts` for building inputs, creating batch requests, checking status, parsing responses
+- Created `lib/prompts/analysis-prompt.ts` with full SYSTEM+USER prompt requiring citations [INT:id|BLK:id] and statistical backing
+- Implemented POST `/api/campaigns/[id]/analyze`, GET `.../status`, GET `.../[analysis_id]` endpoints with Bearer token auth
+- Created `lib/batch-processor.ts` for polling OpenAI batch status every 5min and updating DB
+- Added Analyze tab UI with version history table, detail view, and "Analyze Conversations" button (green, disabled if no completed convos)
+- Debugged batch failure: 203k tokens exceeded 128k limit for 196 conversations
+- Created `009_add_batch_tracking.sql` with batch_processing JSONB, total_batches, completed_batches columns
+- Built `lib/analysis-engine-batch.ts` splitting conversations into 50-convo batches, merge logic with synthesis prompt
+- Created `lib/batch-processor-multi.ts` to orchestrate batch→merge workflow
+- Updated analyze endpoint to auto-detect >50 convos and use multi-batch (4 batches for 196 convos: 50+50+50+46)
+- Added batch progress display in dashboard: "3/4 batches" under conversation count
+- Fixed Next.js SSR Set serialization error by using lazy initialization `() => new Set()` for expandedRows/selectedConversations
+- Created diagnostic scripts: `check-batch-status.js`, `check-openai-batch.js`, `get-batch-error-details.js`
+
+### #NextSteps
+- Run migration `009_add_batch_tracking.sql` to add batch tracking columns
+- Delete failed v1 analysis or start new analysis to test multi-batch system
+- Monitor OpenAI batch completion via `/api/batch-processor` polling
+- Consider adding progress notifications when merge batch completes
+
+### #BugsAndTheories
+- Context length exceeded (203k>128k tokens) ⇒ 196 conversations too large for single batch (fixed: split into 4×50 batches)
+- Set objects not serializable error ⇒ Next.js SSR serialization issue (fixed: lazy init with arrow function)
+- "Simulate Conversations" showing on all tabs ⇒ Missing conditional check (fixed: only show on conversations tab)
+- Analysis button not disabled when no conversations ⇒ Missing filter logic (fixed: check completed count)
+
+### #Background
+Analysis system uses OpenAI Batch API (50% cheaper) to generate comprehensive reports with codebook, statistics (X% a/b format), citations, themes, question-by-question breakdown, and recommendations. For >50 conversations, splits into batches to avoid token limits, processes in parallel, then merges with synthesis prompt that recalculates percentages and combines themes/quotes. Each analysis versioned for historical comparison. Batch processor runs every 5min checking individual batches, triggers merge when all complete, updates final report when merge done. Dashboard shows real-time progress with batch completion counts.
+
+## 2025-11-25 – Compact Session (Part 2)
+
+### #CurrentFocus
+Implemented automatic batch polling, markdown report rendering with clickable citations, and citation modal linking to campaign conversation transcripts.
+
+### #SessionChanges
+- Created `/api/batch-processor/auto-poll` endpoint for automatic batch status checking and result processing
+- Updated analyze endpoint to trigger auto-poll after creating batches
+- Added frontend auto-polling in dashboard: polls every 15s when analysis status='processing', auto-stops when complete
+- Fixed JSON parse error in batch 3 by adding auto-fix for missing commas (common LLM error)
+- Installed react-markdown and remark-gfm for proper markdown rendering
+- Replaced dangerouslySetInnerHTML with ReactMarkdown component with custom styling (black text, proper headings, tables, lists)
+- Extracted headings from markdown to build table of contents sidebar with clickable navigation
+- Created citation parser converting `[INT:id|BLK:id]` to grey conversation icon buttons
+- Added citation modal showing conversation transcript with participant name, demographic tags, highlighted quote
+- Fixed citation data path: fetches conversation transcript (campaign-specific Q&A) not original interview transcript
+- Fixed modal overlay from black to no background (modal floats over page with shadow)
+- Fixed React key warnings by adding unique keys to citation elements and transcript blocks
+- Updated citation highlighting to use array index instead of block.id (transcripts don't have id field)
+- Made parseCitations recursive to handle nested children in markdown (works in paragraphs, lists, recommendations)
+- Added auto-scroll to highlighted block when citation modal opens
+
+### #NextSteps
+- Consider adding personality export/share functionality
+- Add conversation comparison or analysis features
+- Implement email notification when analysis completes
+
+### #BugsAndTheories
+- Batch 3 JSON parse error ⇒ Missing commas in LLM-generated JSON (fixed: regex auto-fix for `"\n"` → `",\n"`)
+- Citations showing as raw text ⇒ Only parsing simple text nodes (fixed: recursive parseCitations handling nested children)
+- Modal showing only name repeated ⇒ Using wrong transcript path (fixed: use conversation.transcript not interview.transcript)
+- Highlighted block not found ⇒ Blocks missing id field (fixed: match by array index instead)
+
+### #Background
+Auto-polling eliminates manual batch processor triggers—frontend detects processing status and polls every 15s until complete. Analysis reports render as markdown with proper formatting (headings, tables, blockquotes, code). Citations link to campaign-specific simulated conversations showing exact quoted answer with full transcript context. System handles both single-batch (≤50 convos) and multi-batch (>50) automatically, merging results when all batches complete.

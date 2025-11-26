@@ -4,6 +4,8 @@ import { useState, useEffect, Suspense, useCallback } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { supabase } from '../../lib/supabase';
 import CreateCampaignForm from './create-campaign';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 
 interface Workspace {
   id: string;
@@ -92,7 +94,7 @@ function DashboardContent() {
   const [selectedTraitKey, setSelectedTraitKey] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [isFullscreen, setIsFullscreen] = useState(false);
-  const [expandedRows, setExpandedRows] = useState<Set<string>>(new Set());
+  const [expandedRows, setExpandedRows] = useState<Set<string>>(() => new Set());
   const [sortColumn, setSortColumn] = useState<string | null>(null);
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
   const [showSortDropdown, setShowSortDropdown] = useState<string | null>(null);
@@ -102,7 +104,13 @@ function DashboardContent() {
   const [showSimulationModal, setShowSimulationModal] = useState(false);
   const [simulationStatus, setSimulationStatus] = useState<any>(null);
   const [conversations, setConversations] = useState<any[]>([]);
-  const [selectedConversations, setSelectedConversations] = useState<Set<string>>(new Set());
+  const [selectedConversations, setSelectedConversations] = useState<Set<string>>(() => new Set());
+  const [analyses, setAnalyses] = useState<any[]>([]);
+  const [selectedAnalysis, setSelectedAnalysis] = useState<any | null>(null);
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [analysisStatus, setAnalysisStatus] = useState<any>(null);
+  const [citationModal, setCitationModal] = useState<{ interviewId: string; blockId: string } | null>(null);
+  const [citationInterview, setCitationInterview] = useState<any | null>(null);
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -257,6 +265,45 @@ function DashboardContent() {
     }
   };
 
+  // Handle analyze conversations
+  const handleAnalyze = async () => {
+    if (!viewingCampaign) return;
+
+    setIsAnalyzing(true);
+
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+
+      const response = await fetch(`/api/campaigns/${viewingCampaign.id}/analyze`, {
+        method: 'POST',
+        headers: session?.access_token ? {
+          'Authorization': `Bearer ${session.access_token}`
+        } : {}
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        console.error('Analysis error:', data);
+        alert(data.error || 'Failed to start analysis');
+        setIsAnalyzing(false);
+        return;
+      }
+
+      // Refresh analyses list
+      await fetchAnalyses();
+
+      // Show success message
+      alert(`Analysis started! Version ${data.version} is processing. Results will be ready in ~24 hours.`);
+
+    } catch (error) {
+      console.error('Analysis error:', error);
+      alert(error instanceof Error ? error.message : 'Failed to start analysis');
+    } finally {
+      setIsAnalyzing(false);
+    }
+  };
+
   // Poll simulation status
   const pollSimulationStatus = () => {
     if (!viewingCampaign) return;
@@ -301,6 +348,149 @@ function DashboardContent() {
       setConversations(data);
     }
   }, [viewingCampaign]);
+
+  // Fetch analyses for current campaign
+  const fetchAnalyses = useCallback(async () => {
+    if (!viewingCampaign) return;
+
+    const session = await supabase.auth.getSession();
+    const token = session.data.session?.access_token;
+
+    if (!token) return;
+
+    try {
+      const response = await fetch(`/api/campaigns/${viewingCampaign.id}/analyze/status`, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setAnalyses(data.analyses || []);
+        setAnalysisStatus(data.latest);
+      }
+    } catch (error) {
+      console.error('Error fetching analyses:', error);
+    }
+  }, [viewingCampaign]);
+
+  // Fetch interview data for citation
+  const fetchCitationInterview = async (conversationId: string) => {
+    try {
+      // Fetch the conversation (simulated interview for this campaign)
+      const { data: convData } = await supabase
+        .from('conversations')
+        .select('*')
+        .eq('id', conversationId)
+        .single();
+
+      if (convData) {
+        // Get the source interview for demographic data
+        const { data: interviewData } = await supabase
+          .from('interviews')
+          .select('*')
+          .eq('id', convData.source_interview_id)
+          .single();
+
+        // Use the conversation's transcript (the simulated conversation for this campaign)
+        setCitationInterview({
+          interview: {
+            ...interviewData,
+            transcript: convData.transcript, // Use conversation transcript, not original interview
+          },
+        });
+        return;
+      }
+
+      // Fallback: try as interview directly (shouldn't happen for campaign citations)
+      const { data: intData } = await supabase
+        .from('interviews')
+        .select('*')
+        .eq('id', conversationId)
+        .single();
+
+      if (intData) {
+        setCitationInterview({
+          interview: intData,
+        });
+      }
+    } catch (error) {
+      console.error('Error fetching citation interview:', error);
+    }
+  };
+
+  // Handle citation click
+  const handleCitationClick = (interviewId: string, blockId: string) => {
+    setCitationModal({ interviewId, blockId });
+    fetchCitationInterview(interviewId);
+  };
+
+  // Auto-scroll to highlighted block when citation interview loads
+  useEffect(() => {
+    if (citationInterview && citationModal) {
+      setTimeout(() => {
+        const element = document.getElementById(`block-${citationModal.blockId}`);
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+      }, 100);
+    }
+  }, [citationInterview, citationModal]);
+
+  // Parse text with citations and make them clickable
+  const parseCitations = (children: any): any => {
+    // Handle different types of children
+    if (typeof children === 'string') {
+      const citationRegex = /\[INT:([^\|]+)\|BLK:([^\]]+)\]/g;
+      const parts = [];
+      let lastIndex = 0;
+      let match;
+      let citationIndex = 0;
+
+      while ((match = citationRegex.exec(children)) !== null) {
+        // Add text before citation
+        if (match.index > lastIndex) {
+          parts.push(<span key={`text-${lastIndex}`}>{children.substring(lastIndex, match.index)}</span>);
+        }
+
+        // Add citation as clickable element
+        const interviewId = match[1];
+        const blockId = match[2];
+        parts.push(
+          <button
+            key={`citation-${citationIndex++}`}
+            onClick={() => handleCitationClick(interviewId, blockId)}
+            className="inline-flex items-center gap-1 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded px-1.5 py-0.5 transition-colors"
+            title="View source conversation"
+          >
+            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+            </svg>
+          </button>
+        );
+
+        lastIndex = match.index + match[0].length;
+      }
+
+      // Add remaining text
+      if (lastIndex < children.length) {
+        parts.push(<span key={`text-${lastIndex}`}>{children.substring(lastIndex)}</span>);
+      }
+
+      return parts.length > 0 ? parts : children;
+    } else if (Array.isArray(children)) {
+      // Recursively process array of children
+      return children.map((child, idx) => {
+        if (typeof child === 'string') {
+          return <span key={idx}>{parseCitations(child)}</span>;
+        }
+        return child;
+      });
+    }
+
+    return children;
+  };
 
   // Delete selected conversations
   const deleteSelectedConversations = async () => {
@@ -520,6 +710,63 @@ function DashboardContent() {
       fetchConversations();
     }
   }, [viewingCampaign, fetchConversations]);
+
+  // Fetch analyses when viewing a campaign
+  useEffect(() => {
+    if (viewingCampaign && campaignViewTab === 'analyze') {
+      fetchAnalyses();
+    }
+  }, [viewingCampaign, campaignViewTab, fetchAnalyses]);
+
+  // Auto-poll batch processor when there's a processing analysis
+  useEffect(() => {
+    if (!analysisStatus || analysisStatus.status !== 'processing') {
+      return;
+    }
+
+    console.log('[Auto-Poll] Analysis in progress, starting automatic polling...');
+
+    const pollBatchProcessor = async () => {
+      try {
+        // Trigger batch processor
+        const response = await fetch('/api/batch-processor/auto-poll', {
+          method: 'POST',
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          console.log(`[Auto-Poll] Processed. Still processing: ${data.still_processing}`);
+
+          // Refresh analyses to get updated status
+          await fetchAnalyses();
+
+          return data.still_processing;
+        }
+        return true;
+      } catch (error) {
+        console.error('[Auto-Poll] Error:', error);
+        return true;
+      }
+    };
+
+    // Run immediately on mount
+    pollBatchProcessor();
+
+    // Then poll every 15 seconds
+    const pollInterval = setInterval(async () => {
+      const stillProcessing = await pollBatchProcessor();
+      if (!stillProcessing) {
+        console.log('[Auto-Poll] Analysis complete, stopping polling.');
+        clearInterval(pollInterval);
+      }
+    }, 15000);
+
+    // Cleanup on unmount or when analysis completes
+    return () => {
+      console.log('[Auto-Poll] Cleaning up polling interval');
+      clearInterval(pollInterval);
+    };
+  }, [analysisStatus, fetchAnalyses]);
 
   const deleteCampaign = async (id: string) => {
     if (!confirm('Are you sure you want to delete this campaign?')) return;
@@ -757,15 +1004,230 @@ function DashboardContent() {
             );
 
           case 'analyze':
+            if (selectedAnalysis) {
+              // Extract headings for navigation
+              const extractHeadings = (markdown: string) => {
+                const headingRegex = /^(#{1,3})\s+(.+)$/gm;
+                const headings: { level: number; text: string; id: string }[] = [];
+                let match;
+                while ((match = headingRegex.exec(markdown)) !== null) {
+                  const level = match[1].length;
+                  const text = match[2];
+                  const id = text.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+                  headings.push({ level, text, id });
+                }
+                return headings;
+              };
+
+              const headings = selectedAnalysis.status === 'completed' && selectedAnalysis.report_markdown
+                ? extractHeadings(selectedAnalysis.report_markdown)
+                : [];
+
+              // Show selected analysis detail view
+              return (
+                <div className="h-full flex">
+                  {/* Left Panel - Report */}
+                  <div className="flex-1 p-8 overflow-y-auto bg-white">
+                    <div className="mb-6">
+                      <button
+                        onClick={() => setSelectedAnalysis(null)}
+                        className="text-gray-500 hover:text-gray-700 flex items-center gap-2 text-sm"
+                      >
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" />
+                        </svg>
+                        Back to analyses list
+                      </button>
+                    </div>
+                    {selectedAnalysis.status === 'completed' ? (
+                      <div className="max-w-4xl">
+                        <ReactMarkdown
+                          remarkPlugins={[remarkGfm]}
+                          components={{
+                            h1: ({ node, ...props }) => <h1 className="text-3xl font-bold text-gray-900 mt-8 mb-4 first:mt-0" {...props} />,
+                            h2: ({ node, ...props }) => <h2 className="text-2xl font-bold text-gray-900 mt-6 mb-3" {...props} />,
+                            h3: ({ node, ...props }) => <h3 className="text-xl font-semibold text-gray-900 mt-4 mb-2" {...props} />,
+                            p: ({ node, children, ...props }) => (
+                              <p className="text-gray-700 leading-relaxed mb-4" {...props}>
+                                {parseCitations(children)}
+                              </p>
+                            ),
+                            ul: ({ node, ...props }) => <ul className="list-disc pl-6 mb-4 space-y-2" {...props} />,
+                            ol: ({ node, ...props }) => <ol className="list-decimal pl-6 mb-4 space-y-2" {...props} />,
+                            li: ({ node, children, ...props }) => (
+                              <li className="text-gray-700" {...props}>
+                                {parseCitations(children)}
+                              </li>
+                            ),
+                            strong: ({ node, ...props }) => <strong className="font-semibold text-gray-900" {...props} />,
+                            em: ({ node, ...props }) => <em className="italic text-gray-700" {...props} />,
+                            blockquote: ({ node, ...props }) => (
+                              <blockquote className="border-l-4 border-blue-500 pl-4 py-2 mb-4 italic text-gray-600 bg-blue-50" {...props} />
+                            ),
+                            table: ({ node, ...props }) => (
+                              <div className="overflow-x-auto mb-6">
+                                <table className="min-w-full divide-y divide-gray-200 border border-gray-200" {...props} />
+                              </div>
+                            ),
+                            thead: ({ node, ...props }) => <thead className="bg-gray-50" {...props} />,
+                            tbody: ({ node, ...props }) => <tbody className="bg-white divide-y divide-gray-200" {...props} />,
+                            tr: ({ node, ...props }) => <tr {...props} />,
+                            th: ({ node, ...props }) => <th className="px-4 py-2 text-left text-xs font-medium text-gray-700 uppercase tracking-wider" {...props} />,
+                            td: ({ node, ...props }) => <td className="px-4 py-2 text-sm text-gray-700" {...props} />,
+                            code: ({ node, inline, ...props }: any) =>
+                              inline ? (
+                                <code className="bg-gray-100 text-gray-800 px-1.5 py-0.5 rounded text-sm font-mono" {...props} />
+                              ) : (
+                                <code className="block bg-gray-900 text-gray-100 p-4 rounded-lg mb-4 overflow-x-auto text-sm font-mono" {...props} />
+                              ),
+                            a: ({ node, ...props }) => <a className="text-blue-600 hover:text-blue-800 underline" {...props} />,
+                          }}
+                        >
+                          {selectedAnalysis.report_markdown || 'No report available'}
+                        </ReactMarkdown>
+                      </div>
+                    ) : selectedAnalysis.status === 'processing' ? (
+                      <div className="bg-blue-50 border border-blue-200 rounded-lg p-8 text-center">
+                        <svg className="animate-spin h-12 w-12 mx-auto mb-4 text-blue-600" fill="none" viewBox="0 0 24 24">
+                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        <p className="text-sm text-gray-700 font-medium">Analysis in progress</p>
+                        <p className="text-xs text-gray-500 mt-2">
+                          {selectedAnalysis.total_batches > 1
+                            ? `Processing batch ${selectedAnalysis.completed_batches || 0}/${selectedAnalysis.total_batches}`
+                            : 'Results will be ready soon'}
+                        </p>
+                      </div>
+                    ) : selectedAnalysis.status === 'failed' ? (
+                      <div className="bg-red-50 border border-red-200 rounded-lg p-8 text-center">
+                        <svg className="w-12 h-12 mx-auto mb-4 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        <p className="text-sm text-red-700 font-medium">Analysis failed</p>
+                        <p className="text-xs text-red-600 mt-2">{selectedAnalysis.error_message || 'Unknown error'}</p>
+                      </div>
+                    ) : (
+                      <div className="bg-gray-50 border border-gray-200 rounded-lg p-8 text-center">
+                        <p className="text-sm text-gray-500">Analysis pending</p>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Right Panel - Table of Contents */}
+                  <div className="w-80 border-l border-gray-200 p-6 overflow-y-auto bg-gray-50">
+                    {selectedAnalysis.status === 'completed' && headings.length > 0 ? (
+                      <>
+                        <h3 className="text-sm font-semibold text-gray-900 mb-4">Contents</h3>
+                        <nav className="space-y-1">
+                          {headings.map((heading, index) => (
+                            <a
+                              key={index}
+                              href={`#${heading.id}`}
+                              className={`block text-sm hover:text-blue-600 transition-colors ${
+                                heading.level === 1
+                                  ? 'font-semibold text-gray-900'
+                                  : heading.level === 2
+                                  ? 'pl-3 text-gray-700'
+                                  : 'pl-6 text-gray-600'
+                              }`}
+                            >
+                              {heading.text}
+                            </a>
+                          ))}
+                        </nav>
+                      </>
+                    ) : (
+                      <div className="text-center text-gray-400 text-sm">
+                        Table of contents will appear here
+                      </div>
+                    )}
+                  </div>
+                </div>
+              );
+            }
+
+            // Show analyses list view
             return (
               <div className="p-8">
-                <div className="bg-gray-50 rounded-lg border-2 border-dashed border-gray-300 p-16 text-center">
-                  <svg className="w-12 h-12 mx-auto mb-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-                  </svg>
-                  <p className="text-sm text-gray-500">No data to analyze yet</p>
-                  <p className="text-xs text-gray-400 mt-2">Analytics will appear once you have conversations</p>
-                </div>
+                {analyses.length === 0 ? (
+                  <div className="bg-gray-50 rounded-lg border-2 border-dashed border-gray-300 p-16 text-center">
+                    <svg className="w-12 h-12 mx-auto mb-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                    </svg>
+                    <p className="text-sm text-gray-500">No analyses yet</p>
+                    <p className="text-xs text-gray-400 mt-2">Click "Analyze Conversations" to generate insights</p>
+                  </div>
+                ) : (
+                  <div>
+                    <h2 className="text-lg font-semibold text-gray-900 mb-4">Analysis History</h2>
+                    <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
+                      <table className="w-full">
+                        <thead className="bg-gray-50 border-b border-gray-200">
+                          <tr>
+                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Version</th>
+                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Created</th>
+                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Conversations</th>
+                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-gray-200">
+                          {analyses.map((analysis: any) => (
+                            <tr key={analysis.id} className="hover:bg-gray-50">
+                              <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                                v{analysis.version}
+                              </td>
+                              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                {new Date(analysis.created_at).toLocaleDateString()}
+                              </td>
+                              <td className="px-6 py-4 whitespace-nowrap">
+                                <span className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${
+                                  analysis.status === 'completed' ? 'bg-green-100 text-green-800' :
+                                  analysis.status === 'processing' ? 'bg-blue-100 text-blue-800' :
+                                  analysis.status === 'failed' ? 'bg-red-100 text-red-800' :
+                                  'bg-gray-100 text-gray-800'
+                                }`}>
+                                  {analysis.status}
+                                </span>
+                              </td>
+                              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                {analysis.conversations_analyzed}
+                                {analysis.total_batches > 1 && (
+                                  <div className="text-xs text-gray-400 mt-1">
+                                    {analysis.completed_batches}/{analysis.total_batches} batches
+                                  </div>
+                                )}
+                              </td>
+                              <td className="px-6 py-4 whitespace-nowrap text-sm">
+                                <button
+                                  onClick={async () => {
+                                    const session = await supabase.auth.getSession();
+                                    const token = session.data.session?.access_token;
+                                    const response = await fetch(`/api/campaigns/${viewingCampaign.id}/analyze/${analysis.id}`, {
+                                      headers: token ? { 'Authorization': `Bearer ${token}` } : {}
+                                    });
+                                    if (response.ok) {
+                                      const data = await response.json();
+                                      setSelectedAnalysis(data);
+                                    }
+                                  }}
+                                  className="text-green-600 hover:text-green-800 font-medium flex items-center gap-1"
+                                >
+                                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                  </svg>
+                                  View
+                                </button>
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                )}
               </div>
             );
 
@@ -827,13 +1289,30 @@ function DashboardContent() {
                 )}
                 {campaignViewTab === 'analyze' && (
                   <button
-                    onClick={() => {/* TODO: Add analyze handler */}}
-                    className="bg-green-600 hover:bg-green-700 text-white px-4 py-1.5 rounded-lg text-sm font-medium transition-colors flex items-center gap-2"
+                    onClick={handleAnalyze}
+                    disabled={isAnalyzing || conversations.filter(c => c.status === 'completed').length === 0}
+                    className={`${
+                      isAnalyzing || conversations.filter(c => c.status === 'completed').length === 0
+                        ? 'bg-gray-400 cursor-not-allowed'
+                        : 'bg-green-600 hover:bg-green-700'
+                    } text-white px-4 py-1.5 rounded-lg text-sm font-medium transition-colors flex items-center gap-2`}
                   >
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-                    </svg>
-                    Analyze Conversations
+                    {isAnalyzing ? (
+                      <>
+                        <svg className="animate-spin h-4 w-4" fill="none" viewBox="0 0 24 24">
+                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        Starting...
+                      </>
+                    ) : (
+                      <>
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                        </svg>
+                        Analyze Conversations
+                      </>
+                    )}
                   </button>
                 )}
                 <button
@@ -2168,6 +2647,112 @@ function DashboardContent() {
                   Sign Out
                 </button>
               </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Citation Modal */}
+      {citationModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4" onClick={() => {
+          setCitationModal(null);
+          setCitationInterview(null);
+        }}>
+          <div
+            className="bg-white rounded-2xl max-w-2xl w-full max-h-[80vh] overflow-hidden flex flex-col shadow-2xl"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Modal Header */}
+            <div className="p-4 border-b border-gray-100">
+              <div className="flex justify-between items-start mb-3">
+                <div>
+                  <h2 className="text-lg font-medium text-gray-900">
+                    {citationInterview?.interview?.name || 'Interview'}
+                  </h2>
+                  {citationInterview?.interview?.summary && (
+                    <p className="text-xs text-gray-500 mt-1">{citationInterview.interview.summary}</p>
+                  )}
+                </div>
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setCitationModal(null);
+                    setCitationInterview(null);
+                  }}
+                  className="p-2 hover:bg-gray-100 rounded-lg transition-colors text-gray-500 hover:text-gray-700"
+                >
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path d="M18 6L6 18M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+
+              {/* Demographics in modal */}
+              {citationInterview?.interview && (
+                <div className="flex flex-wrap gap-2">
+                  {citationInterview.interview.age && (
+                    <span className="inline-flex items-center px-2 py-1 rounded-full text-[10px] font-medium bg-gray-100 text-gray-700">
+                      {citationInterview.interview.age} years old
+                    </span>
+                  )}
+                  {citationInterview.interview.occupation && citationInterview.interview.occupation.toLowerCase() !== 'unknown' && (
+                    <span className="inline-flex items-center px-2 py-1 rounded-full text-[10px] font-medium bg-blue-50 text-blue-700">
+                      {citationInterview.interview.occupation}
+                    </span>
+                  )}
+                  {citationInterview.interview.country && citationInterview.interview.country.toLowerCase() !== 'unknown' && (
+                    <span className="inline-flex items-center px-2 py-1 rounded-full text-[10px] font-medium bg-green-50 text-green-700">
+                      {citationInterview.interview.country}
+                    </span>
+                  )}
+                  {citationInterview.interview.learning_language && citationInterview.interview.learning_language.toLowerCase() !== 'unknown' && (
+                    <span className="inline-flex items-center px-2 py-1 rounded-full text-[10px] font-medium bg-purple-50 text-purple-700">
+                      Learning {citationInterview.interview.learning_language}
+                    </span>
+                  )}
+                  {citationInterview.interview.learning_goal && citationInterview.interview.learning_goal.toLowerCase() !== 'unknown' && (
+                    <span className="inline-flex items-center px-2 py-1 rounded-full text-[10px] font-medium bg-orange-50 text-orange-700">
+                      Goal: {citationInterview.interview.learning_goal}
+                    </span>
+                  )}
+                </div>
+              )}
+            </div>
+
+            {/* Transcript Content */}
+            <div className="flex-1 overflow-y-auto p-4 space-y-4">
+              {citationInterview?.interview?.transcript ? (
+                citationInterview.interview.transcript.map((item: any, idx: number) => {
+                  // Use index for matching since blocks don't have IDs
+                  const isHighlighted = idx === parseInt(citationModal.blockId);
+                  return (
+                    <div
+                      key={`transcript-${idx}`}
+                      id={`block-${idx}`}
+                      className={`space-y-1 ${
+                        item.is_followup ? 'ml-6 pl-3 border-l-2 border-orange-300' : ''
+                      } ${isHighlighted ? 'bg-yellow-100 border-2 border-yellow-400 p-3 rounded-lg' : ''}`}
+                    >
+                      <p className={`text-xs font-medium ${item.is_followup ? 'text-orange-600' : 'text-gray-500'}`}>
+                        {item.is_followup && <span className="text-orange-400 mr-1">↳</span>}
+                        {item.question}
+                      </p>
+                      <p className={`text-sm leading-relaxed ${
+                        isHighlighted ? 'text-gray-900 font-medium' : item.is_followup ? 'text-orange-700' : 'text-gray-700'
+                      }`}>
+                        {item.answer}
+                      </p>
+                    </div>
+                  );
+                })
+              ) : (
+                <div className="flex items-center justify-center h-48">
+                  <svg className="animate-spin h-8 w-8 text-blue-600" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
+                </div>
+              )}
             </div>
           </div>
         </div>
