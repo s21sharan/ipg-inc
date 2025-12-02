@@ -432,12 +432,17 @@ export async function runClustering(
   // Get completed conversations
   const { data: conversations, error: convError } = await supabase
     .from('conversations')
-    .select('id, interview_id, status, transcript, interviews(name, demographics)')
+    .select('id, source_interview_id, status, transcript, participant_name')
     .eq('campaign_id', campaignId)
     .eq('status', 'completed');
 
-  if (convError || !conversations || conversations.length === 0) {
-    throw new Error('No completed conversations found');
+  if (convError) {
+    console.error('Error fetching conversations:', convError);
+    throw new Error(`Failed to fetch conversations: ${convError.message}`);
+  }
+
+  if (!conversations || conversations.length === 0) {
+    throw new Error('No completed conversations found for this campaign');
   }
 
   console.log(`Processing ${conversations.length} conversations for clustering`);
@@ -445,7 +450,7 @@ export async function runClustering(
   // Transform to ConversationData
   const conversationData: ConversationData[] = conversations.map((conv: any) => ({
     id: conv.id,
-    participant_name: conv.interviews?.name || 'Unknown',
+    participant_name: conv.participant_name || 'Unknown',
     transcript: conv.transcript || [],
   }));
 
