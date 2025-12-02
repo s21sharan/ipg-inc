@@ -86,7 +86,6 @@ export async function GET(
       matchedUsers: c.count,
       prevalence: c.prevalence,
       confidence: c.confidence,
-      hexagonCount: c.count,
       members: c.members,
     }));
 

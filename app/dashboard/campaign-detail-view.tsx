@@ -25,7 +25,6 @@ interface InsightCard {
   matchedUsers: number;
   prevalence: 'High' | 'Medium' | 'Low';
   confidence: number;
-  hexagonCount: number;
   members?: Array<{ conversation_id: string; participant_name: string }>;
 }
 
@@ -45,55 +44,116 @@ interface CampaignDetailViewProps {
   onEdit: () => void;
 }
 
-// Hexagon cluster component
-function HexagonCluster({ count, color = '#4A4A4A' }: { count: number; color?: string }) {
-  // Generate honeycomb-pattern positions
-  const generateHexPositions = (count: number) => {
-    const positions: { x: number; y: number }[] = [];
-    const size = 24;
-    const horizontalSpacing = size * 0.85;
-    const verticalSpacing = size * 0.75;
-
-    // Start from center and spiral out
-    const centerX = 180;
-    const centerY = 100;
-
-    // Create a honeycomb pattern
-    let added = 0;
-    let ring = 0;
-
-    while (added < count) {
-      if (ring === 0) {
-        positions.push({ x: centerX, y: centerY });
-        added++;
-      } else {
-        // Calculate positions around the ring
-        const startAngle = Math.PI / 6;
-        for (let side = 0; side < 6 && added < count; side++) {
-          for (let pos = 0; pos < ring && added < count; pos++) {
-            const angle = startAngle + (side * Math.PI / 3);
-            const nextAngle = startAngle + ((side + 1) * Math.PI / 3);
-
-            const t = pos / ring;
-            const x = centerX +
-              ring * horizontalSpacing * Math.cos(angle) * (1 - t) +
-              ring * horizontalSpacing * Math.cos(nextAngle) * t;
-            const y = centerY +
-              ring * verticalSpacing * Math.sin(angle) * (1 - t) +
-              ring * verticalSpacing * Math.sin(nextAngle) * t;
-
-            positions.push({ x, y });
-            added++;
-          }
-        }
-      }
-      ring++;
-    }
-
-    return positions.slice(0, count);
+// Dot cluster component - randomly dispersed dots representing matched users
+// Animates to organized grid on hover
+function DotCluster({ count, color = '#4A4A4A', isHovered = false }: { count: number; color?: string; isHovered?: boolean }) {
+  // Generate seeded random number for consistent positions
+  const seededRandom = (seed: number) => {
+    const x = Math.sin(seed * 9999) * 10000;
+    return x - Math.floor(x);
   };
 
-  const positions = generateHexPositions(count);
+  // Calculate dot size based on count - smaller dots for more users
+  const getDotRadius = (count: number) => {
+    if (count <= 10) return 12;
+    if (count <= 20) return 10;
+    if (count <= 35) return 8;
+    if (count <= 50) return 6;
+    if (count <= 75) return 5;
+    return 4;
+  };
+
+  // Generate grid positions (organized layout for hover state)
+  const generateGridPositions = (count: number) => {
+    const positions: { x: number; y: number }[] = [];
+    const dotRadius = getDotRadius(count);
+    const spacing = dotRadius * 3; // Space between dot centers
+
+    // Calculate grid dimensions - prefer wide horizontal layout
+    // Aim for roughly 2:1 aspect ratio (more columns than rows)
+    const targetCols = Math.ceil(Math.sqrt(count * 2.5));
+    const cols = Math.max(4, Math.min(8, targetCols)); // Between 4-8 columns
+    const rows = Math.ceil(count / cols);
+
+    // Center the grid horizontally and vertically
+    const gridWidth = (cols - 1) * spacing;
+    const gridHeight = (rows - 1) * spacing;
+    const startX = 180 - gridWidth / 2;
+    const startY = 90 - gridHeight / 2;
+
+    for (let i = 0; i < count; i++) {
+      const col = i % cols;
+      const row = Math.floor(i / cols);
+      positions.push({
+        x: startX + col * spacing,
+        y: startY + row * spacing,
+      });
+    }
+
+    return positions;
+  };
+
+  // Generate randomly dispersed positions in a cloud-like pattern
+  const generateRandomPositions = (count: number, seed: number = 42) => {
+    const positions: { x: number; y: number }[] = [];
+    const dotRadius = getDotRadius(count);
+    const minDistance = dotRadius * 2.2; // Minimum distance between dots
+
+    // Bounds for the cluster area
+    const centerX = 180;
+    const centerY = 90;
+    const spreadX = 100; // Horizontal spread from center
+    const spreadY = 60;  // Vertical spread from center
+
+    let attempts = 0;
+    const maxAttempts = count * 100;
+
+    while (positions.length < count && attempts < maxAttempts) {
+      // Generate random position with some clustering toward center
+      const angle = seededRandom(seed + attempts * 2) * Math.PI * 2;
+      const distance = seededRandom(seed + attempts * 3) * 0.8 + seededRandom(seed + attempts * 4) * 0.2;
+
+      const x = centerX + Math.cos(angle) * distance * spreadX * (0.5 + seededRandom(seed + attempts * 5) * 0.5);
+      const y = centerY + Math.sin(angle) * distance * spreadY * (0.5 + seededRandom(seed + attempts * 6) * 0.5);
+
+      // Add some noise for more organic feel
+      const noiseX = (seededRandom(seed + attempts * 7) - 0.5) * 30;
+      const noiseY = (seededRandom(seed + attempts * 8) - 0.5) * 20;
+
+      const finalX = x + noiseX;
+      const finalY = y + noiseY;
+
+      // Check if position is valid (not too close to existing dots)
+      let valid = true;
+      for (const pos of positions) {
+        const dist = Math.sqrt((pos.x - finalX) ** 2 + (pos.y - finalY) ** 2);
+        if (dist < minDistance) {
+          valid = false;
+          break;
+        }
+      }
+
+      // Also ensure within reasonable bounds
+      if (finalX < 80 || finalX > 280 || finalY < 20 || finalY > 160) {
+        valid = false;
+      }
+
+      if (valid) {
+        positions.push({ x: finalX, y: finalY });
+      }
+
+      attempts++;
+    }
+
+    return positions;
+  };
+
+  const dotRadius = getDotRadius(count);
+  const randomPositions = generateRandomPositions(count);
+  const gridPositions = generateGridPositions(count);
+
+  // Use grid positions when hovered, random otherwise
+  const positions = isHovered ? gridPositions : randomPositions;
 
   return (
     <svg viewBox="0 0 360 180" className="w-full h-32">
@@ -102,9 +162,12 @@ function HexagonCluster({ count, color = '#4A4A4A' }: { count: number; color?: s
           key={i}
           cx={pos.x}
           cy={pos.y}
-          r={10}
+          r={dotRadius}
           fill={color}
-          opacity={0.85}
+          opacity={0.9}
+          style={{
+            transition: 'cx 0.4s ease-out, cy 0.4s ease-out',
+          }}
         />
       ))}
     </svg>
@@ -113,10 +176,26 @@ function HexagonCluster({ count, color = '#4A4A4A' }: { count: number; color?: s
 
 // Insight card component
 function InsightCardComponent({ insight, onClick }: { insight: InsightCard; onClick?: () => void }) {
+  const [isHovered, setIsHovered] = useState(false);
+
   return (
     <div
-      className="bg-white border border-gray-200 rounded-2xl p-5 shadow-md hover:shadow-lg transition-shadow cursor-pointer"
+      className={`
+        relative rounded-2xl p-5 shadow-md cursor-pointer
+        transition-all duration-300 ease-out
+        ${isHovered
+          ? 'border-[1.5px] border-blue-500 shadow-[0_0_20px_rgba(37,133,230,0.3)]'
+          : 'border border-gray-200 bg-white'
+        }
+      `}
+      style={{
+        background: isHovered
+          ? 'linear-gradient(to bottom, #fbfbfb 0%, #d4e8fa 100%)'
+          : 'white',
+      }}
       onClick={onClick}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
     >
       {/* Header */}
       <div className="flex items-start justify-between mb-2">
@@ -133,9 +212,9 @@ function InsightCardComponent({ insight, onClick }: { insight: InsightCard; onCl
         <p className="text-sm text-gray-500 italic mb-2">&ldquo;{insight.quote}&rdquo;</p>
       )}
 
-      {/* Hexagon Cluster */}
+      {/* Dot Cluster - number of dots = matched users, animates to grid on hover */}
       <div className="my-4">
-        <HexagonCluster count={insight.hexagonCount} />
+        <DotCluster count={insight.matchedUsers} isHovered={isHovered} />
       </div>
 
       {/* Summary */}
@@ -377,34 +456,28 @@ export default function CampaignDetailView({
       </div>
 
       {/* Right Panel - Conversation Agent */}
-      <div className="w-[400px] bg-white border-l-2 border-gray-300 flex flex-col">
-        {/* Agent Header */}
-        <div className="flex-1 flex flex-col items-center justify-center border-b border-gray-200">
-          <p className="text-3xl font-serif text-gray-900 text-center">IPG</p>
-          <h2 className="text-3xl font-bold text-gray-900 mt-1">Conversation Agent</h2>
+      <div
+        className="w-[400px] border-l-2 border-gray-300 flex flex-col"
+        style={{
+          background: 'linear-gradient(to bottom, #ffffff 80%, #74b9ff 170%)',
+        }}
+      >
+        {/* Main content area - centered text */}
+        <div className="flex-1 flex flex-col items-center justify-center px-8">
+          <h2 className="text-3xl font-bold text-black text-center leading-tight">
+            Ask your users
+          </h2>
+          <p className="text-3xl italic font-medium text-black text-center">
+            anything.
+          </p>
         </div>
 
-        {/* Filter Bar */}
-        <div className="px-4 py-3">
-          <div className="flex items-center gap-2">
-            <span className="text-base font-semibold text-gray-900">Talking to:</span>
-            <button className="flex items-center gap-1 px-2 py-1.5 border border-blue-500 rounded text-blue-500 text-sm">
-              <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M3 4h18v2H3V4zm0 7h12v2H3v-2zm0 7h18v2H3v-2z"/>
-              </svg>
-              <span className="font-semibold text-xs">{selectedFilter}</span>
-              <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M7 10l5 5 5-5z"/>
-              </svg>
-            </button>
-          </div>
-        </div>
-
-        {/* Chat Input */}
-        <div className="p-4">
-          <div className="bg-gray-200 rounded-full flex items-center px-4 py-3">
-            <button className="text-gray-500 mr-3">
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        {/* Bottom section */}
+        <div className="px-5 pb-6">
+          {/* Chat Input */}
+          <div className="bg-[#eaeaea] rounded-full flex items-center px-4 py-3.5 mb-4">
+            <button className="text-gray-400 mr-3 hover:text-gray-600 transition-colors">
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4" />
               </svg>
             </button>
@@ -412,13 +485,27 @@ export default function CampaignDetailView({
               type="text"
               value={chatInput}
               onChange={(e) => setChatInput(e.target.value)}
-              placeholder="Ask anything..."
-              className="flex-1 bg-transparent text-gray-500 placeholder-gray-500 outline-none text-base"
+              placeholder="Ask anything"
+              className="flex-1 bg-transparent text-gray-700 placeholder-[#a7a7a7] outline-none text-sm font-medium"
             />
-            <button className="text-gray-900 ml-3">
-              <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+            <button className="text-black ml-3 hover:text-gray-600 transition-colors">
+              <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
                 <path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/>
                 <path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/>
+              </svg>
+            </button>
+          </div>
+
+          {/* Talking to filter */}
+          <div className="flex items-center gap-3">
+            <span className="text-xs font-semibold text-black">Talking to:</span>
+            <button className="flex items-center gap-1 px-2 py-1 bg-[#2c95ff] rounded text-white text-xs">
+              <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M3 4h18v2H3V4zm0 7h12v2H3v-2zm0 7h18v2H3v-2z"/>
+              </svg>
+              <span className="font-semibold text-[10px]">{selectedFilter}</span>
+              <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M7 10l5 5 5-5z"/>
               </svg>
             </button>
           </div>
