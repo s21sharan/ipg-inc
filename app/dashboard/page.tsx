@@ -7,6 +7,7 @@ import CreateCampaignForm from './create-campaign';
 import CampaignDetailView from './campaign-detail-view';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
+import AnalysisReportView from './analysis-report-view';
 
 interface Workspace {
   id: string;
@@ -87,6 +88,7 @@ function DashboardContent() {
   const [loadingCampaigns, setLoadingCampaigns] = useState(true);
   const [editingCampaign, setEditingCampaign] = useState<Campaign | null>(null);
   const [viewingCampaign, setViewingCampaign] = useState<Campaign | null>(null);
+  const [viewingCampaignInsights, setViewingCampaignInsights] = useState<Campaign | null>(null);
   const [campaignViewTab, setCampaignViewTab] = useState<'summary' | 'conversations' | 'analyze'>('summary');
   const [interviews, setInterviews] = useState<Interview[]>([]);
   const [loadingInterviews, setLoadingInterviews] = useState(false);
@@ -842,21 +844,381 @@ function DashboardContent() {
   };
 
   const renderMainContent = () => {
-    // Show campaign view - new design
-    if (viewingCampaign) {
+    // Show insights view - hexagon clusters (triggered by View button)
+    if (viewingCampaignInsights) {
       return (
         <CampaignDetailView
-          campaign={viewingCampaign}
+          campaign={viewingCampaignInsights}
           workspaceName={currentWorkspace?.name || 'Personal Workspace'}
           onBack={() => {
-            setViewingCampaign(null);
-            setCampaignViewTab('summary');
+            setViewingCampaignInsights(null);
           }}
           onEdit={() => {
-            setViewingCampaign(null);
-            setEditingCampaign(viewingCampaign);
+            setViewingCampaignInsights(null);
+            setEditingCampaign(viewingCampaignInsights);
           }}
         />
+      );
+    }
+
+    // Show campaign management view - tabbed interface (triggered by clicking card)
+    if (viewingCampaign) {
+      const completedConversations = conversations.filter(c => c.status === 'completed');
+
+      return (
+        <div className="flex-1 flex flex-col bg-white overflow-hidden">
+          {/* Header */}
+          <div className="border-b border-gray-200 px-6 py-4">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-4">
+                <button
+                  onClick={() => {
+                    setViewingCampaign(null);
+                    setCampaignViewTab('summary');
+                    setConversations([]);
+                    setAnalyses([]);
+                    setSelectedAnalysis(null);
+                  }}
+                  className="text-gray-400 hover:text-gray-600 transition-colors"
+                >
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" />
+                  </svg>
+                </button>
+                <div>
+                  <h2 className="text-xl font-semibold text-gray-900">{viewingCampaign.title}</h2>
+                  <p className="text-sm text-gray-500">{viewingCampaign.caption}</p>
+                </div>
+              </div>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => {
+                    setViewingCampaignInsights(viewingCampaign);
+                    setViewingCampaign(null);
+                  }}
+                  className="px-3 py-1.5 text-sm font-medium text-green-600 border border-green-600 rounded-md hover:bg-green-50 transition-colors"
+                >
+                  View Insights
+                </button>
+                <button
+                  onClick={() => {
+                    setEditingCampaign(viewingCampaign);
+                    setViewingCampaign(null);
+                  }}
+                  className="px-3 py-1.5 text-sm font-medium text-blue-600 border border-blue-600 rounded-md hover:bg-blue-50 transition-colors"
+                >
+                  Edit
+                </button>
+              </div>
+            </div>
+
+            {/* Tabs */}
+            <div className="flex gap-6 mt-4">
+              {(['summary', 'conversations', 'analyze'] as const).map((tab) => (
+                <button
+                  key={tab}
+                  onClick={() => setCampaignViewTab(tab)}
+                  className={`pb-2 text-sm font-medium capitalize border-b-2 transition-colors ${
+                    campaignViewTab === tab
+                      ? 'text-blue-600 border-blue-600'
+                      : 'text-gray-500 border-transparent hover:text-gray-700'
+                  }`}
+                >
+                  {tab}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Tab Content */}
+          <div className="flex-1 overflow-y-auto p-6">
+            {campaignViewTab === 'summary' && (
+              <div className="max-w-3xl">
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">Campaign Overview</h3>
+                <div className="space-y-4">
+                  <div>
+                    <label className="text-sm font-medium text-gray-600">Description</label>
+                    <p className="text-gray-900 mt-1">{viewingCampaign.caption || 'No description provided'}</p>
+                  </div>
+                  <div>
+                    <label className="text-sm font-medium text-gray-600">Time Estimate</label>
+                    <p className="text-gray-900">{viewingCampaign.time_estimate} minutes</p>
+                  </div>
+                  <div>
+                    <label className="text-sm font-medium text-gray-600">Topics</label>
+                    <p className="text-gray-500 text-sm">{viewingCampaign.topics?.length || 0} topics configured</p>
+                  </div>
+                  <div>
+                    <label className="text-sm font-medium text-gray-600">Created</label>
+                    <p className="text-gray-900">{new Date(viewingCampaign.created_at).toLocaleString()}</p>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {campaignViewTab === 'conversations' && (
+              <div>
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="text-lg font-semibold text-gray-900">
+                    Conversations ({conversations.length})
+                  </h3>
+                  <button
+                    onClick={handleSimulate}
+                    disabled={isSimulating}
+                    className="px-4 py-2 text-sm font-medium text-white bg-purple-600 rounded-md hover:bg-purple-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center gap-2"
+                  >
+                    {isSimulating ? (
+                      <>
+                        <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        Simulating...
+                      </>
+                    ) : (
+                      <>
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        Simulate Conversations
+                      </>
+                    )}
+                  </button>
+                </div>
+
+                {conversations.length === 0 ? (
+                  <div className="text-center py-12">
+                    <svg className="w-12 h-12 text-gray-300 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                    </svg>
+                    <p className="text-gray-500">No conversations yet. Click &quot;Simulate Conversations&quot; to generate interviews.</p>
+                  </div>
+                ) : (
+                  <div className="space-y-2">
+                    {/* Select all / Delete selected */}
+                    {selectedConversations.size > 0 && (
+                      <div className="flex items-center gap-3 p-3 bg-blue-50 rounded-lg mb-4">
+                        <span className="text-sm text-blue-700">{selectedConversations.size} selected</span>
+                        <button
+                          onClick={async () => {
+                            if (!confirm(`Delete ${selectedConversations.size} conversations?`)) return;
+                            const ids = Array.from(selectedConversations);
+                            await supabase.from('conversations').delete().in('id', ids);
+                            setConversations(conversations.filter(c => !selectedConversations.has(c.id)));
+                            setSelectedConversations(new Set());
+                          }}
+                          className="text-sm text-red-600 hover:text-red-700"
+                        >
+                          Delete selected
+                        </button>
+                      </div>
+                    )}
+
+                    {/* Conversations table */}
+                    <table className="w-full">
+                      <thead className="bg-gray-50">
+                        <tr>
+                          <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase">
+                            <input
+                              type="checkbox"
+                              checked={selectedConversations.size === conversations.length && conversations.length > 0}
+                              onChange={() => {
+                                if (selectedConversations.size === conversations.length) {
+                                  setSelectedConversations(new Set());
+                                } else {
+                                  setSelectedConversations(new Set(conversations.map(c => c.id)));
+                                }
+                              }}
+                              className="rounded border-gray-300"
+                            />
+                          </th>
+                          <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase">Participant</th>
+                          <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
+                          <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase">Messages</th>
+                          <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase">Created</th>
+                          <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase">Transcript</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-gray-200">
+                        {conversations.map((conv) => (
+                          <tr key={conv.id} className="hover:bg-gray-50">
+                            <td className="px-3 py-2">
+                              <input
+                                type="checkbox"
+                                checked={selectedConversations.has(conv.id)}
+                                onChange={() => {
+                                  const newSelected = new Set(selectedConversations);
+                                  if (newSelected.has(conv.id)) {
+                                    newSelected.delete(conv.id);
+                                  } else {
+                                    newSelected.add(conv.id);
+                                  }
+                                  setSelectedConversations(newSelected);
+                                }}
+                                className="rounded border-gray-300"
+                              />
+                            </td>
+                            <td className="px-3 py-2 text-sm text-gray-900">{conv.participant_name || 'Unknown'}</td>
+                            <td className="px-3 py-2">
+                              <span className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${
+                                conv.status === 'completed' ? 'bg-green-100 text-green-800' :
+                                conv.status === 'in_progress' ? 'bg-yellow-100 text-yellow-800' :
+                                conv.status === 'failed' ? 'bg-red-100 text-red-800' :
+                                'bg-gray-100 text-gray-800'
+                              }`}>
+                                {conv.status}
+                              </span>
+                            </td>
+                            <td className="px-3 py-2 text-sm text-gray-500">{conv.transcript?.length || 0}</td>
+                            <td className="px-3 py-2 text-sm text-gray-500">
+                              {new Date(conv.created_at).toLocaleDateString()}
+                            </td>
+                            <td className="px-3 py-2">
+                              <button
+                                onClick={() => {
+                                  // Show transcript in a modal
+                                  setSelectedInterview({
+                                    ...({} as Interview),
+                                    id: conv.id,
+                                    name: conv.participant_name || 'Unknown',
+                                    transcript: conv.transcript?.map((t: any) => ({
+                                      question: t.role === 'assistant' ? t.content : '',
+                                      answer: t.role === 'user' ? t.content : '',
+                                    })).filter((t: any) => t.question || t.answer) || [],
+                                  } as Interview);
+                                }}
+                                className="text-blue-600 hover:text-blue-700 text-sm"
+                              >
+                                View
+                              </button>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {campaignViewTab === 'analyze' && (
+              <div>
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="text-lg font-semibold text-gray-900">Analysis Reports</h3>
+                  <button
+                    onClick={async () => {
+                      if (completedConversations.length === 0) {
+                        alert('No completed conversations to analyze');
+                        return;
+                      }
+                      setIsAnalyzing(true);
+                      try {
+                        const { data: { session } } = await supabase.auth.getSession();
+                        if (!session?.access_token) throw new Error('No session');
+
+                        const response = await fetch(`/api/campaigns/${viewingCampaign.id}/analyze`, {
+                          method: 'POST',
+                          headers: { 'Authorization': `Bearer ${session.access_token}` },
+                        });
+
+                        if (!response.ok) {
+                          const data = await response.json();
+                          throw new Error(data.error || 'Analysis failed');
+                        }
+
+                        await fetchAnalyses();
+                      } catch (error: any) {
+                        alert(error.message);
+                      } finally {
+                        setIsAnalyzing(false);
+                      }
+                    }}
+                    disabled={isAnalyzing || completedConversations.length === 0}
+                    className="px-4 py-2 text-sm font-medium text-white bg-green-600 rounded-md hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center gap-2"
+                  >
+                    {isAnalyzing ? (
+                      <>
+                        <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        Starting...
+                      </>
+                    ) : (
+                      <>
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                        </svg>
+                        Analyze Conversations
+                      </>
+                    )}
+                  </button>
+                </div>
+
+                {selectedAnalysis ? (
+                  <AnalysisReportView
+                    reportMarkdown={selectedAnalysis.report_markdown || 'No report available'}
+                    onBack={() => setSelectedAnalysis(null)}
+                  />
+                ) : analyses.length === 0 ? (
+                  <div className="text-center py-12">
+                    <svg className="w-12 h-12 text-gray-300 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                    </svg>
+                    <p className="text-gray-500">No analysis reports yet. Complete some conversations first, then click &quot;Analyze Conversations&quot;.</p>
+                  </div>
+                ) : (
+                  <table className="w-full">
+                    <thead className="bg-gray-50">
+                      <tr>
+                        <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase">Version</th>
+                        <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
+                        <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase">Conversations</th>
+                        <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase">Created</th>
+                        <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase">Action</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-gray-200">
+                      {analyses.map((analysis) => (
+                        <tr key={analysis.id} className="hover:bg-gray-50">
+                          <td className="px-3 py-2 text-sm text-gray-900">v{analysis.version_number}</td>
+                          <td className="px-3 py-2">
+                            <span className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${
+                              analysis.status === 'completed' ? 'bg-green-100 text-green-800' :
+                              analysis.status === 'processing' ? 'bg-yellow-100 text-yellow-800' :
+                              analysis.status === 'failed' ? 'bg-red-100 text-red-800' :
+                              'bg-gray-100 text-gray-800'
+                            }`}>
+                              {analysis.status}
+                              {analysis.status === 'processing' && analysis.total_batches > 1 && (
+                                <span className="ml-1">({analysis.completed_batches}/{analysis.total_batches})</span>
+                              )}
+                            </span>
+                          </td>
+                          <td className="px-3 py-2 text-sm text-gray-500">{analysis.conversations_analyzed}</td>
+                          <td className="px-3 py-2 text-sm text-gray-500">
+                            {new Date(analysis.created_at).toLocaleDateString()}
+                          </td>
+                          <td className="px-3 py-2">
+                            {analysis.status === 'completed' && (
+                              <button
+                                onClick={() => setSelectedAnalysis(analysis)}
+                                className="text-blue-600 hover:text-blue-700 text-sm"
+                              >
+                                View Report
+                              </button>
+                            )}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                )}
+              </div>
+            )}
+          </div>
+        </div>
       );
     }
 
@@ -1085,7 +1447,7 @@ function DashboardContent() {
                       <button
                         onClick={(e) => {
                           e.stopPropagation();
-                          setViewingCampaign(campaign);
+                          setViewingCampaignInsights(campaign);
                           setSidebarCollapsed(true);
                         }}
                         className="inline-flex items-center px-3 py-1.5 rounded-md text-sm font-medium bg-green-500 text-white hover:bg-green-600 transition-colors"

@@ -64,12 +64,16 @@ export async function GET(
     // Return analyses list with summary info
     const analysesSummary = (analyses || []).map((analysis: any) => ({
       id: analysis.id,
-      version: analysis.version_number,
+      version_number: analysis.version_number,
       status: analysis.status,
       conversations_analyzed: analysis.conversations_analyzed,
       created_at: analysis.created_at,
       completed_at: analysis.completed_at,
       error_message: analysis.error_message,
+      total_batches: analysis.total_batches,
+      completed_batches: analysis.completed_batches,
+      report_markdown: analysis.report_markdown,
+      dashboard_json: analysis.dashboard_json,
     }));
 
     // Get the most recent analysis for detailed status

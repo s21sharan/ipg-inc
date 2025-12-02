@@ -440,3 +440,64 @@ Implemented automatic batch polling, markdown report rendering with clickable ci
 
 ### #Background
 Auto-polling eliminates manual batch processor triggers—frontend detects processing status and polls every 15s until complete. Analysis reports render as markdown with proper formatting (headings, tables, blockquotes, code). Citations link to campaign-specific simulated conversations showing exact quoted answer with full transcript context. System handles both single-batch (≤50 convos) and multi-batch (>50) automatically, merging results when all batches complete.
+
+## 2025-12-02 – Compact Session #Deprecated
+
+### #CurrentFocus
+Built new campaign insights view with Figma design implementation and conversation clustering system planning.
+
+### #SessionChanges
+- Created `app/dashboard/campaign-detail-view.tsx` with Figma design: left panel (insights cards), right panel (chat agent)
+- Implemented HexagonCluster component generating honeycomb SVG patterns for user visualization
+- Implemented InsightCard component with title, hexagons, summary, matched users, prevalence, confidence stats
+- Added collapsible sidebar: collapse button next to logo, click anywhere on collapsed sidebar to expand
+- Sidebar when collapsed: shows only "ipg" logo, icons for nav (no text), support/signout icons only
+- Auto-collapse sidebar when clicking View button on campaign for more screen space
+- Separated campaign card click (→ management view with tabs) from View button (→ insights view)
+- Removed legacy tabbed campaign view code, replaced with CampaignDetailView component
+- Added `sidebarCollapsed` state with smooth 300ms transition animation
+- Updated nav/support/signout buttons with `e.stopPropagation()` to prevent sidebar expansion on click
+
+### #NextSteps #Deprecated
+- Create `campaign_clusters` table migration with versioning and RLS policies
+- Build `lib/clustering-engine.ts` with dimension detection, quote extraction, embeddings, k-means, labeling
+- Create cluster API endpoints: POST trigger, GET latest clusters
+- Restore old tabbed view for campaign card clicks (management), keep new view for View button (insights)
+- Integrate clustering to auto-run after analysis completes via `batch-processor-multi.ts`
+
+### #BugsAndTheories
+- TypeScript unused variable warnings ⇒ Legacy code removed but imports/state remained (acceptable hints)
+- Sidebar buttons triggering expand ⇒ Click propagation (fixed: added stopPropagation to all buttons)
+
+### #Background
+Campaign insights view shows 4 user clusters as hexagon groups with labels like "Repetition Fatigue". Clustering uses hybrid approach: embeddings for similarity grouping, LLM for labeling. Dimension (pain_points vs goals) auto-detected per campaign. Quote extraction (2-4 verbatim quotes) preferred over summaries for authenticity. Clusters auto-generated after analysis completes. Two navigation paths: card click → management (conversations, analyze tabs), View button → insights visualization.
+
+## 2025-12-02 – Compact Session (Part 2)
+
+### #CurrentFocus
+Implemented full conversation clustering system with hybrid embeddings+LLM approach and dual navigation UI.
+
+### #SessionChanges
+- Created `supabase/migrations/010_create_campaign_clusters.sql` with versioning, status tracking, RLS policies
+- Built `lib/clustering-engine.ts`: dimension detection, quote extraction, embeddings, k-means, labeling pipeline
+- Created `POST /api/campaigns/[id]/cluster` endpoint to trigger clustering
+- Created `GET /api/campaigns/[id]/cluster/latest` endpoint to fetch completed clusters with status
+- Added `viewingCampaignInsights` state: card click → tabbed mgmt view, View button → insights view
+- Restored tabbed campaign management view with Summary, Conversations, Analyze tabs
+- Updated campaign-detail-view.tsx to fetch real clusters from API with loading/empty/processing states
+- Added "Generate Insights" button when no clusters exist, polls every 5s while processing
+- Integrated auto-trigger clustering in batch-processor.ts and batch-processor-multi.ts after analysis
+- Fixed analyze status API to return report_markdown, dashboard_json, total_batches, completed_batches
+- Updated Summary tab to show campaign description (caption) instead of topics list
+
+### #NextSteps
+- Style analysis report with collapsible sections and citation modals
+- Add quote references that highlight source in right-side modal
+- Add outline/TOC on right side of report view
+
+### #BugsAndTheories
+- View Report not showing content ⇒ API status endpoint missing report_markdown field (fixed)
+- Clustering processing async ⇒ Uses background processing with status polling
+
+### #Background
+Clustering pipeline: detect dimension (pain_points vs goals) → extract 2-4 verbatim quotes → embed with text-embedding-3-small → k-means k=4 → label with GPT-4o-mini → calculate confidence. Auto-triggers after analysis completes. Costs ~$0.12/campaign. Two navigation paths maintained: card click shows tabbed mgmt (Summary/Conversations/Analyze), View button shows hexagon cluster insights.

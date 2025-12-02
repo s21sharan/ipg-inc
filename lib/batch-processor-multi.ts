@@ -10,6 +10,7 @@ import {
   mergeBatchResults,
   checkMergeBatchStatus,
 } from './analysis-engine-batch';
+import { triggerClustering } from './clustering-engine';
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
@@ -74,6 +75,16 @@ async function processMultiBatchAnalysis(analysis: any) {
         .eq('id', analysis.id);
 
       console.log(`✓ Analysis ${analysis.id} completed with merged results`);
+
+      // Auto-trigger clustering after analysis completes
+      try {
+        console.log(`Starting clustering for campaign ${analysis.campaign_id}...`);
+        await triggerClustering(analysis.campaign_id, analysis.id);
+        console.log(`✓ Clustering triggered for campaign ${analysis.campaign_id}`);
+      } catch (clusterError: any) {
+        console.error(`Failed to trigger clustering: ${clusterError.message}`);
+        // Don't fail the analysis if clustering fails - it can be triggered manually
+      }
     } else if (mergeResult.status === 'failed') {
       await supabase
         .from('campaign_analyses')
