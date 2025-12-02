@@ -1989,8 +1989,8 @@ function DashboardContent() {
 
       {/* Main Content */}
       <div className="flex-1 flex flex-col">
-        {/* Header */}
-        {!showCreateModal && !showCreateForm && !editingCampaign && !showPromptBox && !viewingCampaign && (
+        {/* Header - hidden when viewing campaign insights or other modals */}
+        {!showCreateModal && !showCreateForm && !editingCampaign && !showPromptBox && !viewingCampaign && !viewingCampaignInsights && (
           <header className="bg-white border-b border-gray-200 px-6 py-3">
             <div className="flex items-center justify-between">
               <h2 className="text-lg font-light text-gray-800">{currentWorkspace?.name || 'Workspace'}</h2>

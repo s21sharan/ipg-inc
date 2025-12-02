@@ -75,11 +75,11 @@ function DotCluster({ count, color = '#4A4A4A', isHovered = false }: { count: nu
     const cols = Math.max(4, Math.min(8, targetCols)); // Between 4-8 columns
     const rows = Math.ceil(count / cols);
 
-    // Center the grid horizontally and vertically
+    // Center the grid horizontally and vertically (viewBox is 360x160)
     const gridWidth = (cols - 1) * spacing;
     const gridHeight = (rows - 1) * spacing;
     const startX = 180 - gridWidth / 2;
-    const startY = 90 - gridHeight / 2;
+    const startY = 80 - gridHeight / 2;
 
     for (let i = 0; i < count; i++) {
       const col = i % cols;
@@ -99,11 +99,11 @@ function DotCluster({ count, color = '#4A4A4A', isHovered = false }: { count: nu
     const dotRadius = getDotRadius(count);
     const minDistance = dotRadius * 2.2; // Minimum distance between dots
 
-    // Bounds for the cluster area
+    // Bounds for the cluster area (viewBox is 360x160)
     const centerX = 180;
-    const centerY = 90;
+    const centerY = 80;
     const spreadX = 100; // Horizontal spread from center
-    const spreadY = 60;  // Vertical spread from center
+    const spreadY = 50;  // Vertical spread from center
 
     let attempts = 0;
     const maxAttempts = count * 100;
@@ -133,8 +133,8 @@ function DotCluster({ count, color = '#4A4A4A', isHovered = false }: { count: nu
         }
       }
 
-      // Also ensure within reasonable bounds
-      if (finalX < 80 || finalX > 280 || finalY < 20 || finalY > 160) {
+      // Also ensure within reasonable bounds (viewBox is 360x160)
+      if (finalX < 80 || finalX > 280 || finalY < 15 || finalY > 145) {
         valid = false;
       }
 
@@ -156,7 +156,7 @@ function DotCluster({ count, color = '#4A4A4A', isHovered = false }: { count: nu
   const positions = isHovered ? gridPositions : randomPositions;
 
   return (
-    <svg viewBox="0 0 360 180" className="w-full h-32">
+    <svg viewBox="0 0 360 160" className="w-full h-28">
       {positions.map((pos, i) => (
         <circle
           key={i}
@@ -174,22 +174,24 @@ function DotCluster({ count, color = '#4A4A4A', isHovered = false }: { count: nu
   );
 }
 
-// Insight card component
-function InsightCardComponent({ insight, onClick }: { insight: InsightCard; onClick?: () => void }) {
+// Insight card component - compact size to fit 2x2 grid without scrolling
+function InsightCardComponent({ insight, onClick, isSelected }: { insight: InsightCard; onClick?: () => void; isSelected?: boolean }) {
   const [isHovered, setIsHovered] = useState(false);
+
+  const showActiveState = isHovered || isSelected;
 
   return (
     <div
       className={`
-        relative rounded-2xl p-5 shadow-md cursor-pointer
+        relative rounded-[20px] p-4 cursor-pointer flex flex-col min-h-0
         transition-all duration-300 ease-out
-        ${isHovered
+        ${showActiveState
           ? 'border-[1.5px] border-blue-500 shadow-[0_0_20px_rgba(37,133,230,0.3)]'
-          : 'border border-gray-200 bg-white'
+          : 'border border-[#dadada] bg-white shadow-[0px_4px_4px_0px_rgba(0,0,0,0.2)]'
         }
       `}
       style={{
-        background: isHovered
+        background: showActiveState
           ? 'linear-gradient(to bottom, #fbfbfb 0%, #d4e8fa 100%)'
           : 'white',
       }}
@@ -198,41 +200,36 @@ function InsightCardComponent({ insight, onClick }: { insight: InsightCard; onCl
       onMouseLeave={() => setIsHovered(false)}
     >
       {/* Header */}
-      <div className="flex items-start justify-between mb-2">
-        <h3 className="text-xl font-semibold text-blue-500">{insight.title}</h3>
-        <button className="text-black text-xl">
-          <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+      <div className="flex items-start justify-between mb-1">
+        <h3 className="text-[22px] font-semibold text-[#2c95ff] leading-tight">{insight.title}</h3>
+        <button className="text-black text-lg flex-shrink-0 ml-2">
+          <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
             <path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/>
           </svg>
         </button>
       </div>
 
-      {/* Quote */}
-      {insight.quote && (
-        <p className="text-sm text-gray-500 italic mb-2">&ldquo;{insight.quote}&rdquo;</p>
-      )}
-
-      {/* Dot Cluster - number of dots = matched users, animates to grid on hover */}
-      <div className="my-4">
-        <DotCluster count={insight.matchedUsers} isHovered={isHovered} />
+      {/* Dot Cluster - number of dots = matched users, animates to grid on hover/select */}
+      <div className="flex-1 flex items-center justify-center">
+        <DotCluster count={insight.matchedUsers} isHovered={showActiveState} />
       </div>
 
       {/* Summary */}
-      <p className="text-sm text-gray-900 mb-3">{insight.summary}</p>
+      <p className="text-[13px] text-black mb-2 line-clamp-1">{insight.summary}</p>
 
       {/* Stats row */}
-      <div className="flex gap-8 text-xs">
+      <div className="flex gap-6 text-xs">
         <div>
-          <span className="font-semibold text-gray-900">Matched Users: </span>
+          <span className="font-semibold text-black">Matched Users: </span>
           <span className="text-gray-500">{insight.matchedUsers.toLocaleString()}</span>
         </div>
         <div>
-          <span className="font-semibold text-gray-900">Prevalence: </span>
+          <span className="font-semibold text-black">Prevalence: </span>
           <span className="text-gray-500">{insight.prevalence}</span>
         </div>
         <div>
-          <span className="font-semibold text-gray-900">Confidence: </span>
-          <span className="text-gray-500">{(insight.confidence * 100).toFixed(0)}%</span>
+          <span className="font-semibold text-black">Confidence: </span>
+          <span className="text-gray-500">{insight.confidence.toFixed(2)}</span>
         </div>
       </div>
     </div>
@@ -246,10 +243,31 @@ export default function CampaignDetailView({
   onEdit
 }: CampaignDetailViewProps) {
   const [chatInput, setChatInput] = useState('');
-  const [selectedFilter, setSelectedFilter] = useState('All Users');
+  const [selectedClusters, setSelectedClusters] = useState<string[]>([]); // Array of cluster IDs
+  const [showFilterDropdown, setShowFilterDropdown] = useState(false);
   const [clusterData, setClusterData] = useState<ClusterData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isGenerating, setIsGenerating] = useState(false);
+
+  // Toggle cluster selection
+  const toggleClusterSelection = (clusterId: string) => {
+    setSelectedClusters(prev =>
+      prev.includes(clusterId)
+        ? prev.filter(id => id !== clusterId)
+        : [...prev, clusterId]
+    );
+  };
+
+  // Remove a cluster from selection
+  const removeCluster = (clusterId: string) => {
+    setSelectedClusters(prev => prev.filter(id => id !== clusterId));
+  };
+
+  // Get selected cluster names for display
+  const getSelectedClusterNames = () => {
+    const insights = clusterData?.clusters || [];
+    return selectedClusters.map(id => insights.find(c => c.id === id)?.title).filter(Boolean);
+  };
 
   // Fetch clusters on mount
   useEffect(() => {
@@ -328,20 +346,20 @@ export default function CampaignDetailView({
       {/* Left Panel - Main Content */}
       <div className="flex-1 flex flex-col overflow-hidden">
         {/* Top Bar */}
-        <div className="flex items-center justify-between px-6 py-4">
+        <div className="flex items-center justify-between px-6 py-2">
           <div className="flex items-center gap-3">
             {/* Back button */}
             <button
               onClick={onBack}
-              className="w-8 h-5 bg-gray-200 rounded flex items-center justify-center hover:bg-gray-300 transition-colors"
+              className="w-7 h-5 bg-gray-200 rounded flex items-center justify-center hover:bg-gray-300 transition-colors"
             >
-              <svg className="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-3.5 h-3.5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" />
               </svg>
             </button>
 
             {/* Breadcrumb */}
-            <div className="flex items-center gap-4 text-xs font-semibold text-gray-400">
+            <div className="flex items-center gap-3 text-xs font-semibold text-gray-400">
               <span>{workspaceName}</span>
               <span>/</span>
               <span>Simulated Agents</span>
@@ -354,15 +372,15 @@ export default function CampaignDetailView({
         {/* Horizontal line */}
         <div className="mx-6 border-t border-gray-300" />
 
-        {/* Content area */}
-        <div className="flex-1 overflow-y-auto px-10 py-6">
+        {/* Content area - no scroll, fits viewport */}
+        <div className="flex-1 flex flex-col px-6 py-3 min-h-0">
           {/* Title */}
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">
+          <h1 className="text-2xl font-bold text-gray-900 mb-1">
             {campaign.title}
           </h1>
 
           {/* Stats row */}
-          <div className="flex items-center gap-5 text-xs text-gray-600 mb-8">
+          <div className="flex items-center gap-5 text-xs text-gray-600 mb-3">
             <span>
               <span className="font-semibold">Date: </span>
               <span className="font-light">{stats.date}</span>
@@ -441,13 +459,15 @@ export default function CampaignDetailView({
             </div>
           )}
 
-          {/* Insight Cards Grid */}
+          {/* Insight Cards Grid - 2x2 fits without scrolling */}
           {!isLoading && clusterData?.status === 'completed' && insights.length > 0 && (
-            <div className="grid grid-cols-2 gap-7">
+            <div className="flex-1 grid grid-cols-2 gap-4 auto-rows-fr min-h-0">
               {insights.map((insight) => (
                 <InsightCardComponent
                   key={insight.id}
                   insight={insight}
+                  isSelected={selectedClusters.includes(insight.id)}
+                  onClick={() => toggleClusterSelection(insight.id)}
                 />
               ))}
             </div>
@@ -457,7 +477,7 @@ export default function CampaignDetailView({
 
       {/* Right Panel - Conversation Agent */}
       <div
-        className="w-[400px] border-l-2 border-gray-300 flex flex-col"
+        className="w-[400px] border-l-2 border-gray-300 flex flex-col relative"
         style={{
           background: 'linear-gradient(to bottom, #ffffff 80%, #74b9ff 170%)',
         }}
@@ -471,6 +491,74 @@ export default function CampaignDetailView({
             anything.
           </p>
         </div>
+
+        {/* Cohort Filters Dropdown */}
+        {showFilterDropdown && (
+          <div className="absolute left-5 right-5 bottom-24 bg-white border border-[#d7d7d7] rounded-lg shadow-lg p-4 z-10">
+            {/* Header */}
+            <div className="flex items-center justify-between mb-3">
+              <span className="font-bold text-sm text-black">Cohort Filters</span>
+              <button
+                onClick={() => setShowFilterDropdown(false)}
+                className="text-gray-400 hover:text-gray-600"
+              >
+                <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+                </svg>
+              </button>
+            </div>
+
+            {/* Selected clusters as tags */}
+            <div className="bg-[#dbdbdb] rounded-lg p-2 mb-3 min-h-[40px] flex flex-wrap gap-2 items-center">
+              {selectedClusters.length === 0 ? (
+                <span className="text-gray-500 text-xs">Select clusters...</span>
+              ) : (
+                insights.filter(c => selectedClusters.includes(c.id)).map(cluster => (
+                  <span
+                    key={cluster.id}
+                    className="bg-[#6c6c6c] text-white text-xs px-2 py-1 rounded-full flex items-center gap-1"
+                  >
+                    <button
+                      onClick={() => removeCluster(cluster.id)}
+                      className="hover:text-gray-300"
+                    >
+                      <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+                      </svg>
+                    </button>
+                    <span className="max-w-[100px] truncate">{cluster.title}</span>
+                  </span>
+                ))
+              )}
+            </div>
+
+            {/* Cluster checkboxes */}
+            <div className="space-y-1">
+              {insights.map(cluster => (
+                <label
+                  key={cluster.id}
+                  className="flex items-center gap-2 px-1 py-2 hover:bg-gray-50 rounded cursor-pointer border-b border-gray-100 last:border-0"
+                >
+                  <div
+                    className={`w-5 h-5 rounded flex items-center justify-center ${
+                      selectedClusters.includes(cluster.id)
+                        ? 'bg-[#2c95ff]'
+                        : 'bg-gray-200'
+                    }`}
+                    onClick={() => toggleClusterSelection(cluster.id)}
+                  >
+                    {selectedClusters.includes(cluster.id) && (
+                      <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
+                      </svg>
+                    )}
+                  </div>
+                  <span className="text-sm text-gray-700 font-medium">{cluster.title}</span>
+                </label>
+              ))}
+            </div>
+          </div>
+        )}
 
         {/* Bottom section */}
         <div className="px-5 pb-6">
@@ -499,13 +587,23 @@ export default function CampaignDetailView({
           {/* Talking to filter */}
           <div className="flex items-center gap-3">
             <span className="text-xs font-semibold text-black">Talking to:</span>
-            <button className="flex items-center gap-1 px-2 py-1 bg-[#2c95ff] rounded text-white text-xs">
+            <button
+              onClick={() => setShowFilterDropdown(!showFilterDropdown)}
+              className="flex items-center gap-1 px-2 py-1 bg-[#2c95ff] rounded text-white text-xs"
+            >
               <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24">
                 <path d="M3 4h18v2H3V4zm0 7h12v2H3v-2zm0 7h18v2H3v-2z"/>
               </svg>
-              <span className="font-semibold text-[10px]">{selectedFilter}</span>
+              <span className="font-semibold text-[10px]">
+                {selectedClusters.length === 0
+                  ? 'All Users'
+                  : selectedClusters.length === 1
+                    ? insights.find(c => c.id === selectedClusters[0])?.title || 'Selected'
+                    : `${selectedClusters.length} Cohorts`
+                }
+              </span>
               <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M7 10l5 5 5-5z"/>
+                <path d={showFilterDropdown ? "M7 14l5-5 5 5z" : "M7 10l5 5 5-5z"}/>
               </svg>
             </button>
           </div>
