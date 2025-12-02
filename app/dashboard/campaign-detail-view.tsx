@@ -482,65 +482,80 @@ export default function CampaignDetailView({
           background: 'linear-gradient(to bottom, #ffffff 80%, #74b9ff 170%)',
         }}
       >
+        {/* Top left label */}
+        <div className="px-5 pt-4">
+          <p className="text-[22px] font-normal">
+            <span className="text-[#a8a8a8]">IPG</span>
+            <span className="text-black"> Conversation Agent</span>
+          </p>
+        </div>
+
         {/* Main content area - centered text */}
         <div className="flex-1 flex flex-col items-center justify-center px-8">
-          <h2 className="text-3xl font-bold text-black text-center leading-tight">
-            Ask your users
-          </h2>
-          <p className="text-3xl italic font-medium text-black text-center">
-            anything.
+          <p className="text-[32px] text-center leading-tight">
+            <span className="font-bold text-black">Ask your users </span>
+            <span
+              className="font-medium italic bg-clip-text"
+              style={{
+                background: 'linear-gradient(to right, #000000, #a0a0a0)',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+              }}
+            >
+              anything.
+            </span>
           </p>
         </div>
 
         {/* Cohort Filters Dropdown */}
         {showFilterDropdown && (
-          <div className="absolute left-5 right-5 bottom-24 bg-white border border-[#d7d7d7] rounded-lg shadow-lg p-4 z-10">
+          <div className="absolute left-5 right-5 bottom-20 bg-white border border-[#d7d7d7] rounded-lg shadow-lg p-3 z-10">
             {/* Header */}
-            <div className="flex items-center justify-between mb-3">
-              <span className="font-bold text-sm text-black">Cohort Filters</span>
+            <div className="flex items-center justify-between mb-2">
+              <span className="font-bold text-xs text-black">Cohort Filters</span>
               <button
                 onClick={() => setShowFilterDropdown(false)}
                 className="text-gray-400 hover:text-gray-600"
               >
-                <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 24 24">
                   <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
                 </svg>
               </button>
             </div>
 
             {/* Selected clusters as tags */}
-            <div className="bg-[#dbdbdb] rounded-lg p-2 mb-3 min-h-[40px] flex flex-wrap gap-2 items-center">
+            <div className="bg-[#dbdbdb] rounded-md p-1.5 mb-2 min-h-[28px] flex flex-wrap gap-1.5 items-center">
               {selectedClusters.length === 0 ? (
-                <span className="text-gray-500 text-xs">Select clusters...</span>
+                <span className="text-gray-500 text-[10px]">Select clusters...</span>
               ) : (
                 insights.filter(c => selectedClusters.includes(c.id)).map(cluster => (
                   <span
                     key={cluster.id}
-                    className="bg-[#6c6c6c] text-white text-xs px-2 py-1 rounded-full flex items-center gap-1"
+                    className="bg-[#6c6c6c] text-white text-[10px] px-1.5 py-0.5 rounded-full flex items-center gap-0.5"
                   >
                     <button
                       onClick={() => removeCluster(cluster.id)}
                       className="hover:text-gray-300"
                     >
-                      <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 24 24">
+                      <svg className="w-2.5 h-2.5" fill="currentColor" viewBox="0 0 24 24">
                         <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
                       </svg>
                     </button>
-                    <span className="max-w-[100px] truncate">{cluster.title}</span>
+                    <span className="max-w-[80px] truncate">{cluster.title}</span>
                   </span>
                 ))
               )}
             </div>
 
             {/* Cluster checkboxes */}
-            <div className="space-y-1">
+            <div className="space-y-0.5">
               {insights.map(cluster => (
                 <label
                   key={cluster.id}
-                  className="flex items-center gap-2 px-1 py-2 hover:bg-gray-50 rounded cursor-pointer border-b border-gray-100 last:border-0"
+                  className="flex items-center gap-1.5 px-1 py-1.5 hover:bg-gray-50 rounded cursor-pointer border-b border-gray-100 last:border-0"
                 >
                   <div
-                    className={`w-5 h-5 rounded flex items-center justify-center ${
+                    className={`w-4 h-4 rounded flex items-center justify-center ${
                       selectedClusters.includes(cluster.id)
                         ? 'bg-[#2c95ff]'
                         : 'bg-gray-200'
@@ -548,12 +563,12 @@ export default function CampaignDetailView({
                     onClick={() => toggleClusterSelection(cluster.id)}
                   >
                     {selectedClusters.includes(cluster.id) && (
-                      <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 24 24">
+                      <svg className="w-2.5 h-2.5 text-white" fill="currentColor" viewBox="0 0 24 24">
                         <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
                       </svg>
                     )}
                   </div>
-                  <span className="text-sm text-gray-700 font-medium">{cluster.title}</span>
+                  <span className="text-xs text-gray-700 font-medium">{cluster.title}</span>
                 </label>
               ))}
             </div>
