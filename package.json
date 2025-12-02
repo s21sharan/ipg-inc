@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.78.0",
+    "dotenv": "^17.2.3",
     "next": "16.0.1",
     "openai": "^5.23.2",
     "react": "19.2.0",

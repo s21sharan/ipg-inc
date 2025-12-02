@@ -1,13 +1,11 @@
 /**
- * Clustering Engine
+ * Clustering Engine (LLM-Based)
  *
  * Generates insight clusters from campaign conversations using:
- * 1. Dimension detection (pain_points vs goals)
- * 2. Quote extraction (2-4 verbatim quotes per conversation)
- * 3. Embedding generation (text-embedding-3-small)
- * 4. K-means clustering (k=4)
- * 5. Cluster labeling (GPT-4o-mini)
- * 6. Confidence calculation
+ * 1. Pattern extraction from each conversation
+ * 2. LLM proposes cluster categories from patterns
+ * 3. LLM assigns each conversation to a cluster
+ * 4. Quote generation for each cluster
  */
 
 import { createClient } from '@supabase/supabase-js';
@@ -20,6 +18,8 @@ const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
 
+const TARGET_CLUSTERS = 4;
+
 // Types
 export interface ClusterMember {
   conversation_id: string;
@@ -30,11 +30,11 @@ export interface ClusterMember {
 export interface Cluster {
   cluster_id: string; // 'A', 'B', 'C', 'D'
   label: string;
-  quote: string; // First-person quote (5-7 words)
+  quote: string;
   description: string;
   count: number;
   percentage: number;
-  confidence: number; // 0-1
+  confidence: number;
   prevalence: 'High' | 'Medium' | 'Low';
   members: ClusterMember[];
 }
@@ -48,361 +48,259 @@ export interface ClusteringResult {
 interface ConversationData {
   id: string;
   participant_name: string;
-  transcript: Array<{ role: string; content: string }>;
-  quotes?: string[];
-  embedding?: number[];
+  transcript: Array<{ question: string; answer: string }>;
+  patterns?: string[];
 }
 
-// Step 1: Detect the best clustering dimension
-async function detectDimension(
-  campaignTitle: string,
-  campaignCaption: string,
-  sampleConversations: ConversationData[]
-): Promise<{ dimension: string; rationale: string }> {
-  // Get sample quotes from conversations
-  const sampleTexts = sampleConversations.slice(0, 5).map(conv => {
-    const userResponses = conv.transcript
-      .filter(t => t.role === 'user')
-      .map(t => t.content)
-      .slice(0, 3)
-      .join('\n');
-    return `${conv.participant_name}: ${userResponses.substring(0, 500)}`;
-  }).join('\n\n');
-
-  const prompt = `You are analyzing a market research campaign to determine the best way to cluster participants.
-
-Campaign: "${campaignTitle}"
-Description: "${campaignCaption}"
-
-Sample participant responses:
-${sampleTexts}
-
-Based on the campaign focus and participant responses, choose the SINGLE BEST dimension for clustering:
-- "pain_points" - Group by frustrations, problems, or challenges they face
-- "goals" - Group by what they want to achieve or their motivations
-
-Respond with EXACTLY this JSON format:
-{
-  "dimension": "pain_points" or "goals",
-  "rationale": "Brief 1-sentence explanation of why this dimension is most insightful for this campaign"
-}`;
-
-  const response = await openai.chat.completions.create({
-    model: 'gpt-4o-mini',
-    messages: [{ role: 'user', content: prompt }],
-    max_tokens: 150,
-    temperature: 0.3,
-  });
-
-  try {
-    const content = response.choices[0].message.content?.trim() || '';
-    const parsed = JSON.parse(content);
-    return {
-      dimension: parsed.dimension,
-      rationale: parsed.rationale,
-    };
-  } catch {
-    // Default to pain_points if parsing fails
-    return {
-      dimension: 'pain_points',
-      rationale: 'Defaulted to pain points analysis',
-    };
-  }
+interface ClusterDefinition {
+  id: number;
+  name: string;
+  description: string;
+  keyCharacteristics: string[];
 }
 
-// Step 2: Extract quotes from each conversation
-async function extractQuotes(
-  conversations: ConversationData[],
-  dimension: string
-): Promise<ConversationData[]> {
-  const dimensionPrompt = dimension === 'pain_points'
-    ? 'frustrations, complaints, problems, or challenges'
-    : 'goals, desires, motivations, or what they want to achieve';
-
-  // Process in batches
-  const batchSize = 10;
+// Step 1: Extract patterns from each conversation
+async function extractPatterns(conversations: ConversationData[]): Promise<ConversationData[]> {
+  const batchSize = 20;
   const results: ConversationData[] = [];
 
   for (let i = 0; i < conversations.length; i += batchSize) {
     const batch = conversations.slice(i, i + batchSize);
 
     const batchPromises = batch.map(async (conv) => {
-      const userResponses = conv.transcript
-        .filter(t => t.role === 'user')
-        .map(t => t.content)
+      const qaPairs = conv.transcript
+        .map(t => `Q: ${t.question}\nA: ${t.answer}`)
         .join('\n\n');
 
-      const prompt = `Extract 2-4 verbatim quotes from this interview participant that reveal their ${dimensionPrompt}.
+      const prompt = `Analyze this interview and extract 2-3 KEY PATTERNS that characterize this person's perspective.
 
-Participant: ${conv.participant_name}
-Responses:
-${userResponses}
+Interview with ${conv.participant_name}:
+${qaPairs}
+
+Extract patterns that capture:
+- Their main concerns or hesitations
+- What they value or prioritize
+- Their decision-making approach
+- What would make them act/change
 
 Rules:
-- Extract EXACT quotes from the text (do not paraphrase)
-- Each quote should be 1-3 sentences
-- Focus on quotes that reveal ${dimensionPrompt}
-- Return 2-4 quotes total
+- Each pattern should be a specific, concrete statement (not generic)
+- Use their actual words/phrases where possible
+- Patterns should be things that could differentiate people into groups
 
-Respond with EXACTLY this JSON format:
+JSON format:
 {
-  "quotes": ["quote 1", "quote 2", "quote 3"]
+  "patterns": [
+    "Pattern 1: specific insight about this person",
+    "Pattern 2: another distinct pattern"
+  ]
 }`;
 
       try {
         const response = await openai.chat.completions.create({
           model: 'gpt-4o-mini',
           messages: [{ role: 'user', content: prompt }],
-          max_tokens: 500,
-          temperature: 0.3,
+          max_tokens: 400,
+          temperature: 0.2,
         });
 
         const content = response.choices[0].message.content?.trim() || '';
-        const parsed = JSON.parse(content);
-        return {
-          ...conv,
-          quotes: parsed.quotes || [],
-        };
-      } catch {
-        // Fallback: use first few user responses
-        const fallbackQuotes = conv.transcript
-          .filter(t => t.role === 'user')
-          .slice(0, 3)
-          .map(t => t.content.substring(0, 200));
-        return {
-          ...conv,
-          quotes: fallbackQuotes,
-        };
+        const jsonMatch = content.match(/\{[\s\S]*\}/);
+        if (jsonMatch) {
+          const parsed = JSON.parse(jsonMatch[0]);
+          return { ...conv, patterns: parsed.patterns || [] };
+        }
+      } catch (e) {
+        console.error('Pattern extraction error:', e);
       }
+
+      return { ...conv, patterns: [] };
     });
 
     const batchResults = await Promise.all(batchPromises);
     results.push(...batchResults);
-
-    console.log(`Extracted quotes: ${Math.min(i + batchSize, conversations.length)}/${conversations.length}`);
+    console.log(`Extracted patterns: ${results.length}/${conversations.length}`);
   }
 
   return results;
 }
 
-// Step 3: Generate embeddings
-async function generateEmbeddings(
-  conversations: ConversationData[]
-): Promise<ConversationData[]> {
-  const batchSize = 20;
-  const results: ConversationData[] = [...conversations];
+// Step 2: LLM proposes cluster categories from all patterns
+async function proposeClusterCategories(
+  conversations: ConversationData[],
+  numClusters: number
+): Promise<ClusterDefinition[]> {
+  const allPatternsWithContext = conversations
+    .flatMap((c, idx) => (c.patterns || []).map(p => `[P${idx + 1}] ${p}`))
+    .slice(0, 300);
+
+  const prompt = `You are a UX researcher. Analyze these ${conversations.length} user interview patterns and identify ${numClusters} distinct ISSUES or PATTERNS that ACTUALLY EXIST in the data.
+
+ALL PATTERNS FROM INTERVIEWS:
+${allPatternsWithContext.join('\n')}
+
+INSTRUCTIONS:
+1. Read ALL the patterns above carefully
+2. Identify the ${numClusters} most common/distinct themes that ACTUALLY appear in the data
+3. Each cluster must be grounded in real patterns from the interviews - do NOT invent issues that aren't there
+4. Name each cluster with a 2-4 word label that summarizes the core issue
+
+NAMING STYLE EXAMPLES (from different domains - do NOT use these, create names from YOUR data):
+- E-commerce: "Checkout Abandonment Friction", "Trust Deficit", "Price Comparison Fatigue"
+- Banking: "Hidden Fee Anxiety", "Security Concern Paralysis", "Branch Dependency"
+- Fitness: "Plateau Frustration", "Equipment Intimidation", "Schedule Inflexibility"
+
+Your cluster names should emerge FROM the patterns above, not from these examples.
+
+JSON format:
+{
+  "clusters": [
+    {
+      "id": 1,
+      "name": "2-4 word issue label FROM THE DATA",
+      "description": "What this issue is based on the actual patterns",
+      "keyCharacteristics": ["actual symptom from data", "another symptom", "third symptom"]
+    }
+  ]
+}`;
+
+  try {
+    const response = await openai.chat.completions.create({
+      model: 'gpt-4o',
+      messages: [{ role: 'user', content: prompt }],
+      max_tokens: 2000,
+      temperature: 0.5,
+    });
+
+    const content = response.choices[0].message.content?.trim() || '';
+    const jsonMatch = content.match(/\{[\s\S]*\}/);
+    if (jsonMatch) {
+      const parsed = JSON.parse(jsonMatch[0]);
+      return parsed.clusters || [];
+    }
+  } catch (e) {
+    console.error('Cluster proposal error:', e);
+  }
+
+  return [];
+}
+
+// Step 3: LLM assigns each conversation to a cluster
+async function assignConversationsToClusters(
+  conversations: ConversationData[],
+  clusters: ClusterDefinition[]
+): Promise<Map<string, number>> {
+  const assignments = new Map<string, number>();
+  const batchSize = 15;
+
+  const clusterDesc = clusters
+    .map(c => `CLUSTER ${c.id}: "${c.name}"\n  - ${c.description}\n  - Key traits: ${c.keyCharacteristics.join(', ')}`)
+    .join('\n\n');
 
   for (let i = 0; i < conversations.length; i += batchSize) {
     const batch = conversations.slice(i, i + batchSize);
-    const texts = batch.map(conv => (conv.quotes || []).join('\n\n'));
 
-    const response = await openai.embeddings.create({
-      model: 'text-embedding-3-small',
-      input: texts,
-    });
+    const batchPromises = batch.map(async (conv) => {
+      const patterns = (conv.patterns || []).join('\n- ');
 
-    for (let j = 0; j < response.data.length; j++) {
-      results[i + j].embedding = response.data[j].embedding;
-    }
+      const prompt = `Assign this user to the cluster that best matches their PRIMARY issue/pattern.
 
-    console.log(`Generated embeddings: ${Math.min(i + batchSize, conversations.length)}/${conversations.length}`);
-  }
+CLUSTERS:
+${clusterDesc}
 
-  return results;
-}
+USER'S PATTERNS:
+- ${patterns}
 
-// Step 4: K-means clustering
-function kMeans(embeddings: number[][], k: number, maxIterations = 100): {
-  assignments: number[];
-  centroids: number[][];
-  distances: number[];
-} {
-  const n = embeddings.length;
-  if (n === 0) return { assignments: [], centroids: [], distances: [] };
+Which cluster BEST describes this user's main issue? Pick the ONE that is most dominant.
 
-  const dim = embeddings[0].length;
-
-  // Initialize centroids using k-means++
-  const centroids: number[][] = [];
-  const usedIndices = new Set<number>();
-
-  // First centroid: random
-  let firstIdx = Math.floor(Math.random() * n);
-  centroids.push([...embeddings[firstIdx]]);
-  usedIndices.add(firstIdx);
-
-  // Remaining centroids: weighted by distance
-  while (centroids.length < k) {
-    const distances = embeddings.map((emb, idx) => {
-      if (usedIndices.has(idx)) return 0;
-      let minDist = Infinity;
-      for (const centroid of centroids) {
-        const dist = euclideanDistance(emb, centroid);
-        minDist = Math.min(minDist, dist);
-      }
-      return minDist * minDist;
-    });
-
-    const totalDist = distances.reduce((a, b) => a + b, 0);
-    let random = Math.random() * totalDist;
-
-    for (let i = 0; i < n; i++) {
-      random -= distances[i];
-      if (random <= 0 && !usedIndices.has(i)) {
-        centroids.push([...embeddings[i]]);
-        usedIndices.add(i);
-        break;
-      }
-    }
-  }
-
-  let assignments = new Array(n).fill(0);
-  let pointDistances = new Array(n).fill(0);
-
-  for (let iter = 0; iter < maxIterations; iter++) {
-    // Assign points to nearest centroid
-    const newAssignments: number[] = [];
-    const newDistances: number[] = [];
-
-    for (const emb of embeddings) {
-      let minDist = Infinity;
-      let minIdx = 0;
-      for (let c = 0; c < k; c++) {
-        const dist = euclideanDistance(emb, centroids[c]);
-        if (dist < minDist) {
-          minDist = dist;
-          minIdx = c;
-        }
-      }
-      newAssignments.push(minIdx);
-      newDistances.push(minDist);
-    }
-
-    // Check for convergence
-    if (newAssignments.every((a, i) => a === assignments[i])) {
-      console.log(`K-means converged after ${iter + 1} iterations`);
-      assignments = newAssignments;
-      pointDistances = newDistances;
-      break;
-    }
-
-    assignments = newAssignments;
-    pointDistances = newDistances;
-
-    // Update centroids
-    for (let c = 0; c < k; c++) {
-      const clusterIndices = assignments
-        .map((a, i) => (a === c ? i : -1))
-        .filter(i => i >= 0);
-
-      if (clusterIndices.length > 0) {
-        centroids[c] = new Array(dim).fill(0);
-        for (const idx of clusterIndices) {
-          for (let d = 0; d < dim; d++) {
-            centroids[c][d] += embeddings[idx][d] / clusterIndices.length;
-          }
-        }
-      }
-    }
-  }
-
-  return { assignments, centroids, distances: pointDistances };
-}
-
-function euclideanDistance(a: number[], b: number[]): number {
-  let sum = 0;
-  for (let i = 0; i < a.length; i++) {
-    sum += (a[i] - b[i]) ** 2;
-  }
-  return Math.sqrt(sum);
-}
-
-// Step 5: Label clusters
-async function labelClusters(
-  clusters: Array<{
-    members: ConversationData[];
-    avgDistance: number;
-  }>,
-  dimension: string
-): Promise<Array<{
-  label: string;
-  quote: string;
-  description: string;
-}>> {
-  const dimensionNoun = dimension === 'pain_points' ? 'frustration' : 'goal';
-
-  const results = [];
-
-  for (let i = 0; i < clusters.length; i++) {
-    const cluster = clusters[i];
-
-    // Gather all quotes from cluster members
-    const allQuotes = cluster.members
-      .flatMap(m => m.quotes || [])
-      .slice(0, 15) // Limit to avoid token issues
-      .map((q, idx) => `${idx + 1}. "${q}"`)
-      .join('\n');
-
-    const prompt = `These quotes are from interview participants who share a common ${dimensionNoun}. Analyze them to identify the theme.
-
-Quotes:
-${allQuotes}
-
-Respond with EXACTLY this JSON format:
+JSON:
 {
-  "label": "2-4 word label for the ${dimensionNoun} (e.g., 'Repetition Fatigue', 'Progress Tracking')",
-  "quote": "5-7 word first-person statement expressing this ${dimensionNoun} (e.g., 'I feel stuck doing the same thing')",
-  "description": "1-2 sentence description of this ${dimensionNoun} pattern"
+  "cluster_id": <number 1-${clusters.length}>
 }`;
+
+      try {
+        const response = await openai.chat.completions.create({
+          model: 'gpt-4o-mini',
+          messages: [{ role: 'user', content: prompt }],
+          max_tokens: 100,
+          temperature: 0.2,
+        });
+
+        const content = response.choices[0].message.content?.trim() || '';
+        const jsonMatch = content.match(/\{[\s\S]*\}/);
+        if (jsonMatch) {
+          const parsed = JSON.parse(jsonMatch[0]);
+          return { id: conv.id, clusterId: parsed.cluster_id };
+        }
+      } catch (e) {
+        console.error('Assignment error:', e);
+      }
+
+      return { id: conv.id, clusterId: 1 };
+    });
+
+    const batchResults = await Promise.all(batchPromises);
+    batchResults.forEach(r => assignments.set(r.id, r.clusterId));
+    console.log(`Assigned: ${Math.min(i + batchSize, conversations.length)}/${conversations.length}`);
+  }
+
+  return assignments;
+}
+
+// Step 4: Generate representative quotes for each cluster
+async function generateClusterQuotes(
+  conversations: ConversationData[],
+  assignments: Map<string, number>,
+  clusters: ClusterDefinition[]
+): Promise<Map<number, string>> {
+  const quotes = new Map<number, string>();
+
+  for (const cluster of clusters) {
+    const members = conversations.filter(c => assignments.get(c.id) === cluster.id);
+
+    if (members.length === 0) {
+      quotes.set(cluster.id, '');
+      continue;
+    }
+
+    const samplePatterns = members
+      .flatMap(m => m.patterns || [])
+      .slice(0, 15)
+      .join('\n- ');
+
+    const prompt = `Based on these interview patterns from ${members.length} participants in the "${cluster.name}" cluster, generate a representative first-person quote.
+
+PATTERNS:
+- ${samplePatterns}
+
+Create a quote that:
+- Is 8-15 words
+- Captures the core sentiment/concern of this group
+- Sounds like something a real person would say
+- Uses "I" perspective
+
+JSON: { "quote": "The first-person quote" }`;
 
     try {
       const response = await openai.chat.completions.create({
         model: 'gpt-4o-mini',
         messages: [{ role: 'user', content: prompt }],
-        max_tokens: 200,
+        max_tokens: 100,
         temperature: 0.5,
       });
 
       const content = response.choices[0].message.content?.trim() || '';
-      const parsed = JSON.parse(content);
-      results.push({
-        label: parsed.label,
-        quote: parsed.quote,
-        description: parsed.description,
-      });
-
-      console.log(`Labeled cluster ${i + 1}: "${parsed.label}"`);
-    } catch {
-      results.push({
-        label: `Cluster ${String.fromCharCode(65 + i)}`,
-        quote: 'Common experience shared',
-        description: 'A group of participants with similar perspectives.',
-      });
+      const jsonMatch = content.match(/\{[\s\S]*\}/);
+      if (jsonMatch) {
+        const parsed = JSON.parse(jsonMatch[0]);
+        quotes.set(cluster.id, parsed.quote);
+      }
+    } catch (e) {
+      quotes.set(cluster.id, '');
     }
   }
 
-  return results;
-}
-
-// Step 6: Calculate confidence based on cluster cohesion
-function calculateConfidence(distances: number[], clusterSize: number, totalSize: number): number {
-  if (distances.length === 0) return 0.5;
-
-  // Average distance to centroid (lower = more cohesive)
-  const avgDistance = distances.reduce((a, b) => a + b, 0) / distances.length;
-
-  // Normalize distance to 0-1 range (assuming typical range 0-2 for normalized embeddings)
-  const normalizedDistance = Math.min(avgDistance / 2, 1);
-
-  // Convert to confidence (higher distance = lower confidence)
-  const distanceConfidence = 1 - normalizedDistance;
-
-  // Factor in cluster size (very small or very large clusters are less confident)
-  const expectedSize = totalSize / 4;
-  const sizeRatio = clusterSize / expectedSize;
-  const sizeConfidence = sizeRatio > 0.5 && sizeRatio < 2 ? 1 : 0.7;
-
-  return Math.round(distanceConfidence * sizeConfidence * 100) / 100;
+  return quotes;
 }
 
 function getPrevalence(percentage: number): 'High' | 'Medium' | 'Low' {
@@ -454,86 +352,82 @@ export async function runClustering(
     transcript: conv.transcript || [],
   }));
 
-  // Step 1: Detect dimension
-  console.log('Step 1: Detecting clustering dimension...');
-  const { dimension, rationale } = await detectDimension(
-    campaign.title || campaign.name,
-    campaign.caption || '',
-    conversationData
-  );
-  console.log(`Dimension: ${dimension} - ${rationale}`);
+  // Step 1: Extract patterns
+  console.log('Step 1: Extracting patterns from conversations...');
+  const withPatterns = await extractPatterns(conversationData);
 
-  // Step 2: Extract quotes
-  console.log('Step 2: Extracting quotes...');
-  const withQuotes = await extractQuotes(conversationData, dimension);
+  // Step 2: LLM proposes cluster categories
+  console.log('Step 2: LLM proposing cluster categories...');
+  const proposedClusters = await proposeClusterCategories(withPatterns, TARGET_CLUSTERS);
 
-  // Step 3: Generate embeddings
-  console.log('Step 3: Generating embeddings...');
-  const withEmbeddings = await generateEmbeddings(withQuotes);
-
-  // Step 4: K-means clustering
-  console.log('Step 4: Running k-means clustering...');
-  const embeddings = withEmbeddings
-    .filter(c => c.embedding && c.embedding.length > 0)
-    .map(c => c.embedding!);
-
-  const validConversations = withEmbeddings.filter(c => c.embedding && c.embedding.length > 0);
-
-  const { assignments, distances } = kMeans(embeddings, 4);
-
-  // Group by cluster
-  const clusterGroups: Map<number, { members: ConversationData[]; distances: number[] }> = new Map();
-  for (let i = 0; i < assignments.length; i++) {
-    const clusterId = assignments[i];
-    if (!clusterGroups.has(clusterId)) {
-      clusterGroups.set(clusterId, { members: [], distances: [] });
-    }
-    clusterGroups.get(clusterId)!.members.push(validConversations[i]);
-    clusterGroups.get(clusterId)!.distances.push(distances[i]);
+  if (proposedClusters.length === 0) {
+    throw new Error('Failed to propose clusters');
   }
 
-  // Convert to array and sort by size
-  const sortedClusters = Array.from(clusterGroups.entries())
-    .map(([, data]) => ({
-      members: data.members,
-      avgDistance: data.distances.reduce((a, b) => a + b, 0) / data.distances.length,
-      distances: data.distances,
+  console.log('Proposed clusters:');
+  proposedClusters.forEach(c => {
+    console.log(`  ${c.id}. ${c.name}: ${c.description}`);
+  });
+
+  // Step 3: LLM assigns each conversation to a cluster
+  console.log('Step 3: Assigning conversations to clusters...');
+  const assignments = await assignConversationsToClusters(withPatterns, proposedClusters);
+
+  // Count cluster sizes
+  const clusterSizes = new Map<number, number>();
+  proposedClusters.forEach(c => clusterSizes.set(c.id, 0));
+  assignments.forEach(clusterId => {
+    clusterSizes.set(clusterId, (clusterSizes.get(clusterId) || 0) + 1);
+  });
+
+  console.log('Cluster distribution:');
+  proposedClusters.forEach(c => {
+    const size = clusterSizes.get(c.id) || 0;
+    const pct = Math.round((size / conversations.length) * 100);
+    console.log(`  ${c.name}: ${size} (${pct}%)`);
+  });
+
+  // Step 4: Generate quotes
+  console.log('Step 4: Generating representative quotes...');
+  const quotes = await generateClusterQuotes(withPatterns, assignments, proposedClusters);
+
+  // Build final result
+  console.log('Step 5: Building results...');
+  const totalConversations = conversations.length;
+
+  // Sort clusters by size (largest first) and filter out empty ones
+  const sortedClusters = proposedClusters
+    .map(cluster => ({
+      cluster,
+      count: clusterSizes.get(cluster.id) || 0,
+      members: withPatterns.filter(c => assignments.get(c.id) === cluster.id),
     }))
-    .sort((a, b) => b.members.length - a.members.length);
+    .filter(c => c.count > 0)
+    .sort((a, b) => b.count - a.count);
 
-  // Step 5: Label clusters
-  console.log('Step 5: Labeling clusters...');
-  const labels = await labelClusters(sortedClusters, dimension);
-
-  // Step 6: Build final result
-  console.log('Step 6: Building results...');
-  const totalConversations = validConversations.length;
-
-  const clusters: Cluster[] = sortedClusters.map((cluster, idx) => {
-    const count = cluster.members.length;
-    const percentage = Math.round((count / totalConversations) * 100);
-    const confidence = calculateConfidence(cluster.distances, count, totalConversations);
+  const clusters: Cluster[] = sortedClusters.map((item, idx) => {
+    const percentage = Math.round((item.count / totalConversations) * 100);
 
     return {
       cluster_id: String.fromCharCode(65 + idx), // A, B, C, D
-      label: labels[idx].label,
-      quote: labels[idx].quote,
-      description: labels[idx].description,
-      count,
+      label: item.cluster.name,
+      quote: quotes.get(item.cluster.id) || '',
+      description: item.cluster.description,
+      count: item.count,
       percentage,
-      confidence,
+      confidence: 0.85, // LLM-based clustering doesn't have distance metrics
       prevalence: getPrevalence(percentage),
-      members: cluster.members.map(m => ({
+      members: item.members.map(m => ({
         conversation_id: m.id,
         participant_name: m.participant_name,
-        quotes: m.quotes || [],
+        quotes: m.patterns || [],
       })),
     };
   });
 
   return {
-    dimension,
-    dimension_rationale: rationale,
+    dimension: 'issues', // LLM-based approach focuses on issues/patterns
+    dimension_rationale: 'Clusters identified by analyzing user patterns and concerns',
     clusters,
   };
 }
