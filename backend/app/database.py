@@ -1,0 +1,24 @@
+from supabase import create_client, Client
+from functools import lru_cache
+from .config import get_settings
+
+
+@lru_cache()
+def get_supabase_client() -> Client:
+    """Get a cached Supabase client instance."""
+    settings = get_settings()
+    return create_client(settings.supabase_url, settings.supabase_anon_key)
+
+
+def get_supabase_admin_client() -> Client | None:
+    """Get a Supabase client with service role key for admin operations."""
+    settings = get_settings()
+    if settings.supabase_service_role_key:
+        return create_client(settings.supabase_url, settings.supabase_service_role_key)
+    return None
+
+
+# Dependency for FastAPI routes
+def get_db() -> Client:
+    """FastAPI dependency to get Supabase client."""
+    return get_supabase_client()
