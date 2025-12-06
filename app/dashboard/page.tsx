@@ -2,12 +2,12 @@
 
 import { useState, useEffect, Suspense, useCallback } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { supabase } from '../../lib/supabase';
-import CreateCampaignForm from './create-campaign';
-import CampaignDetailView from './campaign-detail-view';
+import { supabase } from '@/lib/db/supabase';
+import CreateCampaignForm from './components/create-campaign';
+import CampaignDetailView from './components/campaign-detail-view';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
-import AnalysisReportView from './analysis-report-view';
+import AnalysisReportView from './components/analysis-report-view';
 
 interface Workspace {
   id: string;

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { processPendingBatches } from '../../../lib/batch-processor';
-import { processMultiBatchAnalyses } from '../../../lib/batch-processor-multi';
+import { processPendingBatches } from '@/lib/engines/batch-processor';
+import { processMultiBatchAnalyses } from '@/lib/engines/batch-processor-multi';
 
 /**
  * API endpoint to manually trigger batch processing

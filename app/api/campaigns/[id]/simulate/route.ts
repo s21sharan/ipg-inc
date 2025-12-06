@@ -1,6 +1,6 @@
 import { createClient } from '@supabase/supabase-js';
-import { simulateInterview, buildAgentContext, type Campaign, type Interview } from '@/lib/simulation-engine';
-import { extractConversationReflectionWithRetry } from '@/lib/conversation-reflection';
+import { simulateInterview, buildAgentContext, type Campaign, type Interview } from '@/lib/engines/simulation-engine';
+import { extractConversationReflectionWithRetry } from '@/lib/engines/conversation-reflection';
 import { NextRequest, NextResponse } from 'next/server';
 
 // Background simulation processing

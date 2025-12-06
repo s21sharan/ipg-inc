@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { useState, useEffect, useRef, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
-import { supabase } from '../../lib/supabase';
+import { supabase } from '../../lib/db/supabase';
 
 function VerifyOTPContent() {
   const [otp, setOtp] = useState(['', '', '', '', '', '']);

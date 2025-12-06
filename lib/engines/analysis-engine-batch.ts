@@ -7,7 +7,7 @@
 
 import { createClient } from '@supabase/supabase-js';
 import OpenAI from 'openai';
-import { buildAnalysisPrompt } from './prompts/analysis-prompt';
+import { buildAnalysisPrompt } from '../prompts/analysis-prompt';
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,

@@ -3,8 +3,8 @@ import { createClient } from '@supabase/supabase-js';
 import {
   buildAnalysisInput,
   createBatchAnalysisRequest,
-} from '../../../../../lib/analysis-engine';
-import { createMultiBatchAnalysis } from '../../../../../lib/analysis-engine-batch';
+} from '@/lib/engines/analysis-engine';
+import { createMultiBatchAnalysis } from '@/lib/engines/analysis-engine-batch';
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;

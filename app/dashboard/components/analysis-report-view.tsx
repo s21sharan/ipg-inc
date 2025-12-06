@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
-import { supabase } from '../../lib/supabase';
+import { supabase } from '@/lib/db/supabase';
 
 interface AnalysisReportViewProps {
   reportMarkdown: string;
