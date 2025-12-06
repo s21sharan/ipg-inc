@@ -342,7 +342,7 @@ export default function CampaignDetailView({
   const insights = clusterData?.clusters || [];
 
   return (
-    <div className="flex h-full bg-gray-100">
+    <div className="flex h-full w-full bg-gray-100">
       {/* Left Panel - Main Content */}
       <div className="flex-1 flex flex-col overflow-hidden">
         {/* Top Bar */}
