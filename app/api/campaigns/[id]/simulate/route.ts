@@ -1,5 +1,6 @@
 import { createClient } from '@supabase/supabase-js';
 import { simulateInterview, buildAgentContext, type Campaign, type Interview } from '@/lib/simulation-engine';
+import { extractConversationReflectionWithRetry } from '@/lib/conversation-reflection';
 import { NextRequest, NextResponse } from 'next/server';
 
 // Background simulation processing
@@ -115,6 +116,20 @@ async function processSimulation(
             agentContext
           );
 
+          // Extract reflection memory if conversation completed successfully
+          let reflectionMemory = null;
+          if (result.status === 'completed' && result.transcript.length > 0) {
+            try {
+              reflectionMemory = await extractConversationReflectionWithRetry(
+                result.transcript,
+                campaign.title
+              );
+            } catch (reflectionError) {
+              console.error('Failed to extract reflection memory:', reflectionError);
+              // Continue even if reflection extraction fails
+            }
+          }
+
           // Update conversation record
           await supabase
             .from('conversations')
@@ -123,6 +138,7 @@ async function processSimulation(
               topics_covered: result.topics_covered,
               status: result.status,
               error_message: result.error_message || null,
+              reflection_memory: reflectionMemory,
               updated_at: new Date().toISOString()
             })
             .eq('id', conversationId);

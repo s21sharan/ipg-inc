@@ -373,7 +373,7 @@ export default function CampaignDetailView({
         <div className="mx-6 border-t border-gray-300" />
 
         {/* Content area - no scroll, fits viewport */}
-        <div className="flex-1 flex flex-col px-6 py-3 min-h-0">
+        <div className="flex-1 flex flex-col px-6 py-3 min-h-0 overflow-y-auto">
           {/* Title */}
           <h1 className="text-2xl font-bold text-gray-900 mb-1">
             {campaign.title}
@@ -461,7 +461,7 @@ export default function CampaignDetailView({
 
           {/* Insight Cards Grid - 2x2 fits without scrolling */}
           {!isLoading && clusterData?.status === 'completed' && insights.length > 0 && (
-            <div className="flex-1 grid grid-cols-2 gap-4 auto-rows-fr min-h-0">
+            <div className="grid grid-cols-2 gap-4 auto-rows-fr">
               {insights.map((insight) => (
                 <InsightCardComponent
                   key={insight.id}
@@ -477,7 +477,7 @@ export default function CampaignDetailView({
 
       {/* Right Panel - Conversation Agent */}
       <div
-        className="w-[400px] border-l-2 border-gray-300 flex flex-col relative"
+        className="w-[340px] flex-shrink-0 border-l-2 border-gray-300 flex flex-col relative"
         style={{
           background: 'linear-gradient(to bottom, #ffffff 80%, #74b9ff 170%)',
         }}
