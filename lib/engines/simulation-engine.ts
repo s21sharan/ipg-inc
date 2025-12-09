@@ -43,11 +43,64 @@ export interface AgentContext {
   personality: any;
 }
 
+// Emotional state vector for Chain-of-Feeling tracking
+export interface EmotionalState {
+  curiosity: number;      // 0-1: Interest in topic
+  frustration: number;    // 0-1: Annoyance or dissatisfaction
+  enthusiasm: number;     // 0-1: Excitement or passion
+  anxiety: number;        // 0-1: Worry or stress
+  contentment: number;    // 0-1: Satisfaction or peace
+}
+
+// Entity mentioned in conversation (for GraphRAG)
+export interface Entity {
+  id: string;
+  type: 'Product' | 'Concept' | 'Person' | 'Brand' | 'Feature' | 'Emotion';
+  name: string;
+}
+
+// Relationship between entities or agent
+export interface Relationship {
+  source: string;  // entity id or 'self'
+  relation: string; // e.g., 'FRUSTRATED_BY', 'LIKES', 'USES', 'CAUSED_BY'
+  target: string;  // entity id
+}
+
+// Higher-order reflection/insight
+export interface Reflection {
+  insight: string;
+  evidence: string[];  // references to what triggered this insight
+  importance: number;  // 1-10
+  type: 'observation' | 'reflection' | 'plan';
+}
+
+// Cognitive metadata captured during simulation
+export interface CognitiveMetadata {
+  // Chain-of-Feeling: before/after emotional states
+  emotional_before: EmotionalState;
+  emotional_after: EmotionalState;
+  emotional_trigger: string;
+
+  // Memory stream data
+  importance_score: number;    // 1-10: How significant is this to agent's identity
+  memory_type: 'observation' | 'reflection' | 'plan';
+
+  // GraphRAG: entities and relationships
+  entities: Entity[];
+  relationships: Relationship[];
+
+  // Higher-order reflection (if this exchange triggered an insight)
+  reflection: Reflection | null;
+}
+
 export interface ConversationEntry {
   question: string;
   answer: string;
   is_followup?: boolean;
   followup_to_index?: number;
+  // New: Cognitive metadata for SyntheticCohorts
+  cognitive?: CognitiveMetadata;
+  timestamp?: string;
 }
 
 export interface SimulationResult {
@@ -146,30 +199,73 @@ function formatAgentContext(agentContext: AgentContext, participantName: string)
 - Use your personality traits to guide your tone, but keep it brief
 - If you have more to say, let the interviewer ask follow-up questions
 
-Respond naturally and authentically as this person would. Stay consistent with your stated values, frustrations, habits, and communication style.`;
+You MUST respond with a JSON object containing your response AND your full cognitive state:
+{
+  "response": "Your natural, conversational answer here",
+
+  "emotional_before": {
+    "curiosity": 0.0-1.0, "frustration": 0.0-1.0, "enthusiasm": 0.0-1.0, "anxiety": 0.0-1.0, "contentment": 0.0-1.0
+  },
+  "emotional_after": {
+    "curiosity": 0.0-1.0, "frustration": 0.0-1.0, "enthusiasm": 0.0-1.0, "anxiety": 0.0-1.0, "contentment": 0.0-1.0
+  },
+  "emotional_trigger": "What about this question shifted your emotions",
+
+  "importance_score": 1-10,
+  "memory_type": "observation" | "reflection" | "plan",
+
+  "entities": [
+    { "id": "e1", "type": "Product|Concept|Person|Brand|Feature|Emotion", "name": "entity name" }
+  ],
+  "relationships": [
+    { "source": "self", "relation": "FRUSTRATED_BY|LIKES|USES|WANTS|AVOIDS", "target": "e1" }
+  ],
+
+  "reflection": {
+    "insight": "A deeper realization about yourself this triggered, or null if none",
+    "evidence": ["what in this exchange supports the insight"],
+    "importance": 1-10,
+    "type": "observation|reflection|plan"
+  } or null
+}
+
+Stay consistent with your stated values, frustrations, habits, and communication style.`;
 
   return contextText;
 }
 
+// Structured response from agent including cognitive metadata
+interface AgentStructuredResponse {
+  response: string;
+  emotional_before: EmotionalState;
+  emotional_after: EmotionalState;
+  emotional_trigger: string;
+  importance_score: number;
+  memory_type: 'observation' | 'reflection' | 'plan';
+  entities: Entity[];
+  relationships: Relationship[];
+  reflection: Reflection | null;
+}
+
 /**
- * Get agent response to a question
+ * Get agent response to a question with cognitive metadata
  */
 async function getAgentResponse(
   question: string,
   agentContext: AgentContext,
   participantName: string,
   currentTranscript: ConversationEntry[]
-): Promise<string> {
+): Promise<{ answer: string; cognitive: CognitiveMetadata }> {
   const systemPrompt = formatAgentContext(agentContext, participantName);
 
   const messages: OpenAI.Chat.ChatCompletionMessageParam[] = [
     { role: 'system', content: systemPrompt }
   ];
 
-  // Add current conversation history
+  // Add current conversation history (only the text, not cognitive metadata)
   currentTranscript.forEach(({ question: q, answer: a }) => {
     messages.push({ role: 'user', content: q });
-    messages.push({ role: 'assistant', content: a });
+    messages.push({ role: 'assistant', content: JSON.stringify({ response: a }) });
   });
 
   // Add new question
@@ -179,10 +275,52 @@ async function getAgentResponse(
     model: 'gpt-4o',
     messages,
     temperature: 0.8,
-    max_tokens: 100 // Reduced to 100 for 1-2 sentence responses
+    max_tokens: 500, // Increased for full cognitive metadata JSON
+    response_format: { type: 'json_object' }
   });
 
-  return response.choices[0].message.content || '';
+  const content = response.choices[0].message.content || '{}';
+
+  const defaultEmotional: EmotionalState = {
+    curiosity: 0.5,
+    frustration: 0.2,
+    enthusiasm: 0.5,
+    anxiety: 0.2,
+    contentment: 0.5
+  };
+
+  try {
+    const parsed: AgentStructuredResponse = JSON.parse(content);
+
+    return {
+      answer: parsed.response || '',
+      cognitive: {
+        emotional_before: parsed.emotional_before || defaultEmotional,
+        emotional_after: parsed.emotional_after || defaultEmotional,
+        emotional_trigger: parsed.emotional_trigger || 'unknown',
+        importance_score: parsed.importance_score || 5,
+        memory_type: parsed.memory_type || 'observation',
+        entities: parsed.entities || [],
+        relationships: parsed.relationships || [],
+        reflection: parsed.reflection || null
+      }
+    };
+  } catch {
+    // Fallback if JSON parsing fails
+    return {
+      answer: content,
+      cognitive: {
+        emotional_before: defaultEmotional,
+        emotional_after: defaultEmotional,
+        emotional_trigger: 'parsing_error',
+        importance_score: 5,
+        memory_type: 'observation' as const,
+        entities: [],
+        relationships: [],
+        reflection: null
+      }
+    };
+  }
 }
 
 /**
@@ -325,11 +463,13 @@ async function handleStatementTopic(
 
   // Present statement and get agent's natural reaction
   const prompt = `${statement}\n\n[Interviewer waits for your reaction or acknowledgment]`;
-  const response = await getAgentResponse(prompt, agentContext, participantName, currentTranscript);
+  const { answer, cognitive } = await getAgentResponse(prompt, agentContext, participantName, currentTranscript);
 
   currentTranscript.push({
     question: statement,
-    answer: response
+    answer,
+    cognitive,
+    timestamp: new Date().toISOString()
   });
 }
 
@@ -345,37 +485,43 @@ async function handleQuestionTopic(
   // Ask main question
   const mainQuestion = topic.question || '';
   const mainQuestionIndex = currentTranscript.length;
-  const mainAnswer = await getAgentResponse(mainQuestion, agentContext, participantName, currentTranscript);
+  const mainResponse = await getAgentResponse(mainQuestion, agentContext, participantName, currentTranscript);
 
   currentTranscript.push({
     question: mainQuestion,
-    answer: mainAnswer
+    answer: mainResponse.answer,
+    cognitive: mainResponse.cognitive,
+    timestamp: new Date().toISOString()
   });
 
   // Check if we should ask a follow-up for the main answer
-  const followUpDecision = await shouldAskFollowUp(mainQuestion, mainAnswer, topic);
+  const followUpDecision = await shouldAskFollowUp(mainQuestion, mainResponse.answer, topic);
 
   if (followUpDecision.should_followup && followUpDecision.followup_question) {
-    const followUpAnswer = await getAgentResponse(followUpDecision.followup_question, agentContext, participantName, currentTranscript);
+    const followUpResponse = await getAgentResponse(followUpDecision.followup_question, agentContext, participantName, currentTranscript);
 
     currentTranscript.push({
       question: followUpDecision.followup_question,
-      answer: followUpAnswer,
+      answer: followUpResponse.answer,
       is_followup: true,
-      followup_to_index: mainQuestionIndex
+      followup_to_index: mainQuestionIndex,
+      cognitive: followUpResponse.cognitive,
+      timestamp: new Date().toISOString()
     });
 
     // Potentially ask one more follow-up if the first follow-up was also brief
-    const secondFollowUp = await shouldAskFollowUp(followUpDecision.followup_question, followUpAnswer, topic);
+    const secondFollowUp = await shouldAskFollowUp(followUpDecision.followup_question, followUpResponse.answer, topic);
 
     if (secondFollowUp.should_followup && secondFollowUp.followup_question) {
-      const secondAnswer = await getAgentResponse(secondFollowUp.followup_question, agentContext, participantName, currentTranscript);
+      const secondResponse = await getAgentResponse(secondFollowUp.followup_question, agentContext, participantName, currentTranscript);
 
       currentTranscript.push({
         question: secondFollowUp.followup_question,
-        answer: secondAnswer,
+        answer: secondResponse.answer,
         is_followup: true,
-        followup_to_index: mainQuestionIndex
+        followup_to_index: mainQuestionIndex,
+        cognitive: secondResponse.cognitive,
+        timestamp: new Date().toISOString()
       });
     }
   }
@@ -393,24 +539,28 @@ async function handleQuestionTopic(
 
     probesAsked.push(decision.question);
     const probeQuestionIndex = currentTranscript.length;
-    const probeAnswer = await getAgentResponse(decision.question, agentContext, participantName, currentTranscript);
+    const probeResponse = await getAgentResponse(decision.question, agentContext, participantName, currentTranscript);
 
     currentTranscript.push({
       question: decision.question,
-      answer: probeAnswer
+      answer: probeResponse.answer,
+      cognitive: probeResponse.cognitive,
+      timestamp: new Date().toISOString()
     });
 
     // Check if probe answer needs follow-up
-    const probeFollowUp = await shouldAskFollowUp(decision.question, probeAnswer, topic);
+    const probeFollowUp = await shouldAskFollowUp(decision.question, probeResponse.answer, topic);
 
     if (probeFollowUp.should_followup && probeFollowUp.followup_question) {
-      const probeFollowUpAnswer = await getAgentResponse(probeFollowUp.followup_question, agentContext, participantName, currentTranscript);
+      const probeFollowUpResponse = await getAgentResponse(probeFollowUp.followup_question, agentContext, participantName, currentTranscript);
 
       currentTranscript.push({
         question: probeFollowUp.followup_question,
-        answer: probeFollowUpAnswer,
+        answer: probeFollowUpResponse.answer,
         is_followup: true,
-        followup_to_index: probeQuestionIndex
+        followup_to_index: probeQuestionIndex,
+        cognitive: probeFollowUpResponse.cognitive,
+        timestamp: new Date().toISOString()
       });
     }
   }
@@ -471,12 +621,14 @@ Set "continue" to false when you feel the goals have been sufficiently explored.
       break;
     }
 
-    // Get agent response
-    const answer = await getAgentResponse(decision.question, agentContext, participantName, currentTranscript);
+    // Get agent response with cognitive metadata
+    const agentResponse = await getAgentResponse(decision.question, agentContext, participantName, currentTranscript);
 
     currentTranscript.push({
       question: decision.question,
-      answer
+      answer: agentResponse.answer,
+      cognitive: agentResponse.cognitive,
+      timestamp: new Date().toISOString()
     });
   }
 }

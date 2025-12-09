@@ -19,6 +19,14 @@ class Settings(BaseSettings):
     # OpenAI
     openai_api_key: str
 
+    # Memgraph - Graph Database
+    # Local: bolt://localhost:7687, AWS: bolt://<your-instance>:7687
+    memgraph_host: str = "localhost"
+    memgraph_port: int = 7687
+    memgraph_username: str = ""
+    memgraph_password: str = ""
+    memgraph_encrypted: bool = False  # Set True for AWS with SSL
+
     # CORS - allowed origins for frontend
     cors_origins: list[str] = ["http://localhost:3000"]
 
@@ -26,6 +34,7 @@ class Settings(BaseSettings):
         # Load from .env.local in project root (one level up from backend)
         env_file = str(Path(__file__).parent.parent.parent / ".env.local")
         env_file_encoding = "utf-8"
+        extra = "ignore"  # Ignore extra env vars not defined in Settings
 
         # Map NEXT_PUBLIC_ prefixed vars to our settings
         @classmethod
@@ -48,6 +57,12 @@ def get_settings() -> Settings:
         supabase_service_role_key=os.getenv("SUPABASE_SERVICE_ROLE_KEY"),
         openai_api_key=os.getenv("OPENAI_API_KEY", ""),
         debug=os.getenv("DEBUG", "false").lower() == "true",
+        # Memgraph settings
+        memgraph_host=os.getenv("MEMGRAPH_HOST", "localhost"),
+        memgraph_port=int(os.getenv("MEMGRAPH_PORT", "7687")),
+        memgraph_username=os.getenv("MEMGRAPH_USERNAME", ""),
+        memgraph_password=os.getenv("MEMGRAPH_PASSWORD", ""),
+        memgraph_encrypted=os.getenv("MEMGRAPH_ENCRYPTED", "false").lower() == "true",
     )
 
 

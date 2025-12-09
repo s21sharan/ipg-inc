@@ -7,6 +7,10 @@ python-multipart==0.0.17
 supabase==2.10.0
 asyncpg==0.30.0
 
+# Graph Database (Memgraph)
+gqlalchemy==1.8.0
+neo4j==5.26.0
+
 # AI/ML
 openai==1.57.2
 numpy==2.1.3

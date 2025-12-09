@@ -3,7 +3,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
 
 from app.config import get_settings
-from app.routers import simulation, analysis, clustering, health
+from app.routers import simulation, analysis, clustering, health, graph
+from app.memgraph import get_memgraph_connection
 
 
 @asynccontextmanager
@@ -13,9 +14,13 @@ async def lifespan(app: FastAPI):
     settings = get_settings()
     print(f"Starting {settings.app_name}...")
     print(f"Debug mode: {settings.debug}")
+    print(f"Memgraph: {settings.memgraph_host}:{settings.memgraph_port}")
     yield
     # Shutdown
     print("Shutting down...")
+    # Close Memgraph connections
+    get_memgraph_connection().close()
+    print("Memgraph connections closed.")
 
 
 def create_app() -> FastAPI:
@@ -43,6 +48,7 @@ def create_app() -> FastAPI:
     app.include_router(simulation.router, prefix="/api/simulation", tags=["Simulation"])
     app.include_router(analysis.router, prefix="/api/analysis", tags=["Analysis"])
     app.include_router(clustering.router, prefix="/api/clustering", tags=["Clustering"])
+    app.include_router(graph.router, prefix="/api/graph", tags=["Graph"])
 
     return app
 

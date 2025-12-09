@@ -3,6 +3,7 @@ from supabase import Client
 
 from app.database import get_db
 from app.config import get_settings
+from app.memgraph import health_check as memgraph_health_check
 
 router = APIRouter()
 
@@ -18,17 +19,32 @@ async def detailed_health_check(db: Client = Depends(get_db)):
     """Detailed health check including database connectivity."""
     settings = get_settings()
 
-    # Test database connection
-    db_status = "healthy"
+    # Test Supabase connection
+    supabase_status = "healthy"
     try:
-        # Simple query to test connection
         db.table("workspaces").select("id").limit(1).execute()
     except Exception as e:
-        db_status = f"unhealthy: {str(e)}"
+        supabase_status = f"unhealthy: {str(e)}"
+
+    # Test Memgraph connection
+    memgraph_status = memgraph_health_check()
+
+    # Determine overall status
+    is_healthy = (
+        supabase_status == "healthy"
+        and memgraph_status.get("status") == "connected"
+    )
 
     return {
-        "status": "healthy" if db_status == "healthy" else "degraded",
+        "status": "healthy" if is_healthy else "degraded",
         "app_name": settings.app_name,
-        "database": db_status,
+        "supabase": supabase_status,
+        "memgraph": memgraph_status,
         "openai_configured": bool(settings.openai_api_key),
     }
+
+
+@router.get("/health/memgraph")
+async def memgraph_health():
+    """Memgraph-specific health check with detailed info."""
+    return memgraph_health_check()

@@ -1,0 +1,35 @@
+version: "3.8"
+
+services:
+  memgraph:
+    image: memgraph/memgraph-platform:latest
+    container_name: ipg-memgraph
+    ports:
+      - "7687:7687"   # Bolt protocol (driver connection)
+      - "7444:7444"   # Memgraph Lab websocket
+      - "3001:3000"   # Memgraph Lab UI (using 3001 to avoid conflict with Next.js)
+    environment:
+      - MEMGRAPH_ENTERPRISE_LICENSE=${MEMGRAPH_ENTERPRISE_LICENSE:-}
+      - MEMGRAPH_ORGANIZATION_NAME=${MEMGRAPH_ORGANIZATION_NAME:-}
+    volumes:
+      - memgraph_data:/var/lib/memgraph
+      - memgraph_log:/var/log/memgraph
+      - memgraph_etc:/etc/memgraph
+    # Memory limits for development
+    deploy:
+      resources:
+        limits:
+          memory: 2G
+    healthcheck:
+      test: ["CMD", "echo", ">", "/dev/tcp/localhost/7687"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  memgraph_data:
+    driver: local
+  memgraph_log:
+    driver: local
+  memgraph_etc:
+    driver: local
