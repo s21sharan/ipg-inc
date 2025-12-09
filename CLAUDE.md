@@ -95,7 +95,7 @@ Fixed LangGraph agent for gpt-5-nano reasoning model and explored existing Qdran
 - Explored Memgraph: Agent nodes (196), Memory nodes (7497), Trait nodes (980), REMEMBERS + HAS_TRAIT relations
 - Olga has 40 memories in Qdrant/Memgraph: pain_points, goals, traits, preferences, habits, facts
 
-### #NextSteps
+### #NextSteps #Deprecated
 - Integrate Qdrant long-term memories into Memory Stream at session start
 - Add runtime conversation memories (observations, reflections) during agent interactions
 - Create DERIVED_FROM relationships in Memgraph when reflections are generated
@@ -110,3 +110,35 @@ Fixed LangGraph agent for gpt-5-nano reasoning model and explored existing Qdran
 
 ### #Background
 gpt-5-nano is a reasoning model (like o1) that uses internal reasoning tokens before output. Existing Qdrant/Memgraph data contains rich agent profiles: 40 memories per agent (pain_points, goals, habits, traits), OCEAN personality scores as Trait nodes. This is "long-term memory" from original interviews. Runtime Memory Stream will add new conversation memories on top.
+
+## 2025-12-08 – Compact Session (Part 2)
+
+### #CurrentFocus
+Implemented persistent memory stream with Qdrant storage and Memgraph relationship tracking across agent sessions.
+
+### #SessionChanges
+- Created `app/orchestration/persistent_memory.py` with PersistentMemoryStore class for Qdrant + Memgraph ops
+- Added `load_memories()`, `save_memory()`, `search_similar()` methods in PersistentMemoryStore
+- Implemented `_create_memory_node()` creating Memory nodes with REMEMBERS relationships in Memgraph
+- Implemented `_create_derived_from_relationship()` linking reflections to source memories
+- Updated `memory_stream.py` with `persistent` flag, `session_id`, and persistence methods
+- Added `load_from_persistent()`, `save_to_persistent()`, `add_memory_persistent()` to MemoryStream
+- Added `add_reflection_with_sources()` for tracking DERIVED_FROM relationships
+- Updated AgentOrchestrator with `persistent` flag and auto-load/save in `initialize_state`/`run_single_turn`
+- Added `get_memory_stats()`, `get_session_id()`, `finalize_session()` helper methods to orchestrator
+- Created `tests/test_persistent_memory.py` with unit tests, integration tests, and OpenAI evaluation test
+- Created `scripts/test_persistent_memory.py` for interactive testing with --auto and --inspect modes
+- Added pytest markers `integration` and `evaluation` to conftest.py
+- Exported `PersistentMemoryStore`, `get_persistent_memory_store` from orchestration module
+
+### #NextSteps
+- Run integration tests with `pytest tests/test_persistent_memory.py -v -s -m integration`
+- Test with `python scripts/test_persistent_memory.py --auto` for two-session memory continuity
+- Consider adding memory decay/consolidation for long-running agents
+- Add API endpoint to expose persistent memory stats
+
+### #BugsAndTheories
+- None identified this session (clean implementation)
+
+### #Background
+Persistent memory enables cross-session continuity: memories load from Qdrant at session start, new memories save after each turn, DERIVED_FROM tracks reflection sources in Memgraph. Test file uses OpenAI to evaluate whether agent responses reference prior session content. Interactive script provides --auto mode for automated two-session testing.

@@ -13,6 +13,20 @@ from app.database import get_db
 
 
 # ============================================================
+# Pytest Markers
+# ============================================================
+
+def pytest_configure(config):
+    """Register custom markers."""
+    config.addinivalue_line(
+        "markers", "integration: marks tests requiring external services (Qdrant, Memgraph)"
+    )
+    config.addinivalue_line(
+        "markers", "evaluation: marks tests that use OpenAI to evaluate results"
+    )
+
+
+# ============================================================
 # Mock Supabase Client
 # ============================================================
 

@@ -8,7 +8,7 @@ and termination logic.
 Reference: SyntheticCohorts Framework Section 4 (Multi-Agent Orchestration)
 """
 
-from typing import Callable
+from typing import Callable, TYPE_CHECKING
 import uuid
 
 from langgraph.graph import StateGraph, START, END
@@ -31,6 +31,9 @@ from .nodes import (
     should_terminate,
     DEFAULT_REFLECTION_THRESHOLD,
 )
+
+if TYPE_CHECKING:
+    from .memory_stream import MemoryStream
 
 
 def create_agent_graph() -> StateGraph:
@@ -107,12 +110,14 @@ class AgentOrchestrator:
     - Campaign question sequencing
     - Graph execution
     - Output extraction
+    - Persistent memory storage via Qdrant/Memgraph
     """
 
     def __init__(
         self,
         reflection_threshold: float = DEFAULT_REFLECTION_THRESHOLD,
         max_iterations: int = 20,
+        persistent: bool = False,
     ):
         """
         Initialize the orchestrator.
@@ -120,14 +125,21 @@ class AgentOrchestrator:
         Args:
             reflection_threshold: Importance score sum to trigger reflection
             max_iterations: Maximum Q&A exchanges before termination
+            persistent: Enable persistent memory storage via Qdrant/Memgraph
         """
         self.reflection_threshold = reflection_threshold
         self.max_iterations = max_iterations
+        self.persistent = persistent
         self.graph = create_agent_graph()
+        self._session_id: str | None = None
+        self._memory_stream: "MemoryStream | None" = None
 
     def initialize_state(self, workflow_input: WorkflowInput) -> AgentState:
         """
         Initialize agent state from interview data and campaign context.
+
+        If persistent=True, loads existing memories from Qdrant and combines
+        them with transcript memories.
 
         Args:
             workflow_input: Input containing interview data and campaign
@@ -135,8 +147,14 @@ class AgentOrchestrator:
         Returns:
             Initialized AgentState ready for graph execution
         """
+        from .memory_stream import MemoryStream
+
         interview = workflow_input["interview_data"]
         campaign = workflow_input["campaign"]
+        agent_id = workflow_input["agent_id"]
+
+        # Generate session ID for tracking new memories
+        self._session_id = str(uuid.uuid4())
 
         # Extract personality (default to moderate if not available)
         # Handle nested structure: personality.scores.trait
@@ -170,30 +188,41 @@ class AgentOrchestrator:
             "communication_style": reflection_data.get("communication_style", {}),
         }
 
-        # Build initial memory stream from interview transcript
-        initial_memories: list[MemoryObject] = []
+        # Initialize memory stream with persistence if enabled
+        self._memory_stream = MemoryStream(
+            agent_id=agent_id,
+            persistent=self.persistent,
+            session_id=self._session_id,
+        )
+
+        # Load persistent memories from Qdrant if enabled
+        if self.persistent:
+            loaded_count = self._memory_stream.load_from_persistent(limit=100)
+            print(f"   Loaded {loaded_count} memories from persistent storage")
+
+        # Add transcript memories if not already loaded from persistent storage
         transcript = interview.get("transcript", [])
+        existing_ids = {m["id"] for m in self._memory_stream.memories}
 
         for i, exchange in enumerate(transcript[:10]):  # Limit to recent memories
             q = exchange.get("question", "")
             a = exchange.get("answer", "")
             if q and a:
-                initial_memories.append({
-                    "id": str(uuid.uuid4()),
-                    "content": f"In a past interview, I was asked '{q}' and answered: '{a}'",
-                    "timestamp": "2024-01-01T00:00:00Z",  # Historical placeholder
-                    "importance": 5.0,  # Moderate importance for past interviews
-                    "memory_type": "observation",
-                    "embedding": None,  # Will be generated on retrieval
-                })
+                memory_id = f"transcript-{agent_id}-{i}"
+                if memory_id not in existing_ids:
+                    self._memory_stream.add_memory(
+                        content=f"In a past interview, I was asked '{q}' and answered: '{a}'",
+                        memory_type="observation",
+                        importance=5.0,
+                    )
 
         state: AgentState = {
-            "agent_id": workflow_input["agent_id"],
+            "agent_id": agent_id,
             "agent_name": workflow_input["agent_name"],
             "personality": personality,
             "emotional_state": emotional_state,
             "reflection_memory": reflection_memory,
-            "memory_stream": initial_memories,
+            "memory_stream": self._memory_stream.to_list(),
             "retrieved_memories": [],
             "current_observation": workflow_input["initial_observation"],
             "current_plan": "",
@@ -255,6 +284,9 @@ class AgentOrchestrator:
         Useful for interactive/streaming simulations where each
         question-answer pair is processed independently.
 
+        If persistent=True, new memories are saved to Qdrant/Memgraph
+        after each turn.
+
         Args:
             state: Current agent state
             observation: New observation (e.g., interviewer question)
@@ -262,6 +294,9 @@ class AgentOrchestrator:
         Returns:
             Tuple of (updated state, agent response)
         """
+        # Track memory count before turn
+        memories_before = len(state.get("memory_stream", []))
+
         # Update observation and set termination flag for single turn
         state["current_observation"] = observation
         state["should_terminate"] = True  # Stop after one cycle
@@ -274,6 +309,18 @@ class AgentOrchestrator:
 
         # Extract the response
         response = updated_state.get("current_action", "")
+
+        # Persist new memories if enabled
+        if self.persistent and self._memory_stream:
+            # Sync new memories from state to memory stream
+            new_memories = updated_state.get("memory_stream", [])[memories_before:]
+            for memory in new_memories:
+                self._memory_stream._new_memories.append(memory)
+
+            # Save to persistent storage
+            saved_count = self._memory_stream.save_to_persistent()
+            if saved_count > 0:
+                print(f"   Persisted {saved_count} new memories")
 
         return updated_state, response
 
@@ -365,8 +412,37 @@ class AgentOrchestrator:
 
         return output
 
+    def get_memory_stats(self) -> dict:
+        """Get statistics about the current memory stream."""
+        if self._memory_stream:
+            return self._memory_stream.get_memory_stats()
+        return {
+            "total_memories": 0,
+            "new_memories": 0,
+            "session_id": self._session_id,
+            "persistent": self.persistent,
+        }
+
+    def get_session_id(self) -> str | None:
+        """Get the current session ID."""
+        return self._session_id
+
+    def finalize_session(self) -> int:
+        """
+        Finalize the session and ensure all memories are persisted.
+
+        Call this at the end of a conversation to ensure all new memories
+        are saved to Qdrant/Memgraph.
+
+        Returns:
+            Number of memories saved
+        """
+        if self._memory_stream and self.persistent:
+            return self._memory_stream.save_to_persistent()
+        return 0
+
 
 # Factory function for FastAPI dependency injection
-def get_agent_orchestrator() -> AgentOrchestrator:
+def get_agent_orchestrator(persistent: bool = False) -> AgentOrchestrator:
     """Get an AgentOrchestrator instance."""
-    return AgentOrchestrator()
+    return AgentOrchestrator(persistent=persistent)
