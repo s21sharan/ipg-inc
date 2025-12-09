@@ -37,6 +37,21 @@ function getOpenAIClient(): OpenAI {
 const EMBEDDING_BATCH_SIZE = 20;
 
 /**
+ * Hash a string to a positive number for Qdrant point IDs
+ * Qdrant requires either UUID or unsigned integer IDs
+ */
+function hashStringToNumber(str: string): number {
+  let hash = 0;
+  for (let i = 0; i < str.length; i++) {
+    const char = str.charCodeAt(i);
+    hash = ((hash << 5) - hash) + char;
+    hash = hash & hash; // Convert to 32bit integer
+  }
+  // Ensure positive number
+  return Math.abs(hash);
+}
+
+/**
  * Interview data structure (from Supabase)
  */
 export interface Interview {
@@ -108,14 +123,28 @@ async function generateEmbeddings(texts: string[]): Promise<number[][]> {
   const client = getOpenAIClient();
   const embeddings: number[][] = [];
 
-  for (let i = 0; i < texts.length; i += EMBEDDING_BATCH_SIZE) {
-    const batch = texts.slice(i, i + EMBEDDING_BATCH_SIZE);
-    const response = await client.embeddings.create({
-      model: 'text-embedding-3-small',
-      input: batch,
-      dimensions: EMBEDDING_DIMENSIONS,
-    });
-    embeddings.push(...response.data.map((d) => d.embedding));
+  // Filter out empty texts
+  const validTexts = texts.filter((t) => t && t.trim().length > 0);
+  if (validTexts.length !== texts.length) {
+    console.log(`  Warning: Filtered out ${texts.length - validTexts.length} empty texts`);
+  }
+
+  for (let i = 0; i < validTexts.length; i += EMBEDDING_BATCH_SIZE) {
+    const batch = validTexts.slice(i, i + EMBEDDING_BATCH_SIZE);
+    try {
+      const response = await client.embeddings.create({
+        model: 'text-embedding-3-small',
+        input: batch,
+        dimensions: EMBEDDING_DIMENSIONS,
+      });
+      embeddings.push(...response.data.map((d) => d.embedding));
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error);
+      console.error(`  Embedding batch ${i / EMBEDDING_BATCH_SIZE + 1} failed:`, message);
+      // Log problematic texts
+      console.error(`  Batch texts:`, batch.map((t) => t.slice(0, 50) + '...'));
+      throw error;
+    }
   }
 
   return embeddings;
@@ -123,6 +152,7 @@ async function generateEmbeddings(texts: string[]): Promise<number[][]> {
 
 /**
  * Create Agent node in Memgraph
+ * Note: Memgraph uses localDateTime() or string timestamps instead of datetime()
  */
 async function createAgentNode(interview: Interview): Promise<void> {
   await runQuery(
@@ -140,8 +170,8 @@ async function createAgentNode(interview: Interview): Promise<void> {
         a.learning_language = $learning_language,
         a.usage_frequency = $usage_frequency,
         a.is_premium_user = $is_premium_user,
-        a.created_at = datetime($created_at),
-        a.synced_at = datetime()
+        a.created_at = $created_at,
+        a.synced_at = $synced_at
     `,
     {
       id: interview.id,
@@ -158,6 +188,7 @@ async function createAgentNode(interview: Interview): Promise<void> {
       usage_frequency: interview.usage_frequency || null,
       is_premium_user: interview.is_premium_user || null,
       created_at: interview.created_at || new Date().toISOString(),
+      synced_at: new Date().toISOString(),
     }
   );
 }
@@ -228,7 +259,7 @@ async function createMemoryNodes(
           m.source_type = 'interview',
           m.source_id = $agent_id,
           m.category = $category,
-          m.created_at = datetime()
+          m.created_at = $created_at
       MERGE (a)-[r:REMEMBERS]->(m)
       SET r.importance = $importance
       `,
@@ -239,6 +270,7 @@ async function createMemoryNodes(
         content: memory.content,
         importance: memory.importance,
         category: memory.category,
+        created_at: new Date().toISOString(),
       }
     );
 
@@ -249,7 +281,24 @@ async function createMemoryNodes(
 }
 
 /**
+ * Validate interview data before syncing
+ */
+function validateInterview(interview: Interview): string[] {
+  const errors: string[] = [];
+
+  if (!interview.id) {
+    errors.push('Missing interview ID');
+  }
+  if (!interview.name) {
+    errors.push('Missing interview name');
+  }
+
+  return errors;
+}
+
+/**
  * Sync interview to both Memgraph and Qdrant
+ * This is atomic - if any step fails, the agent is deleted from the graph
  */
 export async function syncInterviewToGraph(
   interview: Interview
@@ -260,6 +309,24 @@ export async function syncInterviewToGraph(
   let traitCount = 0;
   let memoryCount = 0;
   let embeddingCount = 0;
+
+  // 0. Validate interview data first
+  const validationErrors = validateInterview(interview);
+  if (validationErrors.length > 0) {
+    return {
+      success: false,
+      agentId: interview.id || 'unknown',
+      traitCount: 0,
+      memoryCount: 0,
+      embeddingCount: 0,
+      errors: validationErrors,
+      durationMs: Date.now() - startTime,
+    };
+  }
+
+  // Pre-extract memories to validate before creating anything
+  const memories = extractMemoriesFromReflection(interview.reflection_memory);
+  const stats = getMemoryStats(memories);
 
   try {
     // 1. Create Agent node in Memgraph
@@ -272,9 +339,7 @@ export async function syncInterviewToGraph(
       console.log(`  Created ${traitCount} Trait nodes`);
     }
 
-    // 3. Extract and create Memory nodes
-    const memories = extractMemoriesFromReflection(interview.reflection_memory);
-    const stats = getMemoryStats(memories);
+    // 3. Create Memory nodes (already extracted above)
     console.log(`  Extracted ${stats.total} memories (avg importance: ${stats.avgImportance.toFixed(1)})`);
 
     if (memories.length > 0) {
@@ -286,9 +351,10 @@ export async function syncInterviewToGraph(
       const memoryTexts = memories.map((m) => m.content);
       const memoryEmbeddings = await generateEmbeddings(memoryTexts);
 
-      // 5. Upsert to Qdrant
+      // 5. Upsert to Qdrant (using numeric IDs since Qdrant needs UUID or uint64)
       const vectorPoints = memories.map((memory, index) => ({
-        id: memoryIds[index],
+        // Use a hash of the memoryId to create a numeric ID for Qdrant
+        id: hashStringToNumber(memoryIds[index]),
         vector: memoryEmbeddings[index],
         payload: {
           content: memory.content,
@@ -296,14 +362,20 @@ export async function syncInterviewToGraph(
           importance: memory.importance,
           agent_id: interview.id,
           agent_name: interview.name,
-          memgraph_id: memoryIds[index],
+          memgraph_id: memoryIds[index],  // Store original ID in payload
           category: memory.category,
         },
       }));
 
-      await upsertPoints(COLLECTIONS.MEMORY_EMBEDDINGS, vectorPoints);
-      embeddingCount = vectorPoints.length;
-      console.log(`  Upserted ${embeddingCount} vectors to Qdrant`);
+      try {
+        await upsertPoints(COLLECTIONS.MEMORY_EMBEDDINGS, vectorPoints);
+        embeddingCount = vectorPoints.length;
+        console.log(`  Upserted ${embeddingCount} vectors to Qdrant`);
+      } catch (qdrantError) {
+        const msg = qdrantError instanceof Error ? qdrantError.message : String(qdrantError);
+        console.error(`  Qdrant upsert failed:`, msg);
+        throw qdrantError;
+      }
     }
 
     // 6. Create agent profile embedding
@@ -331,6 +403,14 @@ export async function syncInterviewToGraph(
     const message = error instanceof Error ? error.message : String(error);
     errors.push(message);
     console.error(`  Error syncing interview: ${message}`);
+
+    // Cleanup on failure - delete any partial data
+    try {
+      await deleteAgentFromGraph(interview.id);
+      console.log(`  Rolled back: deleted partial agent data`);
+    } catch (cleanupError) {
+      // Ignore cleanup errors
+    }
   }
 
   const durationMs = Date.now() - startTime;
@@ -338,9 +418,9 @@ export async function syncInterviewToGraph(
   return {
     success: errors.length === 0,
     agentId: interview.id,
-    traitCount,
-    memoryCount,
-    embeddingCount,
+    traitCount: errors.length === 0 ? traitCount : 0,
+    memoryCount: errors.length === 0 ? memoryCount : 0,
+    embeddingCount: errors.length === 0 ? embeddingCount : 0,
     errors,
     durationMs,
   };

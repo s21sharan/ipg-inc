@@ -82,7 +82,7 @@ export async function deleteCollection(collectionName: string): Promise<void> {
 // ============================================================================
 
 export interface VectorPoint {
-  id: string;
+  id: string | number;  // Qdrant accepts UUID strings or unsigned integers
   vector: number[];
   payload: Record<string, unknown>;
 }
@@ -110,7 +110,7 @@ export async function upsertPoints(
  */
 export async function deletePoints(
   collectionName: string,
-  ids: string[]
+  ids: (string | number)[]
 ): Promise<void> {
   const qdrant = getQdrantClient();
   await qdrant.delete(collectionName, {
@@ -124,7 +124,7 @@ export async function deletePoints(
  */
 export async function getPoints(
   collectionName: string,
-  ids: string[]
+  ids: (string | number)[]
 ): Promise<VectorPoint[]> {
   const qdrant = getQdrantClient();
   const result = await qdrant.retrieve(collectionName, {
@@ -134,7 +134,7 @@ export async function getPoints(
   });
 
   return result.map((p) => ({
-    id: p.id as string,
+    id: p.id as string | number,
     vector: p.vector as number[],
     payload: p.payload as Record<string, unknown>,
   }));
@@ -145,7 +145,7 @@ export async function getPoints(
 // ============================================================================
 
 export interface SearchResult {
-  id: string;
+  id: string | number;
   score: number;
   payload: Record<string, unknown>;
 }

@@ -11,6 +11,7 @@
     "db:status": "tsx -e \"require('./lib/graph/client').getDatabaseStats().then(console.log)\"",
     "db:init-qdrant": "tsx lib/graph/scripts/init-qdrant.ts",
     "db:seed": "tsx lib/graph/scripts/seed-interviews.ts",
+    "db:cleanup": "tsx lib/graph/scripts/cleanup-agents.ts",
     "db:test": "tsx lib/graph/scripts/test-queries.ts"
   },
   "dependencies": {

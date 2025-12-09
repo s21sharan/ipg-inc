@@ -160,11 +160,12 @@ export async function up(): Promise<{ success: boolean; errors: string[] }> {
     await runQuery(`
       MERGE (m:_Migration {version: $version})
       SET m.name = $name,
-          m.applied_at = datetime(),
+          m.applied_at = $applied_at,
           m.status = 'completed'
     `, {
       version: MIGRATION_VERSION,
       name: MIGRATION_NAME,
+      applied_at: new Date().toISOString(),
     });
     console.log('  ✓ Migration recorded in database\n');
   } catch (error) {

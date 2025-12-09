@@ -115,6 +115,17 @@ const IMPORTANCE_BY_TYPE: Record<MemoryType, number> = {
 };
 
 /**
+ * Safely get string value, handling non-string types
+ */
+function safeString(value: unknown): string | null {
+  if (value === null || value === undefined) return null;
+  if (typeof value === 'string') return value.trim() || null;
+  if (typeof value === 'number') return String(value);
+  if (typeof value === 'boolean') return String(value);
+  return null; // Skip objects, arrays, etc.
+}
+
+/**
  * Extract all memories from a reflection_memory object
  */
 export function extractMemoriesFromReflection(
@@ -131,10 +142,11 @@ export function extractMemoriesFromReflection(
     const pp = reflection.pain_points_and_frustrations;
 
     for (const item of pp.current_problems || []) {
-      if (item && item.trim()) {
+      const content = safeString(item);
+      if (content) {
         memories.push({
           type: 'pain_point',
-          content: item.trim(),
+          content,
           importance: IMPORTANCE_BY_TYPE.pain_point,
           category: 'pain_points_and_frustrations.current_problems',
         });
@@ -142,10 +154,11 @@ export function extractMemoriesFromReflection(
     }
 
     for (const item of pp.recurring_frustrations || []) {
-      if (item && item.trim()) {
+      const content = safeString(item);
+      if (content) {
         memories.push({
           type: 'pain_point',
-          content: item.trim(),
+          content,
           importance: IMPORTANCE_BY_TYPE.pain_point - 1,
           category: 'pain_points_and_frustrations.recurring_frustrations',
         });
@@ -153,10 +166,11 @@ export function extractMemoriesFromReflection(
     }
 
     for (const item of pp.unmet_needs || []) {
-      if (item && item.trim()) {
+      const content = safeString(item);
+      if (content) {
         memories.push({
           type: 'pain_point',
-          content: `Unmet need: ${item.trim()}`,
+          content: `Unmet need: ${content}`,
           importance: IMPORTANCE_BY_TYPE.pain_point - 1,
           category: 'pain_points_and_frustrations.unmet_needs',
         });
@@ -164,10 +178,11 @@ export function extractMemoriesFromReflection(
     }
 
     for (const item of pp.workarounds || []) {
-      if (item && item.trim()) {
+      const content = safeString(item);
+      if (content) {
         memories.push({
           type: 'workaround',
-          content: item.trim(),
+          content,
           importance: IMPORTANCE_BY_TYPE.workaround,
           category: 'pain_points_and_frustrations.workarounds',
         });
@@ -180,10 +195,11 @@ export function extractMemoriesFromReflection(
     const gm = reflection.goals_and_motivations;
 
     for (const item of gm.primary_goals || []) {
-      if (item && item.trim()) {
+      const content = safeString(item);
+      if (content) {
         memories.push({
           type: 'goal',
-          content: item.trim(),
+          content,
           importance: IMPORTANCE_BY_TYPE.goal,
           category: 'goals_and_motivations.primary_goals',
         });
@@ -191,10 +207,11 @@ export function extractMemoriesFromReflection(
     }
 
     for (const item of gm.motivations || []) {
-      if (item && item.trim()) {
+      const content = safeString(item);
+      if (content) {
         memories.push({
           type: 'motivation',
-          content: item.trim(),
+          content,
           importance: IMPORTANCE_BY_TYPE.motivation,
           category: 'goals_and_motivations.motivations',
         });
@@ -202,10 +219,11 @@ export function extractMemoriesFromReflection(
     }
 
     for (const item of gm.values || []) {
-      if (item && item.trim()) {
+      const content = safeString(item);
+      if (content) {
         memories.push({
           type: 'value',
-          content: item.trim(),
+          content,
           importance: IMPORTANCE_BY_TYPE.value,
           category: 'goals_and_motivations.values',
         });
@@ -213,10 +231,11 @@ export function extractMemoriesFromReflection(
     }
 
     for (const item of gm.aspirations || []) {
-      if (item && item.trim()) {
+      const content = safeString(item);
+      if (content) {
         memories.push({
           type: 'aspiration',
-          content: item.trim(),
+          content,
           importance: IMPORTANCE_BY_TYPE.aspiration,
           category: 'goals_and_motivations.aspirations',
         });
@@ -229,10 +248,11 @@ export function extractMemoriesFromReflection(
     const pa = reflection.product_attitudes;
 
     for (const item of pa.likes || []) {
-      if (item && item.trim()) {
+      const content = safeString(item);
+      if (content) {
         memories.push({
           type: 'preference_positive',
-          content: item.trim(),
+          content,
           importance: IMPORTANCE_BY_TYPE.preference_positive,
           category: 'product_attitudes.likes',
         });
@@ -240,10 +260,11 @@ export function extractMemoriesFromReflection(
     }
 
     for (const item of pa.dislikes || []) {
-      if (item && item.trim()) {
+      const content = safeString(item);
+      if (content) {
         memories.push({
           type: 'preference_negative',
-          content: item.trim(),
+          content,
           importance: IMPORTANCE_BY_TYPE.preference_negative,
           category: 'product_attitudes.dislikes',
         });
@@ -251,10 +272,11 @@ export function extractMemoriesFromReflection(
     }
 
     for (const item of pa.current_products || []) {
-      if (item && item.trim()) {
+      const content = safeString(item);
+      if (content) {
         memories.push({
           type: 'product_usage',
-          content: `Uses: ${item.trim()}`,
+          content: `Uses: ${content}`,
           importance: IMPORTANCE_BY_TYPE.product_usage,
           category: 'product_attitudes.current_products',
         });
@@ -262,30 +284,33 @@ export function extractMemoriesFromReflection(
     }
 
     for (const item of pa.feature_preferences || []) {
-      if (item && item.trim()) {
+      const content = safeString(item);
+      if (content) {
         memories.push({
           type: 'preference_positive',
-          content: `Feature preference: ${item.trim()}`,
+          content: `Feature preference: ${content}`,
           importance: IMPORTANCE_BY_TYPE.preference_positive - 1,
           category: 'product_attitudes.feature_preferences',
         });
       }
     }
 
-    if (pa.pricing_sensitivity && pa.pricing_sensitivity.trim()) {
+    const pricingSensitivity = safeString(pa.pricing_sensitivity);
+    if (pricingSensitivity) {
       memories.push({
         type: 'preference_negative',
-        content: `Pricing sensitivity: ${pa.pricing_sensitivity.trim()}`,
+        content: `Pricing sensitivity: ${pricingSensitivity}`,
         importance: IMPORTANCE_BY_TYPE.preference_negative - 1,
         category: 'product_attitudes.pricing_sensitivity',
       });
     }
 
     for (const item of pa.switching_barriers || []) {
-      if (item && item.trim()) {
+      const content = safeString(item);
+      if (content) {
         memories.push({
           type: 'experience',
-          content: `Switching barrier: ${item.trim()}`,
+          content: `Switching barrier: ${content}`,
           importance: IMPORTANCE_BY_TYPE.experience,
           category: 'product_attitudes.switching_barriers',
         });
@@ -298,10 +323,11 @@ export function extractMemoriesFromReflection(
     const pl = reflection.personality_and_lifestyle;
 
     for (const item of pl.traits || []) {
-      if (item && item.trim()) {
+      const content = safeString(item);
+      if (content) {
         memories.push({
           type: 'personality_trait',
-          content: item.trim(),
+          content,
           importance: IMPORTANCE_BY_TYPE.personality_trait,
           category: 'personality_and_lifestyle.traits',
         });
@@ -309,10 +335,11 @@ export function extractMemoriesFromReflection(
     }
 
     for (const item of pl.habits || []) {
-      if (item && item.trim()) {
+      const content = safeString(item);
+      if (content) {
         memories.push({
           type: 'habit',
-          content: item.trim(),
+          content,
           importance: IMPORTANCE_BY_TYPE.habit,
           category: 'personality_and_lifestyle.habits',
         });
@@ -320,29 +347,32 @@ export function extractMemoriesFromReflection(
     }
 
     for (const item of pl.interests || []) {
-      if (item && item.trim()) {
+      const content = safeString(item);
+      if (content) {
         memories.push({
           type: 'interest',
-          content: item.trim(),
+          content,
           importance: IMPORTANCE_BY_TYPE.interest,
           category: 'personality_and_lifestyle.interests',
         });
       }
     }
 
-    if (pl.tech_savviness && pl.tech_savviness.trim()) {
+    const techSavviness = safeString(pl.tech_savviness);
+    if (techSavviness) {
       memories.push({
         type: 'personality_trait',
-        content: `Tech savviness: ${pl.tech_savviness.trim()}`,
+        content: `Tech savviness: ${techSavviness}`,
         importance: IMPORTANCE_BY_TYPE.personality_trait,
         category: 'personality_and_lifestyle.tech_savviness',
       });
     }
 
-    if (pl.communication_style && pl.communication_style.trim()) {
+    const communicationStyle = safeString(pl.communication_style);
+    if (communicationStyle) {
       memories.push({
         type: 'personality_trait',
-        content: `Communication style: ${pl.communication_style.trim()}`,
+        content: `Communication style: ${communicationStyle}`,
         importance: IMPORTANCE_BY_TYPE.personality_trait,
         category: 'personality_and_lifestyle.communication_style',
       });
@@ -363,11 +393,11 @@ export function extractMemoriesFromReflection(
     ];
 
     for (const [field, label] of factFields) {
-      const value = bf[field];
-      if (value && value.trim() && value.toLowerCase() !== 'unknown') {
+      const value = safeString(bf[field]);
+      if (value && value.toLowerCase() !== 'unknown') {
         memories.push({
           type: 'fact',
-          content: `${label}: ${value.trim()}`,
+          content: `${label}: ${value}`,
           importance: IMPORTANCE_BY_TYPE.fact,
           category: `basic_facts.${field}`,
         });
@@ -380,10 +410,11 @@ export function extractMemoriesFromReflection(
     const oq = reflection.open_questions;
 
     for (const item of oq.topics_to_explore || []) {
-      if (item && item.trim()) {
+      const content = safeString(item);
+      if (content) {
         memories.push({
           type: 'hypothesis',
-          content: `Topic to explore: ${item.trim()}`,
+          content: `Topic to explore: ${content}`,
           importance: IMPORTANCE_BY_TYPE.hypothesis,
           category: 'open_questions.topics_to_explore',
         });
@@ -391,10 +422,11 @@ export function extractMemoriesFromReflection(
     }
 
     for (const item of oq.contradictions || []) {
-      if (item && item.trim()) {
+      const content = safeString(item);
+      if (content) {
         memories.push({
           type: 'hypothesis',
-          content: `Contradiction: ${item.trim()}`,
+          content: `Contradiction: ${content}`,
           importance: IMPORTANCE_BY_TYPE.hypothesis,
           category: 'open_questions.contradictions',
         });
@@ -402,10 +434,11 @@ export function extractMemoriesFromReflection(
     }
 
     for (const item of oq.hypotheses || []) {
-      if (item && item.trim()) {
+      const content = safeString(item);
+      if (content) {
         memories.push({
           type: 'hypothesis',
-          content: item.trim(),
+          content,
           importance: IMPORTANCE_BY_TYPE.hypothesis,
           category: 'open_questions.hypotheses',
         });
