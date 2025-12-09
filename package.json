@@ -5,11 +5,19 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "db:migrate": "tsx lib/graph/migrations/001_initial_schema.ts",
+    "db:migrate:down": "tsx lib/graph/migrations/001_initial_schema.ts down",
+    "db:status": "tsx -e \"require('./lib/graph/client').getDatabaseStats().then(console.log)\"",
+    "db:init-qdrant": "tsx lib/graph/scripts/init-qdrant.ts",
+    "db:seed": "tsx lib/graph/scripts/seed-interviews.ts",
+    "db:test": "tsx lib/graph/scripts/test-queries.ts"
   },
   "dependencies": {
+    "@qdrant/js-client-rest": "^1.16.2",
     "@supabase/supabase-js": "^2.78.0",
     "dotenv": "^17.2.3",
+    "neo4j-driver": "^6.0.1",
     "next": "16.0.1",
     "openai": "^5.23.2",
     "react": "19.2.0",
@@ -23,6 +31,7 @@
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "tailwindcss": "^4",
+    "tsx": "^4.21.0",
     "typescript": "^5"
   }
 }

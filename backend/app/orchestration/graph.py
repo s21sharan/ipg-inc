@@ -139,11 +139,14 @@ class AgentOrchestrator:
         campaign = workflow_input["campaign"]
 
         # Extract personality (default to moderate if not available)
-        personality_data = interview.get("personality", {})
+        # Handle nested structure: personality.scores.trait
+        personality_raw = interview.get("personality", {})
+        personality_data = personality_raw.get("scores", personality_raw)
         personality: PersonalityProfile = {
             "openness": personality_data.get("openness", 2.5),
             "conscientiousness": personality_data.get("conscientiousness", 2.5),
-            "extraversion": personality_data.get("extraversion", 2.5),
+            # Handle both spellings: "extraversion" and "extroversion"
+            "extraversion": personality_data.get("extraversion") or personality_data.get("extroversion", 2.5),
             "agreeableness": personality_data.get("agreeableness", 2.5),
             "neuroticism": personality_data.get("neuroticism", 2.5),
         }
@@ -259,11 +262,15 @@ class AgentOrchestrator:
         Returns:
             Tuple of (updated state, agent response)
         """
-        # Update observation
+        # Update observation and set termination flag for single turn
         state["current_observation"] = observation
+        state["should_terminate"] = True  # Stop after one cycle
 
-        # Run one iteration (observe → plan → act)
+        # Run one iteration (observe → plan → act → end)
         updated_state = self.graph.invoke(state)
+
+        # Reset termination flag for next turn
+        updated_state["should_terminate"] = False
 
         # Extract the response
         response = updated_state.get("current_action", "")
@@ -301,7 +308,9 @@ class AgentOrchestrator:
                 content = topic.get("content", "")
                 if content:
                     state["current_observation"] = content
+                    state["should_terminate"] = True  # Single turn
                     state = self.graph.invoke(state)
+                    state["should_terminate"] = False  # Reset for next turn
 
                     if on_response:
                         on_response(content, state.get("current_action", ""), turn)
@@ -312,7 +321,9 @@ class AgentOrchestrator:
                 question = topic.get("question", "")
                 if question:
                     state["current_observation"] = question
+                    state["should_terminate"] = True  # Single turn
                     state = self.graph.invoke(state)
+                    state["should_terminate"] = False  # Reset for next turn
 
                     if on_response:
                         on_response(question, state.get("current_action", ""), turn)
@@ -325,7 +336,9 @@ class AgentOrchestrator:
 
                     for probe in probes[:2]:  # Limit to 2 probes per topic
                         state["current_observation"] = probe
+                        state["should_terminate"] = True  # Single turn
                         state = self.graph.invoke(state)
+                        state["should_terminate"] = False  # Reset for next turn
 
                         if on_response:
                             on_response(probe, state.get("current_action", ""), turn)

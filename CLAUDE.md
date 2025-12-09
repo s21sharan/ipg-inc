@@ -501,3 +501,68 @@ Implemented full conversation clustering system with hybrid embeddings+LLM appro
 
 ### #Background
 Clustering pipeline: detect dimension (pain_points vs goals) → extract 2-4 verbatim quotes → embed with text-embedding-3-small → k-means k=4 → label with GPT-4o-mini → calculate confidence. Auto-triggers after analysis completes. Costs ~$0.12/campaign. Two navigation paths maintained: card click shows tabbed mgmt (Summary/Conversations/Analyze), View button shows hexagon cluster insights.
+
+## 2025-12-08 – Compact Session
+
+### #CurrentFocus
+Built LangGraph-based generative agent orchestration with Plan→Act→Observe→Reflect cognitive loop and test script.
+
+### #SessionChanges
+- Created `backend/app/orchestration/` module with full LangGraph cognitive architecture
+- Built `agent_state.py` with TypedDict schemas: AgentState, MemoryObject, PersonalityProfile, EmotionalState
+- Built `llm_client.py` with OpenAI wrapper for gpt-5-nano, embeddings, and importance scoring
+- Built `memory_stream.py` with retrieval function balancing recency/importance/relevance (weighted scoring)
+- Built `nodes.py` with observe, plan, act, reflect nodes implementing Chain-of-Feeling emotional tracking
+- Built `graph.py` with StateGraph workflow + AgentOrchestrator class for campaign simulations
+- Added LangGraph dependencies: langgraph>=0.2.60, langchain-core>=0.3.28, langchain-openai>=0.2.14
+- Fixed openai version conflict: changed to >=1.58.1 (required by langchain-openai)
+- Fixed deprecated `set_entry_point()` → `graph.add_edge(START, "observe")` per LangGraph docs
+- Added `START` import from `langgraph.graph` for proper entry point definition
+- Removed unused `HumanMessage, SystemMessage` imports from nodes.py
+- Created `backend/scripts/test_agent.py` for testing orchestrator with Supabase demo data
+- Test script supports: campaign simulation mode, interactive mode, interview listing
+- Created `backend/tests/test_orchestration.py` with 20+ unit tests covering state, memory, nodes, graph
+
+### #NextSteps
+- Run `pip install -r requirements.txt` to install LangGraph dependencies
+- Run `python scripts/test_agent.py` to test agent with Duolingo demo data
+- Add API endpoint to expose orchestrator for frontend integration
+- Integrate orchestrator with existing simulation_service.py
+
+### #BugsAndTheories
+- langchain-openai requires openai>=1.58.1 ⇒ Version conflict with openai==1.57.2 (fixed: updated to >=1.58.1)
+- set_entry_point deprecated ⇒ LangGraph now uses add_edge(START, node) pattern (fixed)
+
+### #Background
+SyntheticCohorts framework implementation using LangGraph for stateful agent workflows. Agents use memory stream with weighted retrieval (recency 0.3, importance 0.3, relevance 0.4). Chain-of-Feeling tracks emotional state shifts through Big Five personality conditioning. Reflection triggers when importance accumulator exceeds threshold (default 50). Test script fetches real Duolingo interviews from Supabase and runs full cognitive loop with gpt-5-nano.
+
+## 2025-12-08 – Compact Session
+
+### #CurrentFocus
+Implemented Knowledge Graph schema for SyntheticCohorts using Memgraph + Qdrant with full interview sync pipeline.
+
+### #SessionChanges
+- Created comprehensive plan mapping Supabase data → Memgraph graph nodes per gen_agent_framework.md
+- Installed `neo4j-driver` and `@qdrant/js-client-rest` dependencies
+- Created `lib/graph/client.ts` with Memgraph connection via Bolt protocol (singleton driver)
+- Created `lib/vector/qdrant-client.ts` with vector search, collection mgmt, filtered queries
+- Created `lib/graph/schema.cypher` with 8 node types, constraints, and indexes
+- Created `lib/graph/migrations/001_initial_schema.ts` for schema setup with up/down/isApplied
+- Created `lib/graph/extractors/memory-extractor.ts` extracting fine-grained Memory nodes (~20-50 per agent)
+- Created `lib/graph/sync/interview-to-graph.ts` syncing Interview → Agent + Trait + Memory + embeddings
+- Added npm scripts: `db:migrate`, `db:migrate:down` for schema management
+- Installed `tsx` for TypeScript CLI execution
+- Updated `.env.example` with QDRANT_URL and QDRANT_API_KEY variables
+- Docker already configured: Memgraph (7687/7444) + Qdrant (6333/6334) in docker-compose.yml
+
+### #NextSteps
+- Run `docker-compose up -d` to start Memgraph and Qdrant services
+- Run `npm run db:migrate` to create schema constraints/indexes
+- Initialize Qdrant collections via `initializeCollections()` function
+- Sync existing interviews to graph with `syncInterviewsBatch()` function
+
+### #BugsAndTheories
+- npx ts-node path resolution error ⇒ ts-node not installed properly (fixed: installed tsx, added npm scripts)
+
+### #Background
+Graph schema implements SyntheticCohorts framework from docs/gen_agent_framework.md. 8 node types: Agent, Trait, Topic, Product, Event, Sentiment, Memory, Cluster. Fine-grained memory extraction creates ~20-50 Memory nodes per interview from reflection_memory JSONB. Hybrid retrieval pattern: Qdrant for semantic search (1536-dim embeddings) + Memgraph for graph traversal. Design decisions confirmed: Qdrant for vectors (separate DB), fine-grained memories (each pain_point/goal = 1 node), shared Product/Topic nodes across workspaces.

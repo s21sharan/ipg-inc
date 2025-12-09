@@ -150,11 +150,12 @@ Memory: "{memory_content}"
 
 Respond with ONLY a number between 1 and 10."""
 
+        # Note: gpt-5-nano is a reasoning model and needs more tokens
+        # for internal reasoning before producing the score
         response = self.openai.chat.completions.create(
             model=DEFAULT_MODEL,
             messages=[{"role": "user", "content": prompt}],
-            max_tokens=10,
-            temperature=0.3,  # Lower temp for more consistent scoring
+            max_completion_tokens=500,
         )
 
         try:
@@ -168,7 +169,6 @@ Respond with ONLY a number between 1 and 10."""
         prompt: str,
         response_model: type[BaseModel],
         system_prompt: str | None = None,
-        temperature: float = 0.7,
     ) -> BaseModel:
         """
         Generate a structured response using Pydantic model.
@@ -177,7 +177,6 @@ Respond with ONLY a number between 1 and 10."""
             prompt: User prompt
             response_model: Pydantic model for response structure
             system_prompt: Optional system prompt
-            temperature: Sampling temperature
 
         Returns:
             Parsed Pydantic model instance
@@ -191,7 +190,7 @@ Respond with ONLY a number between 1 and 10."""
             model=DEFAULT_MODEL,
             messages=messages,
             response_format=response_model,
-            temperature=temperature,
+            # Note: gpt-5-nano only supports temperature=1 (default)
         )
 
         return response.choices[0].message.parsed
@@ -200,8 +199,7 @@ Respond with ONLY a number between 1 and 10."""
         self,
         prompt: str,
         system_prompt: str | None = None,
-        temperature: float = 0.7,
-        max_tokens: int = 500,
+        max_tokens: int = 2000,
     ) -> str:
         """
         Simple text completion.
@@ -209,8 +207,7 @@ Respond with ONLY a number between 1 and 10."""
         Args:
             prompt: User prompt
             system_prompt: Optional system prompt
-            temperature: Sampling temperature
-            max_tokens: Maximum response tokens
+            max_tokens: Maximum completion tokens (includes reasoning for gpt-5-nano)
 
         Returns:
             Generated text response
@@ -220,11 +217,14 @@ Respond with ONLY a number between 1 and 10."""
             messages.append({"role": "system", "content": system_prompt})
         messages.append({"role": "user", "content": prompt})
 
+        # Note: gpt-5-nano is a reasoning model - it uses tokens for internal
+        # reasoning before producing output. We need higher limits to ensure
+        # enough tokens remain for the actual response after reasoning.
         response = self.openai.chat.completions.create(
             model=DEFAULT_MODEL,
             messages=messages,
-            temperature=temperature,
-            max_tokens=max_tokens,
+            max_completion_tokens=max_tokens,
+            # Note: gpt-5-nano only supports temperature=1 (default)
         )
 
         return response.choices[0].message.content or ""

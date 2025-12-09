@@ -13,7 +13,15 @@ Components:
 - graph: Main workflow graph definition and compilation
 """
 
-from .agent_state import AgentState, MemoryObject, PersonalityProfile, EmotionalState
+from .agent_state import (
+    AgentState,
+    MemoryObject,
+    PersonalityProfile,
+    EmotionalState,
+    ReflectionMemory,
+    WorkflowInput,
+    WorkflowOutput,
+)
 from .llm_client import LLMClient, get_llm_client
 from .memory_stream import MemoryStream
 from .nodes import plan_node, act_node, observe_node, reflect_node, should_reflect
@@ -25,6 +33,9 @@ __all__ = [
     "MemoryObject",
     "PersonalityProfile",
     "EmotionalState",
+    "ReflectionMemory",
+    "WorkflowInput",
+    "WorkflowOutput",
     # LLM
     "LLMClient",
     "get_llm_client",

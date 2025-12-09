@@ -118,7 +118,7 @@ How does this make you feel? Respond in this exact JSON format:
     "narrative": "<1-2 sentences describing your emotional reaction>"
 }}"""
 
-    response = llm.complete(user_prompt, system_prompt=system_prompt, temperature=0.7)
+    response = llm.complete(user_prompt, system_prompt=system_prompt)
 
     # Parse emotional state update
     try:
@@ -207,7 +207,7 @@ Conversation so far:
 What do you plan to do? Consider your emotional state ({state['emotional_state']['primary_emotion']}) and personality.
 Express your intention in 1-2 sentences."""
 
-    plan = llm.complete(user_prompt, system_prompt=system_prompt, temperature=0.7, max_tokens=200)
+    plan = llm.complete(user_prompt, system_prompt=system_prompt, max_tokens=1500)
 
     # Create memory of the plan
     plan_memory: MemoryObject = {
@@ -265,7 +265,7 @@ Interviewer: "{state['current_observation']}"
 
 Respond as {state['agent_name']} (feeling {state['emotional_state']['primary_emotion']}):"""
 
-    response = llm.complete(user_prompt, system_prompt=system_prompt, temperature=0.8, max_tokens=150)
+    response = llm.complete(user_prompt, system_prompt=system_prompt, max_tokens=1500)
 
     # Create memory of the action
     action_memory: MemoryObject = {
@@ -336,7 +336,7 @@ Focus on patterns and what they reveal about the person's evolving attitudes or 
 Generate 2-3 high-level insights about what these experiences reveal about {state['agent_name']}.
 Format each insight on a new line, starting with "Insight:"."""
 
-    response = llm.complete(user_prompt, system_prompt=system_prompt, temperature=0.6, max_tokens=300)
+    response = llm.complete(user_prompt, system_prompt=system_prompt, max_tokens=1500)
 
     # Parse and store reflections
     reflection_memories: list[MemoryObject] = []
