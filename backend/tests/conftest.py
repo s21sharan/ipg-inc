@@ -143,6 +143,37 @@ def mock_memgraph_unhealthy():
 
 
 # ============================================================
+# Mock Qdrant
+# ============================================================
+
+@pytest.fixture
+def mock_qdrant_healthy():
+    """Mock Qdrant health check returning healthy status."""
+    with patch("app.routers.health.qdrant_health_check") as mock:
+        mock.return_value = {
+            "host": "localhost",
+            "port": 6333,
+            "status": "connected",
+            "version": "1.7.0",
+            "collections_count": 3,
+        }
+        yield mock
+
+
+@pytest.fixture
+def mock_qdrant_unhealthy():
+    """Mock Qdrant health check returning unhealthy status."""
+    with patch("app.routers.health.qdrant_health_check") as mock:
+        mock.return_value = {
+            "host": "localhost",
+            "port": 6333,
+            "status": "disconnected",
+            "error": "Cannot connect to Qdrant",
+        }
+        yield mock
+
+
+# ============================================================
 # Sample Test Data
 # ============================================================
 
