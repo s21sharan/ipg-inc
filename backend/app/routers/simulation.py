@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, BackgroundTasks
+from fastapi import APIRouter, Depends, HTTPException, BackgroundTasks, Query
 from pydantic import BaseModel
 from supabase import Client
 from typing import Optional
@@ -78,7 +78,7 @@ async def get_simulation_status(
 @router.delete("/conversations/{campaign_id}")
 async def delete_conversations(
     campaign_id: str,
-    conversation_ids: Optional[list[str]] = None,
+    conversation_ids: Optional[list[str]] = Query(default=None),
     db: Client = Depends(get_db),
 ):
     """Delete conversations for a campaign."""

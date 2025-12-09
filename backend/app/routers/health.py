@@ -4,6 +4,7 @@ from supabase import Client
 from app.database import get_db
 from app.config import get_settings
 from app.memgraph import health_check as memgraph_health_check
+from app.qdrant import health_check as qdrant_health_check
 
 router = APIRouter()
 
@@ -29,10 +30,14 @@ async def detailed_health_check(db: Client = Depends(get_db)):
     # Test Memgraph connection
     memgraph_status = memgraph_health_check()
 
+    # Test Qdrant connection
+    qdrant_status = qdrant_health_check()
+
     # Determine overall status
     is_healthy = (
         supabase_status == "healthy"
         and memgraph_status.get("status") == "connected"
+        and qdrant_status.get("status") == "connected"
     )
 
     return {
@@ -40,6 +45,7 @@ async def detailed_health_check(db: Client = Depends(get_db)):
         "app_name": settings.app_name,
         "supabase": supabase_status,
         "memgraph": memgraph_status,
+        "qdrant": qdrant_status,
         "openai_configured": bool(settings.openai_api_key),
     }
 
@@ -48,3 +54,9 @@ async def detailed_health_check(db: Client = Depends(get_db)):
 async def memgraph_health():
     """Memgraph-specific health check with detailed info."""
     return memgraph_health_check()
+
+
+@router.get("/health/qdrant")
+async def qdrant_health():
+    """Qdrant-specific health check with detailed info."""
+    return qdrant_health_check()

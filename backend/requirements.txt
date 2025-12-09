@@ -11,6 +11,9 @@ asyncpg==0.30.0
 gqlalchemy==1.8.0
 neo4j==5.26.0
 
+# Vector Database (Qdrant)
+qdrant-client==1.12.1
+
 # AI/ML
 openai==1.57.2
 numpy==2.1.3

@@ -27,6 +27,14 @@ class Settings(BaseSettings):
     memgraph_password: str = ""
     memgraph_encrypted: bool = False  # Set True for AWS with SSL
 
+    # Qdrant - Vector Database
+    # Local: localhost:6333, Cloud: https://<cluster>.cloud.qdrant.io
+    qdrant_host: str = "localhost"
+    qdrant_port: int = 6333
+    qdrant_grpc_port: int = 6334
+    qdrant_api_key: str | None = None  # Required for Qdrant Cloud
+    qdrant_https: bool = False  # Set True for Qdrant Cloud
+
     # CORS - allowed origins for frontend
     cors_origins: list[str] = ["http://localhost:3000"]
 
@@ -63,6 +71,12 @@ def get_settings() -> Settings:
         memgraph_username=os.getenv("MEMGRAPH_USERNAME", ""),
         memgraph_password=os.getenv("MEMGRAPH_PASSWORD", ""),
         memgraph_encrypted=os.getenv("MEMGRAPH_ENCRYPTED", "false").lower() == "true",
+        # Qdrant settings
+        qdrant_host=os.getenv("QDRANT_HOST", "localhost"),
+        qdrant_port=int(os.getenv("QDRANT_PORT", "6333")),
+        qdrant_grpc_port=int(os.getenv("QDRANT_GRPC_PORT", "6334")),
+        qdrant_api_key=os.getenv("QDRANT_API_KEY"),
+        qdrant_https=os.getenv("QDRANT_HTTPS", "false").lower() == "true",
     )
 
 
