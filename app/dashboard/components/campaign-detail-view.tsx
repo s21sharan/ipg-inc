@@ -256,6 +256,9 @@ export default function CampaignDetailView({
   const [swarmResponse, setSwarmResponse] = useState<any>(null);
   const [swarmError, setSwarmError] = useState<string | null>(null);
 
+  // Expanded conversation panel state
+  const [isConversationExpanded, setIsConversationExpanded] = useState(false);
+
   // Toggle cluster selection
   const toggleClusterSelection = (clusterId: string) => {
     setSelectedClusters(prev =>
@@ -611,9 +614,9 @@ export default function CampaignDetailView({
             </div>
           )}
 
-          {/* Insight Cards Grid - 2x2 fits without scrolling */}
+          {/* Insight Cards Grid - 2x2 normal, 1x4 vertical when conversation expanded */}
           {!isLoading && clusterData?.status === 'completed' && insights.length > 0 && (
-            <div className="grid grid-cols-2 gap-4 auto-rows-fr">
+            <div className={`grid gap-4 ${isConversationExpanded ? 'grid-cols-1 max-w-[400px]' : 'grid-cols-2 auto-rows-fr'}`}>
               {insights.map((insight) => (
                 <InsightCardComponent
                   key={insight.id}
@@ -629,11 +632,29 @@ export default function CampaignDetailView({
 
       {/* Right Panel - Conversation Agent */}
       <div
-        className="w-[340px] flex-shrink-0 border-l-2 border-gray-300 flex flex-col relative"
+        className={`flex-shrink-0 border-l-2 border-gray-300 flex flex-col relative transition-all duration-300 ${
+          isConversationExpanded ? 'w-[calc(100%-450px)]' : 'w-[340px]'
+        }`}
         style={{
           background: 'linear-gradient(to bottom, #ffffff 80%, #74b9ff 170%)',
         }}
       >
+        {/* Expand/Collapse Arrow */}
+        <button
+          onClick={() => setIsConversationExpanded(!isConversationExpanded)}
+          className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-1/2 w-6 h-12 bg-white border border-gray-300 rounded-l-lg flex items-center justify-center hover:bg-gray-50 transition-colors shadow-sm z-10"
+          title={isConversationExpanded ? 'Collapse panel' : 'Expand panel'}
+        >
+          <svg
+            className={`w-4 h-4 text-gray-600 transition-transform duration-300 ${isConversationExpanded ? 'rotate-0' : 'rotate-180'}`}
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" />
+          </svg>
+        </button>
+
         {/* Top left label */}
         <div className="px-5 pt-4">
           <p className="text-[22px] font-normal">
