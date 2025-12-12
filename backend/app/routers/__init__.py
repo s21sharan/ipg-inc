@@ -1,3 +1,3 @@
-from . import health, simulation, analysis, clustering
+from . import health, simulation, analysis, clustering, swarm
 
-__all__ = ["health", "simulation", "analysis", "clustering"]
+__all__ = ["health", "simulation", "analysis", "clustering", "swarm"]
