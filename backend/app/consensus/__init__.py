@@ -22,6 +22,12 @@ from .judge_state import (
     ConsensusInput,
     JudgeState,
 )
+from .critic_agent import CriticAgent, create_critic_agent
+from .consensus_builder import (
+    ConsensusBuilder,
+    create_consensus_builder,
+    build_consensus_from_swarm,
+)
 
 __all__ = [
     # Insight types
@@ -37,4 +43,11 @@ __all__ = [
     "ConsensusSummary",
     "ConsensusInput",
     "JudgeState",
+    # Critic
+    "CriticAgent",
+    "create_critic_agent",
+    # Consensus Builder
+    "ConsensusBuilder",
+    "create_consensus_builder",
+    "build_consensus_from_swarm",
 ]
