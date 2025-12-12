@@ -381,7 +381,7 @@ export default function CampaignDetailView({
         },
         body: JSON.stringify({
           topic: chatInput,
-          agent_ids: Array.from(agentIds).slice(0, 10), // Limit to 10 agents for performance
+          agent_ids: Array.from(agentIds),
         }),
       });
 
