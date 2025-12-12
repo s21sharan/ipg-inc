@@ -177,3 +177,31 @@ Built multi-agent swarm system with consensus generation; wired to frontend clus
 
 ### #Background
 Swarm system enables multi-agent discussions on user questions. Agents from clusters discuss topic for N turns, CriticAgent evaluates quality, ConsensusBuilder extracts insights/agreements/conclusions. E2E test achieved 9/10 GPT evaluation score. Frontend wired via Next.js proxy to FastAPI backend.
+
+## 2025-12-11 – Compact Session (Part 2)
+
+### #CurrentFocus
+Fixed swarm timeout issues by decoupling consensus generation and adding Supabase Realtime for live updates.
+
+### #SessionChanges
+- Fixed `swarm_sessions_status_check` constraint: added `generating_consensus` to allowed statuses
+- Created migration `013_fix_swarm_status_constraint.sql` to alter existing constraint
+- Decoupled consensus from swarm completion: swarm marks "completed" immediately, consensus generates after
+- Replaced frontend polling with Supabase Realtime subscription for `consensus_summaries` table
+- Frontend now shows messages immediately when swarm completes, consensus appears via WebSocket push
+- Extended swarm timeout to 10 minutes, consensus timeout to 10 minutes
+- Updated `swarm_service.py` to not block on consensus generation
+
+### #NextSteps
+- Run SQL to enable Realtime: `ALTER PUBLICATION supabase_realtime ADD TABLE consensus_summaries`
+- Implement memory persistence for swarm conversations (save to Qdrant/Memgraph)
+- Add memory creation after each agent response in swarm
+- Create reflection memories summarizing swarm discussions
+
+### #BugsAndTheories
+- "Conversation timed out" ⇒ consensus generation blocked swarm completion (fixed: decoupled)
+- 404 on consensus ⇒ constraint blocked `generating_consensus` status update (fixed: added to constraint)
+- Swarm agents NOT saving memories ⇒ `load_memories()` exists but no `save_memory()` calls in swarm
+
+### #Background
+Swarm agents load 40+ memories from Qdrant at start but don't persist new conversation memories. PersistentMemoryStore has save methods but SwarmAgent doesn't call them. Next step: wire up memory persistence so agents "learn" from swarm discussions.
