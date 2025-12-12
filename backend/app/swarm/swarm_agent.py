@@ -45,6 +45,7 @@ class SwarmAgent:
         interview_id: str,
         personality: PersonalityProfile,
         reflection_memory: ReflectionMemory,
+        demographics: dict | None = None,
         initial_emotion: EmotionalState | None = None,
     ):
         """
@@ -56,6 +57,7 @@ class SwarmAgent:
             interview_id: Link to original interview data
             personality: Big Five personality profile
             reflection_memory: Structured reflection memory from interview
+            demographics: Demographics data (age, gender, occupation, etc.)
             initial_emotion: Starting emotional state (default: neutral)
         """
         self.agent_id = agent_id
@@ -63,6 +65,7 @@ class SwarmAgent:
         self.interview_id = interview_id
         self.personality = personality
         self.reflection_memory = reflection_memory
+        self.demographics = demographics or {}
 
         # Initialize emotional state
         self.emotional_state: EmotionalState = initial_emotion or {
@@ -236,6 +239,7 @@ How does this make you feel? Respond in this exact JSON format:
             "agent_id": self.agent_id,
             "agent_name": self.agent_name,
             "interview_id": self.interview_id,
+            "demographics": self.demographics,
             "personality": self.personality,
             "emotional_state": self.emotional_state,
             "reflection_memory": self.reflection_memory,
@@ -253,6 +257,7 @@ How does this make you feel? Respond in this exact JSON format:
             interview_id=ctx["interview_id"],
             personality=ctx["personality"],
             reflection_memory=ctx["reflection_memory"],
+            demographics=ctx.get("demographics", {}),
             initial_emotion=ctx["emotional_state"],
         )
         agent.memories = ctx["memories"]
@@ -279,9 +284,11 @@ How does this make you feel? Respond in this exact JSON format:
         interview_id = interview.get("id", str(uuid.uuid4()))
         agent_id = agent_id or interview_id
 
-        # Extract name from demographics or use default
-        demographics = interview.get("demographics", {})
-        name = demographics.get("name", f"Participant-{interview_id[:8]}")
+        # Extract name - check direct field first, then demographics, then fallback
+        name = interview.get("name")
+        if not name:
+            demographics = interview.get("demographics", {})
+            name = demographics.get("name", f"Participant-{interview_id[:8]}")
 
         # Extract personality (handle nested structure)
         personality_raw = interview.get("personality", {})
@@ -307,12 +314,33 @@ How does this make you feel? Respond in this exact JSON format:
             "communication_style": reflection_data.get("communication_style", {}),
         }
 
+        # Extract demographics (flat fields on interview)
+        demographics = {
+            "name": name,
+            "age": interview.get("age"),
+            "gender": interview.get("gender"),
+            "race": interview.get("race"),
+            "hometown": interview.get("hometown"),
+            "occupation": interview.get("occupation"),
+            "country": interview.get("country"),
+            "primary_app": interview.get("primary_app"),
+            "learning_language": interview.get("learning_language"),
+            "learning_goal": interview.get("learning_goal"),
+            "usage_frequency": interview.get("usage_frequency"),
+            "is_premium_user": interview.get("is_premium_user"),
+            "pain_points": interview.get("pain_points", []),
+            "value_props": interview.get("value_props", []),
+        }
+        # Remove None values
+        demographics = {k: v for k, v in demographics.items() if v is not None}
+
         return cls(
             agent_id=agent_id,
             agent_name=name,
             interview_id=interview_id,
             personality=personality,
             reflection_memory=reflection_memory,
+            demographics=demographics,
         )
 
     # =========================================================================

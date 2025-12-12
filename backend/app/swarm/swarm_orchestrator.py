@@ -343,6 +343,7 @@ class SwarmOrchestrator:
                 "agent_id": a["agent_id"],
                 "agent_name": a["agent_name"],
                 "message_count": a["message_count"],
+                "demographics": a.get("demographics", {}),
             }
             for a in state["agents"]
         ]

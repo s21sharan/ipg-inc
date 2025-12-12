@@ -44,6 +44,9 @@ class SwarmAgentContext(TypedDict):
     agent_name: str
     interview_id: str  # Links to original interview data
 
+    # Demographics (age, gender, occupation, etc.)
+    demographics: dict
+
     # Personality (from interview data)
     personality: PersonalityProfile
     emotional_state: EmotionalState

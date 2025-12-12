@@ -1,6 +1,8 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 import { supabase } from '@/lib/db/supabase';
 
 interface Campaign {
@@ -249,6 +251,11 @@ export default function CampaignDetailView({
   const [isLoading, setIsLoading] = useState(true);
   const [isGenerating, setIsGenerating] = useState(false);
 
+  // Swarm conversation state
+  const [isSwarmLoading, setIsSwarmLoading] = useState(false);
+  const [swarmResponse, setSwarmResponse] = useState<any>(null);
+  const [swarmError, setSwarmError] = useState<string | null>(null);
+
   // Toggle cluster selection
   const toggleClusterSelection = (clusterId: string) => {
     setSelectedClusters(prev =>
@@ -329,6 +336,151 @@ export default function CampaignDetailView({
       alert(error.message);
     } finally {
       setIsGenerating(false);
+    }
+  };
+
+  // Submit question to swarm
+  const handleSubmitQuestion = async () => {
+    if (!chatInput.trim()) return;
+
+    // Get agent IDs from selected clusters (or all if none selected)
+    const insights = clusterData?.clusters || [];
+    const clustersToUse = selectedClusters.length > 0
+      ? insights.filter(c => selectedClusters.includes(c.id))
+      : insights;
+
+    // Collect all unique interview IDs from cluster members
+    const agentIds = new Set<string>();
+    for (const cluster of clustersToUse) {
+      if (cluster.members) {
+        for (const member of cluster.members) {
+          agentIds.add(member.conversation_id);
+        }
+      }
+    }
+
+    if (agentIds.size < 2) {
+      setSwarmError('Need at least 2 agents to start a conversation');
+      return;
+    }
+
+    setIsSwarmLoading(true);
+    setSwarmError(null);
+    setSwarmResponse(null);
+
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session?.access_token) throw new Error('No session');
+
+      // Create the swarm
+      const createResponse = await fetch('/api/swarm/create', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${session.access_token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          topic: chatInput,
+          agent_ids: Array.from(agentIds).slice(0, 10), // Limit to 10 agents for performance
+        }),
+      });
+
+      if (!createResponse.ok) {
+        const err = await createResponse.json();
+        throw new Error(err.detail || 'Failed to start conversation');
+      }
+
+      const { swarm_id } = await createResponse.json();
+
+      // Poll for swarm completion (messages)
+      let attempts = 0;
+      const maxAttempts = 120; // 10 minutes max for swarm conversation
+      while (attempts < maxAttempts) {
+        await new Promise(resolve => setTimeout(resolve, 5000)); // Wait 5s
+
+        const statusResponse = await fetch(`/api/swarm/status/${swarm_id}`, {
+          headers: { 'Authorization': `Bearer ${session.access_token}` },
+        });
+
+        if (statusResponse.ok) {
+          const status = await statusResponse.json();
+          if (status.status === 'completed') {
+            // Swarm completed - fetch messages immediately
+            const messagesResponse = await fetch(`/api/swarm/messages/${swarm_id}`, {
+              headers: { 'Authorization': `Bearer ${session.access_token}` },
+            });
+            if (messagesResponse.ok) {
+              const messages = await messagesResponse.json();
+              // Show messages first with loading indicator for consensus
+              setSwarmResponse({
+                messages: messages.messages,
+                type: 'messages',
+                swarm_id: swarm_id,
+                consensusLoading: true
+              });
+            }
+
+            // Subscribe to Supabase Realtime for consensus updates (no polling!)
+            const channel = supabase
+              .channel(`consensus-${swarm_id}`)
+              .on(
+                'postgres_changes',
+                {
+                  event: 'INSERT',
+                  schema: 'public',
+                  table: 'consensus_summaries',
+                  filter: `swarm_id=eq.${swarm_id}`,
+                },
+                (payload) => {
+                  console.log('Consensus received via realtime:', payload);
+                  const consensus = payload.new;
+                  setSwarmResponse(prev => ({
+                    ...prev,
+                    ...consensus,
+                    type: 'consensus',
+                    consensusLoading: false
+                  }));
+                  // Cleanup subscription
+                  supabase.removeChannel(channel);
+                }
+              )
+              .subscribe();
+
+            // Timeout after 10 minutes - cleanup subscription
+            setTimeout(() => {
+              supabase.removeChannel(channel);
+              setSwarmResponse(prev => {
+                if (prev?.consensusLoading) {
+                  return {
+                    ...prev,
+                    consensusLoading: false,
+                    consensusError: 'Consensus generation timed out'
+                  };
+                }
+                return prev;
+              });
+            }, 600000); // 10 minutes
+
+            break;
+          } else if (status.status === 'generating_consensus') {
+            // Legacy status - keep polling
+            console.log('Generating consensus report...');
+          } else if (status.status === 'error' || status.status === 'terminated') {
+            throw new Error('Conversation failed or was terminated');
+          }
+        }
+        attempts++;
+      }
+
+      if (attempts >= maxAttempts) {
+        throw new Error('Conversation timed out');
+      }
+
+      setChatInput('');
+    } catch (error: any) {
+      setSwarmError(error.message);
+    } finally {
+      setIsSwarmLoading(false);
     }
   };
 
@@ -490,21 +642,113 @@ export default function CampaignDetailView({
           </p>
         </div>
 
-        {/* Main content area - centered text */}
-        <div className="flex-1 flex flex-col items-center justify-center px-8">
-          <p className="text-[32px] text-center leading-tight">
-            <span className="font-bold text-black">Ask your users </span>
-            <span
-              className="font-medium italic bg-clip-text"
-              style={{
-                background: 'linear-gradient(to right, #000000, #a0a0a0)',
-                WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent',
-              }}
-            >
-              anything.
-            </span>
-          </p>
+        {/* Main content area - response or placeholder */}
+        <div className="flex-1 flex flex-col px-5 py-4 overflow-y-auto">
+          {isSwarmLoading ? (
+            <div className="flex-1 flex flex-col items-center justify-center">
+              <svg className="w-10 h-10 animate-spin text-blue-500 mb-3" fill="none" viewBox="0 0 24 24">
+                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+              </svg>
+              <p className="text-sm text-gray-600">Agents are discussing...</p>
+              <p className="text-xs text-gray-400 mt-1">This may take a few minutes</p>
+            </div>
+          ) : swarmError ? (
+            <div className="flex-1 flex flex-col items-center justify-center">
+              <div className="bg-red-50 border border-red-200 rounded-lg p-4 max-w-full">
+                <p className="text-red-600 text-sm">{swarmError}</p>
+              </div>
+            </div>
+          ) : swarmResponse ? (
+            <div className="space-y-4 overflow-y-auto">
+              {swarmResponse.synthesized_conclusion && (
+                <div className="bg-white rounded-lg p-4 border border-gray-200">
+                  <div className="prose prose-sm max-w-none">
+                    <ReactMarkdown
+                      remarkPlugins={[remarkGfm]}
+                      components={{
+                        h1: ({ children }) => (
+                          <h1 className="text-xl font-bold text-gray-900 mt-4 mb-3 first:mt-0">{children}</h1>
+                        ),
+                        h2: ({ children }) => (
+                          <h2 className="text-lg font-semibold text-gray-800 mt-4 mb-2">{children}</h2>
+                        ),
+                        h3: ({ children }) => (
+                          <h3 className="text-base font-semibold text-gray-800 mt-3 mb-2">{children}</h3>
+                        ),
+                        p: ({ children }) => (
+                          <p className="text-sm text-gray-700 mb-3 leading-relaxed">{children}</p>
+                        ),
+                        strong: ({ children }) => (
+                          <strong className="font-semibold text-gray-900">{children}</strong>
+                        ),
+                        ul: ({ children }) => (
+                          <ul className="list-disc list-inside space-y-1 my-3 text-sm text-gray-700">{children}</ul>
+                        ),
+                        ol: ({ children }) => (
+                          <ol className="list-decimal list-inside space-y-1 my-3 text-sm text-gray-700">{children}</ol>
+                        ),
+                        li: ({ children }) => (
+                          <li className="text-sm text-gray-700">{children}</li>
+                        ),
+                        hr: () => (
+                          <hr className="my-4 border-gray-200" />
+                        ),
+                        table: ({ children }) => (
+                          <div className="overflow-x-auto my-4">
+                            <table className="min-w-full border border-gray-200 text-sm">{children}</table>
+                          </div>
+                        ),
+                        thead: ({ children }) => (
+                          <thead className="bg-gray-50">{children}</thead>
+                        ),
+                        th: ({ children }) => (
+                          <th className="px-3 py-2 text-left font-semibold text-gray-700 border-b border-gray-200">{children}</th>
+                        ),
+                        td: ({ children }) => (
+                          <td className="px-3 py-2 text-gray-600 border-b border-gray-100">{children}</td>
+                        ),
+                        blockquote: ({ children }) => (
+                          <blockquote className="border-l-4 border-blue-300 pl-4 my-3 italic text-gray-600">{children}</blockquote>
+                        ),
+                      }}
+                    >
+                      {swarmResponse.synthesized_conclusion}
+                    </ReactMarkdown>
+                  </div>
+                </div>
+              )}
+              {swarmResponse.type === 'messages' && swarmResponse.messages && (
+                <div>
+                  <h4 className="text-sm font-semibold text-gray-700 mb-2">Discussion</h4>
+                  <div className="space-y-2 max-h-[300px] overflow-y-auto">
+                    {swarmResponse.messages.map((msg: any, i: number) => (
+                      <div key={i} className="text-sm bg-white rounded-lg p-3 border border-gray-200">
+                        <span className="font-medium text-blue-600">{msg.speaker_name}:</span>
+                        <span className="text-gray-600 ml-2">{msg.content}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          ) : (
+            <div className="flex-1 flex flex-col items-center justify-center">
+              <p className="text-[32px] text-center leading-tight">
+                <span className="font-bold text-black">Ask your users </span>
+                <span
+                  className="font-medium italic bg-clip-text"
+                  style={{
+                    background: 'linear-gradient(to right, #000000, #a0a0a0)',
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
+                  }}
+                >
+                  anything.
+                </span>
+              </p>
+            </div>
+          )}
         </div>
 
         {/* Cohort Filters Dropdown */}
@@ -579,22 +823,27 @@ export default function CampaignDetailView({
         <div className="px-5 pb-6">
           {/* Chat Input */}
           <div className="bg-[#eaeaea] rounded-full flex items-center px-4 py-3.5 mb-4">
-            <button className="text-gray-400 mr-3 hover:text-gray-600 transition-colors">
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4" />
-              </svg>
-            </button>
             <input
               type="text"
               value={chatInput}
               onChange={(e) => setChatInput(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' && !e.shiftKey && !isSwarmLoading) {
+                  e.preventDefault();
+                  handleSubmitQuestion();
+                }
+              }}
               placeholder="Ask anything"
-              className="flex-1 bg-transparent text-gray-700 placeholder-[#a7a7a7] outline-none text-sm font-medium"
+              disabled={isSwarmLoading}
+              className="flex-1 bg-transparent text-gray-700 placeholder-[#a7a7a7] outline-none text-sm font-medium disabled:opacity-50"
             />
-            <button className="text-black ml-3 hover:text-gray-600 transition-colors">
+            <button
+              onClick={handleSubmitQuestion}
+              disabled={isSwarmLoading || !chatInput.trim()}
+              className="text-black ml-3 hover:text-blue-600 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+            >
               <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/>
-                <path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/>
+                <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
               </svg>
             </button>
           </div>

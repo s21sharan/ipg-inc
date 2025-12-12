@@ -15,8 +15,19 @@ from pydantic import BaseModel, Field
 from supabase import Client
 from typing import Any
 
-from app.database import get_db
+from app.database import get_db, get_supabase_admin_client
 from app.services.swarm_service import SwarmService
+
+
+def get_admin_db() -> Client:
+    """Get admin client for swarm operations (bypasses RLS)."""
+    admin = get_supabase_admin_client()
+    if not admin:
+        raise HTTPException(
+            status_code=500,
+            detail="Service role key not configured"
+        )
+    return admin
 
 
 router = APIRouter()
@@ -89,7 +100,7 @@ class StopSwarmResponse(BaseModel):
 @router.post("/create", response_model=SwarmCreateResponse)
 async def create_swarm(
     request: CreateSwarmRequest,
-    db: Client = Depends(get_db),
+    db: Client = Depends(get_admin_db),
 ):
     """
     Create and start a new swarm discussion.
@@ -120,7 +131,7 @@ async def create_swarm(
 @router.get("/status/{swarm_id}", response_model=SwarmStatusResponse)
 async def get_swarm_status(
     swarm_id: str,
-    db: Client = Depends(get_db),
+    db: Client = Depends(get_admin_db),
 ):
     """
     Get the current status of a swarm session.
@@ -148,7 +159,7 @@ async def get_swarm_messages(
     swarm_id: str,
     offset: int = Query(default=0, ge=0, description="Number of messages to skip"),
     limit: int = Query(default=50, ge=1, le=200, description="Maximum messages to return"),
-    db: Client = Depends(get_db),
+    db: Client = Depends(get_admin_db),
 ):
     """
     Get messages from a swarm session with pagination.
@@ -176,7 +187,7 @@ async def get_swarm_messages(
 @router.get("/participants/{swarm_id}", response_model=SwarmParticipantsResponse)
 async def get_swarm_participants(
     swarm_id: str,
-    db: Client = Depends(get_db),
+    db: Client = Depends(get_admin_db),
 ):
     """
     Get participants in a swarm session.
@@ -201,7 +212,7 @@ async def get_swarm_participants(
 @router.get("/consensus/{swarm_id}")
 async def get_swarm_consensus(
     swarm_id: str,
-    db: Client = Depends(get_db),
+    db: Client = Depends(get_admin_db),
 ):
     """
     Get the consensus summary for a completed swarm.
@@ -230,7 +241,7 @@ async def get_swarm_consensus(
 @router.post("/{swarm_id}/stop", response_model=StopSwarmResponse)
 async def stop_swarm(
     swarm_id: str,
-    db: Client = Depends(get_db),
+    db: Client = Depends(get_admin_db),
 ):
     """
     Manually stop an active swarm session.

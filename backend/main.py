@@ -3,7 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
 
 from app.config import get_settings
-from app.routers import simulation, analysis, clustering, health, graph
+from app.routers import simulation, analysis, clustering, health, graph, swarm
 from app.memgraph import get_memgraph_connection
 
 
@@ -49,6 +49,7 @@ def create_app() -> FastAPI:
     app.include_router(analysis.router, prefix="/api/analysis", tags=["Analysis"])
     app.include_router(clustering.router, prefix="/api/clustering", tags=["Clustering"])
     app.include_router(graph.router, prefix="/api/graph", tags=["Graph"])
+    app.include_router(swarm.router, prefix="/api/swarm", tags=["Swarm"])
 
     return app
 

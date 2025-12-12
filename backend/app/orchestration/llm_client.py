@@ -200,6 +200,7 @@ Respond with ONLY a number between 1 and 10."""
         prompt: str,
         system_prompt: str | None = None,
         max_tokens: int = 2000,
+        model: str | None = None,
     ) -> str:
         """
         Simple text completion.
@@ -208,24 +209,36 @@ Respond with ONLY a number between 1 and 10."""
             prompt: User prompt
             system_prompt: Optional system prompt
             max_tokens: Maximum completion tokens (includes reasoning for gpt-5-nano)
+            model: Model to use (default: gpt-5-nano for reasoning, use gpt-4o-mini for extraction)
 
         Returns:
             Generated text response
         """
+        use_model = model or DEFAULT_MODEL
         messages = []
         if system_prompt:
             messages.append({"role": "system", "content": system_prompt})
         messages.append({"role": "user", "content": prompt})
 
-        # Note: gpt-5-nano is a reasoning model - it uses tokens for internal
-        # reasoning before producing output. We need higher limits to ensure
-        # enough tokens remain for the actual response after reasoning.
-        response = self.openai.chat.completions.create(
-            model=DEFAULT_MODEL,
-            messages=messages,
-            max_completion_tokens=max_tokens,
-            # Note: gpt-5-nano only supports temperature=1 (default)
-        )
+        # Use different parameters based on model type
+        # Reasoning models (gpt-5, gpt-5-nano, o1, etc.) require max_completion_tokens
+        reasoning_models = {"gpt-5-nano", "gpt-5", "gpt-5.2", "o1", "o1-mini", "o1-preview"}
+        if use_model in reasoning_models:
+            # Reasoning model - use max_completion_tokens, no temperature
+            response = self.openai.chat.completions.create(
+                model=use_model,
+                messages=messages,
+                max_completion_tokens=max_tokens,
+                # Note: reasoning models only support temperature=1 (default)
+            )
+        else:
+            # Standard models - use max_tokens and temperature
+            response = self.openai.chat.completions.create(
+                model=use_model,
+                messages=messages,
+                max_tokens=max_tokens,
+                temperature=0.7,
+            )
 
         return response.choices[0].message.content or ""
 

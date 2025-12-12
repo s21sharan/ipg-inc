@@ -142,3 +142,38 @@ Implemented persistent memory stream with Qdrant storage and Memgraph relationsh
 
 ### #Background
 Persistent memory enables cross-session continuity: memories load from Qdrant at session start, new memories save after each turn, DERIVED_FROM tracks reflection sources in Memgraph. Test file uses OpenAI to evaluate whether agent responses reference prior session content. Interactive script provides --auto mode for automated two-session testing.
+
+## 2025-12-11 – Compact Session
+
+### #CurrentFocus
+Built multi-agent swarm system with consensus generation; wired to frontend cluster selector.
+
+### #SessionChanges
+- Created `app/swarm/` module: SwarmOrchestrator, SwarmAgent, speaker selection strategies
+- Created `app/consensus/` module: CriticAgent (quality eval), ConsensusBuilder (insight extraction)
+- Created `app/services/swarm_service.py` orchestrating swarm→critic→consensus pipeline
+- Created `app/routers/swarm.py` with REST endpoints: create, status, messages, consensus, stop
+- Mounted swarm router in `main.py` at `/api/swarm`
+- Created Supabase migration `012_create_swarm_tables.sql` (sessions, participants, messages, summaries)
+- Created Next.js proxy routes: `/api/swarm/create`, `/api/swarm/status/[id]`, etc.
+- Wired `campaign-detail-view.tsx` to call swarm API from cluster selector + chat input
+- Fixed agent names: `interview.get("name")` before falling back to `Participant-{id}`
+- Fixed consensus extraction: switched from gpt-5-nano to gpt-4o-mini (reasoning model left 0 output)
+- Added `model` param to `LLMClient.complete()` for flexible model selection
+- Fixed conversation ID resolution: `_get_interviews()` now maps conversation→source_interview_id
+- Created `tests/test_swarm_integration.py` (10 tests) and `tests/test_swarm_router.py` (13 tests)
+- Created `scripts/test_swarm_e2e.py` for full pipeline testing with GPT evaluation
+
+### #NextSteps
+- Test swarm flow from frontend with real cluster selection
+- Add WebSocket streaming for real-time message updates during swarm
+- Implement swarm history/replay in campaign view
+- Add rate limiting for swarm creation
+
+### #BugsAndTheories
+- Empty consensus ⇒ gpt-5-nano used all tokens for reasoning (fixed: use gpt-4o-mini for extraction)
+- "Agents not found" ⇒ cluster members have conversation_id not interview_id (fixed: lookup mapping)
+- Agent names showing "Participant-xxx" ⇒ code checked demographics.name not interview.name (fixed)
+
+### #Background
+Swarm system enables multi-agent discussions on user questions. Agents from clusters discuss topic for N turns, CriticAgent evaluates quality, ConsensusBuilder extracts insights/agreements/conclusions. E2E test achieved 9/10 GPT evaluation score. Frontend wired via Next.js proxy to FastAPI backend.

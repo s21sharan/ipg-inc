@@ -10,9 +10,13 @@ Provides a unified interface for:
 
 import uuid
 import asyncio
+import threading
+import logging
 from datetime import datetime, timezone
 from typing import Any
 from supabase import Client
+
+logger = logging.getLogger(__name__)
 
 from ..swarm import (
     SwarmOrchestrator,
@@ -78,14 +82,22 @@ class SwarmService:
         if len(agent_ids) < 2:
             raise ValueError("Swarm requires at least 2 agents")
 
-        # Fetch interview data for agents
-        interviews = self._get_interviews(agent_ids)
+        # Fetch interview data for agents (supports both interview IDs and conversation IDs)
+        interviews, resolved_ids = self._get_interviews(agent_ids)
 
-        # Validate all agents exist
-        found_ids = {i["id"] for i in interviews}
-        missing = set(agent_ids) - found_ids
+        # Validate all agent IDs were resolved
+        missing = set(agent_ids) - resolved_ids
         if missing:
             raise ValueError(f"Agents not found: {', '.join(missing)}")
+
+        # Deduplicate interviews (multiple conversation IDs may map to same interview)
+        seen_ids = set()
+        unique_interviews = []
+        for interview in interviews:
+            if interview["id"] not in seen_ids:
+                seen_ids.add(interview["id"])
+                unique_interviews.append(interview)
+        interviews = unique_interviews
 
         # Create session in database
         swarm_id = str(uuid.uuid4())
@@ -116,8 +128,13 @@ class SwarmService:
             }
             self.db.table("swarm_participants").insert(participant_data).execute()
 
-        # Start swarm in background
-        self._run_swarm_background(swarm_id, topic, interviews, merged_config)
+        # Start swarm in background thread (truly async)
+        thread = threading.Thread(
+            target=self._run_swarm_background,
+            args=(swarm_id, topic, interviews, merged_config),
+            daemon=True,
+        )
+        thread.start()
 
         return {
             "swarm_id": swarm_id,
@@ -140,12 +157,14 @@ class SwarmService:
             self.db.table("swarm_sessions")
             .select("*")
             .eq("id", swarm_id)
-            .single()
+            .limit(1)
             .execute()
         )
 
         if not result.data:
             return None
+
+        session = result.data[0]
 
         # Get message count
         messages_result = (
@@ -158,7 +177,7 @@ class SwarmService:
         message_count = len(messages_result.data) if messages_result.data else 0
 
         return {
-            **result.data,
+            **session,
             "message_count": message_count,
         }
 
@@ -224,14 +243,15 @@ class SwarmService:
             self.db.table("swarm_sessions")
             .select("status")
             .eq("id", swarm_id)
-            .single()
+            .limit(1)
             .execute()
         )
 
         if not result.data:
             return False
 
-        if result.data["status"] != "active":
+        session = result.data[0]
+        if session["status"] != "active":
             return False
 
         # Update status to terminated
@@ -261,11 +281,11 @@ class SwarmService:
             self.db.table("consensus_summaries")
             .select("*")
             .eq("swarm_id", swarm_id)
-            .single()
+            .limit(1)
             .execute()
         )
 
-        return result.data
+        return result.data[0] if result.data else None
 
     def generate_consensus(
         self,
@@ -302,8 +322,18 @@ class SwarmService:
 
         return consensus
 
-    def _get_interviews(self, agent_ids: list[str]) -> list[dict[str, Any]]:
-        """Fetch interview data for given IDs."""
+    def _get_interviews(self, agent_ids: list[str]) -> tuple[list[dict[str, Any]], set[str]]:
+        """Fetch interview data for given IDs.
+
+        Supports both interview IDs and conversation IDs.
+        For conversation IDs, looks up interview_id or source_interview_id column.
+
+        Returns:
+            Tuple of (interviews list, set of resolved input IDs)
+        """
+        resolved_ids: set[str] = set()
+
+        # First try direct interview lookup
         result = (
             self.db.table("interviews")
             .select("*")
@@ -311,7 +341,46 @@ class SwarmService:
             .execute()
         )
 
-        return result.data or []
+        found_interviews = result.data or []
+        found_ids = {i["id"] for i in found_interviews}
+        resolved_ids.update(found_ids)
+
+        # For any IDs not found as interviews, try looking up as conversation IDs
+        missing_ids = [aid for aid in agent_ids if aid not in found_ids]
+        if missing_ids:
+            # Look up conversations - try both column names for compatibility
+            # (schema uses source_interview_id, but simulation may use interview_id)
+            conv_result = (
+                self.db.table("conversations")
+                .select("*")
+                .in_("id", missing_ids)
+                .execute()
+            )
+
+            if conv_result.data:
+                # Track which conversation IDs were resolved
+                # Check both possible column names
+                conv_to_interview = {}
+                for c in conv_result.data:
+                    interview_id = c.get("interview_id") or c.get("source_interview_id")
+                    if interview_id:
+                        conv_to_interview[c["id"]] = interview_id
+
+                resolved_ids.update(conv_to_interview.keys())
+
+                interview_ids = list(conv_to_interview.values())
+                if interview_ids:
+                    # Fetch these interviews
+                    additional = (
+                        self.db.table("interviews")
+                        .select("*")
+                        .in_("id", interview_ids)
+                        .execute()
+                    )
+                    if additional.data:
+                        found_interviews.extend(additional.data)
+
+        return found_interviews, resolved_ids
 
     def _run_swarm_background(
         self,
@@ -321,11 +390,12 @@ class SwarmService:
         config: dict[str, Any],
     ) -> None:
         """
-        Start swarm execution in background.
+        Start swarm execution in background thread.
 
-        Note: In production, this would use a proper task queue.
-        For now, we run synchronously but save incrementally.
+        Runs the full swarm conversation and generates consensus.
+        Updates database incrementally as messages are generated.
         """
+        logger.info(f"Starting swarm {swarm_id} with {len(interviews)} agents")
         try:
             orchestrator = create_swarm_orchestrator(
                 config.get("speaker_selection", "dynamic")
@@ -353,24 +423,32 @@ class SwarmService:
             # Get output and generate consensus
             output = orchestrator.get_output(final_state)
 
-            # Update session status
+            # Mark swarm as completed immediately so frontend can show messages
             now = datetime.now(timezone.utc).isoformat()
             self.db.table("swarm_sessions").update({
-                "status": final_state["status"],
+                "status": "completed",
                 "completed_at": now,
             }).eq("id", swarm_id).execute()
 
-            # Generate consensus if completed successfully
+            logger.info(f"Swarm {swarm_id} completed, starting consensus generation in background...")
+
+            # Generate consensus in background (don't block the completion)
             if final_state["status"] == "completed":
-                self.generate_consensus(output)
+                try:
+                    self.generate_consensus(output)
+                    logger.info(f"Swarm {swarm_id} consensus generated successfully")
+                except Exception as e:
+                    logger.error(f"Swarm {swarm_id} consensus generation failed: {e}")
+
+            logger.info(f"Swarm {swarm_id} finished with status: {final_state['status']}")
 
         except Exception as e:
             # Mark session as failed
+            logger.error(f"Swarm {swarm_id} failed: {e}")
             self.db.table("swarm_sessions").update({
                 "status": "error",
                 "error": str(e),
             }).eq("id", swarm_id).execute()
-            raise
 
         finally:
             # Cleanup

@@ -21,6 +21,9 @@ from .judge_state import (
 from ..swarm.swarm_state import SwarmOutput, SwarmMessage
 from ..orchestration.llm_client import get_llm_client, LLMClient
 
+# Use gpt-4o-mini for quality assessment (faster and more reliable for structured output)
+ASSESSMENT_MODEL = "gpt-4o-mini"
+
 
 class CriticAgent:
     """
@@ -155,7 +158,7 @@ Conversation:
 Evaluate this discussion and provide quality scores."""
 
         try:
-            response = self._llm.complete(user_prompt, system_prompt=system_prompt)
+            response = self._llm.complete(user_prompt, system_prompt=system_prompt, model=ASSESSMENT_MODEL)
 
             # Parse JSON from response
             start = response.find("{")

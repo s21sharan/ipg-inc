@@ -3,10 +3,8 @@ Consensus Builder for synthesizing swarm discussions into structured summaries.
 
 Implements a MetaGPT-style structured output generator that analyzes
 completed swarm conversations to extract:
-- Key insights with supporting quotes
-- Areas of agreement and disagreement
-- Synthesized conclusions
-- Actionable items
+- Key insights with supporting quotes and statistics
+- Product recommendations with problems, fixes, and implementations
 
 Reference: HACN Architecture - Tier 3 (Consensus Summary Generation)
 """
@@ -27,13 +25,19 @@ from .judge_state import (
 from ..swarm.swarm_state import SwarmOutput, SwarmMessage
 from ..orchestration.llm_client import get_llm_client, LLMClient
 
+# Use gpt-5 for high-quality consensus extraction
+# Note: Reasoning models need high token limits as they use tokens for internal
+# reasoning before producing output
+EXTRACTION_MODEL = "gpt-5"
+EXTRACTION_MAX_TOKENS = 16000  # High limit for reasoning + output
+
 
 class ConsensusBuilder:
     """
     Builds structured consensus summaries from swarm discussions.
 
     Analyzes completed swarm conversations to extract insights,
-    identify areas of agreement/disagreement, and synthesize conclusions.
+    identify patterns, and generate actionable product recommendations.
     """
 
     def __init__(self, llm_client: LLMClient | None = None):
@@ -58,40 +62,26 @@ class ConsensusBuilder:
             critic_evaluation: Optional critic evaluation for context
 
         Returns:
-            ConsensusSummary with structured insights
+            ConsensusSummary with structured insights and recommendations
         """
         messages = swarm_output["messages"]
         topic = swarm_output["topic"]
         participants = swarm_output["participants"]
 
-        # Extract key insights
-        key_insights = self._extract_key_insights(topic, messages, participants)
+        # Generate the full analysis report
+        report = self._generate_full_report(topic, messages, participants)
 
-        # Identify agreement areas
-        agreements = self._identify_agreements(topic, messages, participants)
+        # Extract structured data for database storage
+        key_insights = self._parse_key_insights(report)
+        recommendations = self._parse_recommendations(report)
 
-        # Identify disagreement areas
-        disagreements = self._identify_disagreements(topic, messages, participants)
-
-        # Synthesize conclusion
-        conclusion = self._synthesize_conclusion(
-            topic, key_insights, agreements, disagreements
-        )
-
-        # Generate actionable items
-        actionable_items = self._generate_actionable_items(
-            topic, key_insights, agreements, conclusion
-        )
-
-        # Calculate confidence
-        confidence = self._calculate_confidence(
-            key_insights, agreements, disagreements, critic_evaluation
+        # Calculate confidence based on discussion quality
+        confidence = self._calculate_confidence_from_discussion(
+            messages, participants, critic_evaluation
         )
 
         # Determine consensus strength
-        consensus_strength = self._determine_consensus_strength(
-            agreements, disagreements
-        )
+        consensus_strength = self._determine_consensus_strength_from_report(report)
 
         # Format participants
         formatted_participants = [
@@ -108,373 +98,268 @@ class ConsensusBuilder:
             "topic": topic,
             "participants": formatted_participants,
             "key_insights": key_insights,
-            "areas_of_agreement": agreements,
-            "areas_of_disagreement": disagreements,
-            "synthesized_conclusion": conclusion,
-            "actionable_items": actionable_items,
+            "areas_of_agreement": [],  # Incorporated into key_insights
+            "areas_of_disagreement": [],  # Incorporated into key_insights
+            "synthesized_conclusion": report,  # Full markdown report
+            "actionable_items": recommendations,
             "confidence_score": confidence,
             "consensus_strength": consensus_strength,
             "generated_at": datetime.now(timezone.utc).isoformat(),
-            "model_used": "gpt-4o-mini",
+            "model_used": EXTRACTION_MODEL,
         }
 
-    def _extract_key_insights(
+    def _generate_full_report(
         self,
         topic: str,
         messages: list[SwarmMessage],
         participants: list[dict],
-    ) -> list[KeyInsight]:
-        """Extract key insights from the discussion."""
-        conversation = self._format_conversation(messages)
-        participant_names = [p["agent_name"] for p in participants]
-
-        system_prompt = """You are an expert at analyzing group discussions and extracting key insights.
-
-Identify the 3-5 most important insights from this conversation.
-For each insight:
-1. State the insight clearly
-2. List which participants supported this insight
-3. Include 1-2 direct quotes that support it
-
-Respond in JSON format:
-{
-    "insights": [
-        {
-            "insight": "<the key insight>",
-            "supporting_agents": ["<name1>", "<name2>"],
-            "quotes": [
-                {"agent_name": "<name>", "quote": "<direct quote>", "turn": <turn number>}
-            ],
-            "confidence": <0.0-1.0>
-        }
-    ]
-}"""
-
-        user_prompt = f"""Topic: {topic}
-
-Participants: {', '.join(participant_names)}
-
-Conversation:
-{conversation}
-
-Extract the key insights from this discussion."""
-
-        try:
-            response = self._llm.complete(user_prompt, system_prompt=system_prompt)
-
-            start = response.find("{")
-            end = response.rfind("}") + 1
-            if start >= 0 and end > start:
-                data = json.loads(response[start:end])
-                insights = []
-
-                for item in data.get("insights", [])[:5]:
-                    quotes: list[InsightQuote] = []
-                    for q in item.get("quotes", [])[:3]:
-                        # Find agent_id from name
-                        agent_id = ""
-                        for p in participants:
-                            if p["agent_name"] == q.get("agent_name"):
-                                agent_id = p["agent_id"]
-                                break
-
-                        quotes.append({
-                            "agent_id": agent_id,
-                            "agent_name": q.get("agent_name", "Unknown"),
-                            "quote": q.get("quote", ""),
-                            "turn_number": int(q.get("turn", 0)),
-                        })
-
-                    insights.append({
-                        "insight": item.get("insight", ""),
-                        "supporting_agents": item.get("supporting_agents", []),
-                        "quotes": quotes,
-                        "confidence": float(item.get("confidence", 0.7)),
-                    })
-
-                return insights
-
-        except (json.JSONDecodeError, ValueError, KeyError):
-            pass
-
-        return []
-
-    def _identify_agreements(
-        self,
-        topic: str,
-        messages: list[SwarmMessage],
-        participants: list[dict],
-    ) -> list[AgreementPoint]:
-        """Identify areas of agreement in the discussion."""
-        conversation = self._format_conversation(messages)
-        participant_names = [p["agent_name"] for p in participants]
-
-        system_prompt = """You are an expert at analyzing group discussions for consensus.
-
-Identify points where participants agreed or reached consensus.
-For each agreement:
-1. State the point of agreement
-2. Assess the strength (strong, moderate, weak)
-3. List supporting and dissenting agents
-
-Respond in JSON format:
-{
-    "agreements": [
-        {
-            "point": "<what they agreed on>",
-            "strength": "strong|moderate|weak",
-            "supporting_agents": ["<name1>", "<name2>"],
-            "dissenting_agents": ["<name>"]
-        }
-    ]
-}"""
-
-        user_prompt = f"""Topic: {topic}
-
-Participants: {', '.join(participant_names)}
-
-Conversation:
-{conversation}
-
-Identify areas of agreement in this discussion."""
-
-        try:
-            response = self._llm.complete(user_prompt, system_prompt=system_prompt)
-
-            start = response.find("{")
-            end = response.rfind("}") + 1
-            if start >= 0 and end > start:
-                data = json.loads(response[start:end])
-                agreements = []
-
-                for item in data.get("agreements", [])[:5]:
-                    strength = item.get("strength", "moderate")
-                    if strength not in ("strong", "moderate", "weak"):
-                        strength = "moderate"
-
-                    agreements.append({
-                        "point": item.get("point", ""),
-                        "agreement_level": strength,
-                        "supporting_agents": item.get("supporting_agents", []),
-                        "dissenting_agents": item.get("dissenting_agents", []),
-                    })
-
-                return agreements
-
-        except (json.JSONDecodeError, ValueError, KeyError):
-            pass
-
-        return []
-
-    def _identify_disagreements(
-        self,
-        topic: str,
-        messages: list[SwarmMessage],
-        participants: list[dict],
-    ) -> list[DisagreementPoint]:
-        """Identify areas of disagreement in the discussion."""
-        conversation = self._format_conversation(messages)
-        participant_names = [p["agent_name"] for p in participants]
-
-        system_prompt = """You are an expert at analyzing group discussions for differing viewpoints.
-
-Identify points where participants disagreed or held different positions.
-For each disagreement:
-1. State the point of contention
-2. List the different positions and who held them
-
-Respond in JSON format:
-{
-    "disagreements": [
-        {
-            "point": "<the topic of disagreement>",
-            "positions": [
-                {"position": "<viewpoint 1>", "agents": ["<name1>"]},
-                {"position": "<viewpoint 2>", "agents": ["<name2>"]}
-            ]
-        }
-    ]
-}"""
-
-        user_prompt = f"""Topic: {topic}
-
-Participants: {', '.join(participant_names)}
-
-Conversation:
-{conversation}
-
-Identify areas of disagreement in this discussion."""
-
-        try:
-            response = self._llm.complete(user_prompt, system_prompt=system_prompt)
-
-            start = response.find("{")
-            end = response.rfind("}") + 1
-            if start >= 0 and end > start:
-                data = json.loads(response[start:end])
-                disagreements = []
-
-                for item in data.get("disagreements", [])[:5]:
-                    disagreements.append({
-                        "point": item.get("point", ""),
-                        "positions": item.get("positions", []),
-                    })
-
-                return disagreements
-
-        except (json.JSONDecodeError, ValueError, KeyError):
-            pass
-
-        return []
-
-    def _synthesize_conclusion(
-        self,
-        topic: str,
-        insights: list[KeyInsight],
-        agreements: list[AgreementPoint],
-        disagreements: list[DisagreementPoint],
     ) -> str:
-        """Synthesize a conclusion from the analysis."""
-        insights_text = "\n".join([f"- {i['insight']}" for i in insights]) or "No key insights identified."
-        agreements_text = "\n".join([f"- {a['point']}" for a in agreements]) or "No clear agreements."
-        disagreements_text = "\n".join([f"- {d['point']}" for d in disagreements]) or "No major disagreements."
+        """Generate the full analysis report in the specified format."""
+        conversation = self._format_conversation(messages)
+        participant_profiles = self._format_participant_profiles(participants)
+        participant_names = [p["agent_name"] for p in participants]
+        num_participants = len(participants)
 
-        system_prompt = """You are an expert at synthesizing group discussions into clear conclusions.
+        system_prompt = f"""You are an expert UX researcher and product strategist analyzing a focus group discussion.
 
-Write a concise (2-4 sentences) conclusion that summarizes the key takeaways from this discussion.
-Focus on what was learned and any emerging consensus."""
+Your task is to synthesize the conversation into a comprehensive insights report with actionable product recommendations.
+
+FORMAT YOUR RESPONSE EXACTLY LIKE THIS:
+
+# Key Insights
+
+## [Insight Title]
+**[One-line subtitle that captures the core finding]**
+
+[2-3 paragraph detailed explanation of the insight, weaving in direct quotes from participants. Include specific examples and explain the psychological or behavioral mechanism behind the pattern. Reference participants by name when quoting them.]
+
+- [Statistic or data point derived from the discussion, e.g., "X of {num_participants} users (Y%) mentioned..."]
+- [Another supporting data point]
+- [Pattern observation with specific numbers]
+- [Behavioral insight with quantification where possible]
+
+## [Next Insight Title]
+...
+
+(Continue for 3-5 key insights)
+
+---
+
+# Product Recommendations
+
+| Problem | Fix | Implementation |
+|---------|-----|----------------|
+| [Brief problem statement from insights] | [Concise solution description] | [Detailed implementation steps with specific examples, messages, and mechanics] |
+| [Next problem] | [Next fix] | [Next implementation] |
+
+(Include 3-5 recommendations that directly address the key insights)
+
+GUIDELINES:
+- Extract ACTUAL quotes from the conversation (use participant names)
+- Calculate percentages based on {num_participants} total participants
+- Make insights specific and actionable, not generic
+- Each insight should have a clear "so what" implication
+- Recommendations should be concrete enough for a PM to implement
+- Use bold, specific numbers where possible
+- Connect recommendations directly to insights
+- Implementation details should include example UI copy/messages"""
 
         user_prompt = f"""Topic: {topic}
 
-Key Insights:
-{insights_text}
+Participants ({num_participants} total):
+{participant_profiles}
 
-Areas of Agreement:
-{agreements_text}
+Conversation:
+{conversation}
 
-Areas of Disagreement:
-{disagreements_text}
-
-Write a synthesized conclusion for this discussion."""
+Generate a comprehensive insights report following the exact format specified. Use participant demographics to provide context (e.g., "As a 65-year-old retired woman, Olga noted..." or "The younger participants aged 20-25 tended to...")."""
 
         try:
-            response = self._llm.complete(user_prompt, system_prompt=system_prompt)
+            response = self._llm.complete(
+                user_prompt,
+                system_prompt=system_prompt,
+                model=EXTRACTION_MODEL,
+                max_tokens=EXTRACTION_MAX_TOKENS,
+            )
             return response.strip()
-        except Exception:
-            return "Unable to synthesize conclusion from the discussion."
+        except Exception as e:
+            return f"Unable to generate report: {str(e)}"
 
-    def _generate_actionable_items(
+    def _parse_key_insights(self, report: str) -> list[KeyInsight]:
+        """Parse key insights from the markdown report."""
+        insights = []
+
+        # Simple parsing - extract insight titles and content
+        lines = report.split('\n')
+        current_insight = None
+        current_content = []
+
+        for line in lines:
+            if line.startswith('## ') and 'Product Recommendations' not in line:
+                if current_insight:
+                    insights.append({
+                        "insight": current_insight,
+                        "supporting_agents": [],
+                        "quotes": [],
+                        "confidence": 0.8,
+                        "details": '\n'.join(current_content).strip()
+                    })
+                current_insight = line[3:].strip()
+                current_content = []
+            elif current_insight and not line.startswith('# '):
+                current_content.append(line)
+
+        # Add last insight
+        if current_insight:
+            insights.append({
+                "insight": current_insight,
+                "supporting_agents": [],
+                "quotes": [],
+                "confidence": 0.8,
+                "details": '\n'.join(current_content).strip()
+            })
+
+        return insights[:5]  # Limit to 5 insights
+
+    def _parse_recommendations(self, report: str) -> list[str]:
+        """Parse product recommendations from the report."""
+        recommendations = []
+
+        # Find the recommendations section
+        if '# Product Recommendations' in report:
+            rec_section = report.split('# Product Recommendations')[1]
+
+            # Parse table rows
+            lines = rec_section.split('\n')
+            for line in lines:
+                if line.startswith('|') and '---' not in line and 'Problem' not in line:
+                    parts = [p.strip() for p in line.split('|')[1:-1]]
+                    if len(parts) >= 3:
+                        problem, fix, implementation = parts[0], parts[1], parts[2]
+                        if problem and fix:
+                            recommendations.append(f"{problem}: {fix}")
+
+        return recommendations[:5]
+
+    def _calculate_confidence_from_discussion(
         self,
-        topic: str,
-        insights: list[KeyInsight],
-        agreements: list[AgreementPoint],
-        conclusion: str,
-    ) -> list[str]:
-        """Generate actionable recommendations from the discussion."""
-        insights_text = "\n".join([f"- {i['insight']}" for i in insights]) or "No insights."
-        agreements_text = "\n".join([f"- {a['point']}" for a in agreements]) or "No agreements."
-
-        system_prompt = """You are an expert at turning discussion insights into actionable recommendations.
-
-Generate 2-4 specific, actionable items based on the discussion findings.
-Each item should be concrete and implementable.
-
-Respond in JSON format:
-{
-    "actions": ["<action 1>", "<action 2>", "<action 3>"]
-}"""
-
-        user_prompt = f"""Topic: {topic}
-
-Key Insights:
-{insights_text}
-
-Areas of Agreement:
-{agreements_text}
-
-Conclusion: {conclusion}
-
-Generate actionable items from this discussion."""
-
-        try:
-            response = self._llm.complete(user_prompt, system_prompt=system_prompt)
-
-            start = response.find("{")
-            end = response.rfind("}") + 1
-            if start >= 0 and end > start:
-                data = json.loads(response[start:end])
-                return data.get("actions", [])[:5]
-
-        except (json.JSONDecodeError, ValueError, KeyError):
-            pass
-
-        return []
-
-    def _calculate_confidence(
-        self,
-        insights: list[KeyInsight],
-        agreements: list[AgreementPoint],
-        disagreements: list[DisagreementPoint],
+        messages: list[SwarmMessage],
+        participants: list[dict],
         critic_evaluation: CriticEvaluation | None,
     ) -> float:
-        """Calculate overall confidence score for the consensus."""
-        confidence = 0.5  # Base confidence
+        """Calculate confidence based on discussion quality."""
+        confidence = 0.6  # Base confidence
 
-        # More insights = higher confidence
-        if len(insights) >= 3:
+        # More messages = more data = higher confidence
+        if len(messages) >= 10:
             confidence += 0.1
-        if len(insights) >= 5:
+        if len(messages) >= 20:
             confidence += 0.1
 
-        # Strong agreements increase confidence
-        strong_agreements = sum(1 for a in agreements if a["agreement_level"] == "strong")
-        if strong_agreements >= 2:
-            confidence += 0.15
+        # More participants = more perspectives
+        if len(participants) >= 5:
+            confidence += 0.1
 
-        # Many disagreements decrease confidence
-        if len(disagreements) > len(agreements):
-            confidence -= 0.1
-
-        # Factor in critic quality score if available
+        # Factor in critic evaluation if available
         if critic_evaluation:
             quality_factor = critic_evaluation["quality"]["overall_score"] / 10.0
             confidence = confidence * 0.7 + quality_factor * 0.3
 
         return max(0.0, min(1.0, confidence))
 
-    def _determine_consensus_strength(
+    def _determine_consensus_strength_from_report(
         self,
-        agreements: list[AgreementPoint],
-        disagreements: list[DisagreementPoint],
+        report: str,
     ) -> Literal["strong", "moderate", "weak", "none"]:
-        """Determine the overall strength of consensus."""
-        if not agreements and not disagreements:
-            return "none"
+        """Determine consensus strength from report content."""
+        report_lower = report.lower()
 
-        strong_agreements = sum(1 for a in agreements if a["agreement_level"] == "strong")
-        total_agreements = len(agreements)
-        total_disagreements = len(disagreements)
+        # Look for consensus indicators
+        strong_indicators = ["all participants", "unanimous", "everyone agreed", "100%"]
+        moderate_indicators = ["most participants", "majority", "generally agreed", "70%", "80%"]
+        weak_indicators = ["some participants", "divided", "mixed views", "disagreed"]
 
-        # Strong consensus: multiple strong agreements, few disagreements
-        if strong_agreements >= 2 and total_disagreements <= 1:
+        strong_count = sum(1 for i in strong_indicators if i in report_lower)
+        moderate_count = sum(1 for i in moderate_indicators if i in report_lower)
+        weak_count = sum(1 for i in weak_indicators if i in report_lower)
+
+        if strong_count >= 2:
             return "strong"
-
-        # Moderate: more agreements than disagreements
-        if total_agreements > total_disagreements:
+        elif moderate_count >= 2 or strong_count >= 1:
             return "moderate"
-
-        # Weak: equal or more disagreements
-        if total_agreements > 0:
+        elif weak_count >= 2:
             return "weak"
-
-        return "none"
+        else:
+            return "moderate"  # Default
 
     def _format_conversation(self, messages: list[SwarmMessage]) -> str:
         """Format messages for LLM analysis."""
         lines = []
         for msg in messages:
-            lines.append(f"[Turn {msg['turn_number']}] {msg['speaker_name']}: {msg['content']}")
+            lines.append(f"**{msg['speaker_name']}**: {msg['content']}")
         return "\n\n".join(lines)
+
+    def _format_participant_profiles(self, participants: list[dict]) -> str:
+        """Format participant demographics for the prompt."""
+        profiles = []
+        for p in participants:
+            name = p.get("agent_name", "Unknown")
+            demo = p.get("demographics", {})
+
+            # Build profile line
+            parts = [f"**{name}**"]
+
+            # Age and gender
+            age = demo.get("age")
+            gender = demo.get("gender")
+            if age and gender:
+                parts.append(f"{age}-year-old {gender}")
+            elif age:
+                parts.append(f"{age} years old")
+            elif gender:
+                parts.append(gender)
+
+            # Occupation and location
+            occupation = demo.get("occupation")
+            country = demo.get("country")
+            hometown = demo.get("hometown")
+            if occupation:
+                parts.append(occupation)
+            if hometown and country:
+                parts.append(f"from {hometown}, {country}")
+            elif country:
+                parts.append(f"from {country}")
+
+            # App usage context
+            primary_app = demo.get("primary_app")
+            usage_freq = demo.get("usage_frequency")
+            is_premium = demo.get("is_premium_user")
+            learning_lang = demo.get("learning_language")
+            learning_goal = demo.get("learning_goal")
+
+            usage_parts = []
+            if primary_app:
+                usage_parts.append(f"uses {primary_app}")
+            if usage_freq:
+                usage_parts.append(f"{usage_freq} user")
+            if is_premium is not None:
+                usage_parts.append("premium" if is_premium else "free tier")
+            if learning_lang:
+                usage_parts.append(f"learning {learning_lang}")
+            if learning_goal:
+                usage_parts.append(f"for {learning_goal} purposes")
+
+            if usage_parts:
+                parts.append(f"({', '.join(usage_parts)})")
+
+            # Pain points if available
+            pain_points = demo.get("pain_points", [])
+            if pain_points and isinstance(pain_points, list):
+                parts.append(f"- Pain points: {'; '.join(pain_points[:3])}")
+
+            profiles.append(" - ".join(parts[:4]) + ("\n  " + parts[4] if len(parts) > 4 else ""))
+
+        return "\n".join(profiles)
 
 
 def create_consensus_builder() -> ConsensusBuilder:
