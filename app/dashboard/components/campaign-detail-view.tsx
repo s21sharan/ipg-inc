@@ -259,6 +259,11 @@ export default function CampaignDetailView({
   // Expanded conversation panel state
   const [isConversationExpanded, setIsConversationExpanded] = useState(false);
 
+  // Report view state
+  const [viewMode, setViewMode] = useState<'clusters' | 'report'>('clusters');
+  const [reportData, setReportData] = useState<any>(null);
+  const [isLoadingReport, setIsLoadingReport] = useState(false);
+
   // Toggle cluster selection
   const toggleClusterSelection = (clusterId: string) => {
     setSelectedClusters(prev =>
@@ -339,6 +344,44 @@ export default function CampaignDetailView({
       alert(error.message);
     } finally {
       setIsGenerating(false);
+    }
+  };
+
+  // Fetch and view report
+  const handleViewReport = async () => {
+    setIsLoadingReport(true);
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session?.access_token) throw new Error('No session');
+
+      const response = await fetch(`/api/campaigns/${campaign.id}/analyze/status`, {
+        headers: {
+          'Authorization': `Bearer ${session.access_token}`,
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to fetch report');
+      }
+
+      const data = await response.json();
+
+      // Get the latest completed analysis with report
+      const completedAnalysis = data.analyses?.find(
+        (a: any) => a.status === 'completed' && a.report_markdown
+      );
+
+      if (completedAnalysis) {
+        setReportData(completedAnalysis);
+        setViewMode('report');
+      } else {
+        alert('No completed report available yet. Please run an analysis first.');
+      }
+    } catch (error: any) {
+      console.error('Error fetching report:', error);
+      alert(error.message || 'Failed to load report');
+    } finally {
+      setIsLoadingReport(false);
     }
   };
 
@@ -529,10 +572,31 @@ export default function CampaignDetailView({
 
         {/* Content area - no scroll, fits viewport */}
         <div className="flex-1 flex flex-col px-6 py-3 min-h-0 overflow-y-auto">
-          {/* Title */}
-          <h1 className="text-2xl font-bold text-gray-900 mb-1">
-            {campaign.title}
-          </h1>
+          {/* Title with View Report */}
+          <div className="flex items-center justify-between mb-1">
+            <h1 className="text-2xl font-bold text-gray-900">
+              {campaign.title}
+            </h1>
+            {viewMode === 'clusters' && (
+              <button
+                onClick={handleViewReport}
+                disabled={isLoadingReport}
+                className="flex items-center gap-1 p-2 rounded-lg hover:bg-gray-100 transition-colors disabled:opacity-50"
+              >
+                {isLoadingReport ? (
+                  <svg className="w-4 h-4 animate-spin text-[#484848]" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
+                ) : (
+                  <>
+                    <span className="text-xs text-[#484848] font-semibold underline">VIEW REPORT</span>
+                    <span className="text-xs text-[#484848]">→</span>
+                  </>
+                )}
+              </button>
+            )}
+          </div>
 
           {/* Stats row */}
           <div className="flex items-center gap-5 text-xs text-gray-600 mb-3">
@@ -550,82 +614,189 @@ export default function CampaignDetailView({
             </span>
           </div>
 
-          {/* Loading state */}
-          {isLoading && (
-            <div className="flex items-center justify-center py-20">
-              <svg className="w-8 h-8 animate-spin text-blue-500" fill="none" viewBox="0 0 24 24">
-                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-              </svg>
-            </div>
-          )}
-
-          {/* No clusters state */}
-          {!isLoading && clusterData?.status === 'none' && (
-            <div className="flex flex-col items-center justify-center py-20">
-              <svg className="w-16 h-16 text-gray-300 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z" />
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z" />
-              </svg>
-              <h3 className="text-lg font-medium text-gray-700 mb-2">No Insights Generated Yet</h3>
-              <p className="text-gray-500 mb-6 text-center max-w-md">
-                Generate insight clusters from your conversation data to discover patterns and themes.
-              </p>
+          {/* Report View */}
+          {viewMode === 'report' && reportData && (
+            <div className="flex-1 flex flex-col min-h-0">
+              {/* Back button */}
               <button
-                onClick={handleGenerateClusters}
-                disabled={isGenerating}
-                className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center gap-2"
+                onClick={() => setViewMode('clusters')}
+                className="flex items-center gap-2 text-sm text-gray-600 hover:text-gray-900 mb-4 w-fit"
               >
-                {isGenerating ? (
-                  <>
-                    <svg className="w-5 h-5 animate-spin" fill="none" viewBox="0 0 24 24">
-                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                    </svg>
-                    Starting...
-                  </>
-                ) : (
-                  <>
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
-                    </svg>
-                    Generate Insights
-                  </>
-                )}
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" />
+                </svg>
+                <span>Back to Insights</span>
               </button>
+
+              {/* Report content */}
+              <div className="flex-1 overflow-y-auto bg-white rounded-xl border border-gray-200 shadow-sm">
+                <div className="p-6">
+                  {/* Report header */}
+                  <div className="border-b border-gray-200 pb-4 mb-6">
+                    <h2 className="text-xl font-bold text-gray-900 mb-2">Analysis Report</h2>
+                    <div className="flex items-center gap-4 text-xs text-gray-500">
+                      <span>Version {reportData.version_number}</span>
+                      <span>•</span>
+                      <span>{reportData.conversations_analyzed} conversations analyzed</span>
+                      <span>•</span>
+                      <span>{new Date(reportData.completed_at).toLocaleDateString()}</span>
+                    </div>
+                  </div>
+
+                  {/* Markdown content */}
+                  <div className="prose prose-sm max-w-none">
+                    <ReactMarkdown
+                      remarkPlugins={[remarkGfm]}
+                      components={{
+                        h1: ({ children }) => (
+                          <h1 className="text-2xl font-bold text-gray-900 mt-8 mb-4 first:mt-0 pb-2 border-b border-gray-200">{children}</h1>
+                        ),
+                        h2: ({ children }) => (
+                          <h2 className="text-xl font-semibold text-gray-800 mt-6 mb-3">{children}</h2>
+                        ),
+                        h3: ({ children }) => (
+                          <h3 className="text-lg font-semibold text-gray-800 mt-5 mb-2">{children}</h3>
+                        ),
+                        h4: ({ children }) => (
+                          <h4 className="text-base font-semibold text-gray-700 mt-4 mb-2">{children}</h4>
+                        ),
+                        p: ({ children }) => (
+                          <p className="text-sm text-gray-700 mb-4 leading-relaxed">{children}</p>
+                        ),
+                        strong: ({ children }) => (
+                          <strong className="font-semibold text-gray-900">{children}</strong>
+                        ),
+                        ul: ({ children }) => (
+                          <ul className="list-disc list-outside ml-5 space-y-2 my-4 text-sm text-gray-700">{children}</ul>
+                        ),
+                        ol: ({ children }) => (
+                          <ol className="list-decimal list-outside ml-5 space-y-2 my-4 text-sm text-gray-700">{children}</ol>
+                        ),
+                        li: ({ children }) => (
+                          <li className="text-sm text-gray-700 leading-relaxed">{children}</li>
+                        ),
+                        hr: () => (
+                          <hr className="my-6 border-gray-200" />
+                        ),
+                        table: ({ children }) => (
+                          <div className="overflow-x-auto my-6 rounded-lg border border-gray-200">
+                            <table className="min-w-full text-sm">{children}</table>
+                          </div>
+                        ),
+                        thead: ({ children }) => (
+                          <thead className="bg-gray-50">{children}</thead>
+                        ),
+                        th: ({ children }) => (
+                          <th className="px-4 py-3 text-left font-semibold text-gray-700 border-b border-gray-200">{children}</th>
+                        ),
+                        td: ({ children }) => (
+                          <td className="px-4 py-3 text-gray-600 border-b border-gray-100">{children}</td>
+                        ),
+                        blockquote: ({ children }) => (
+                          <blockquote className="border-l-4 border-blue-400 bg-blue-50 pl-4 pr-4 py-3 my-4 italic text-gray-700 rounded-r-lg">{children}</blockquote>
+                        ),
+                        code: ({ className, children }) => {
+                          const isInline = !className;
+                          return isInline ? (
+                            <code className="bg-gray-100 text-gray-800 px-1.5 py-0.5 rounded text-xs font-mono">{children}</code>
+                          ) : (
+                            <code className="block bg-gray-900 text-gray-100 p-4 rounded-lg text-xs font-mono overflow-x-auto my-4">{children}</code>
+                          );
+                        },
+                        pre: ({ children }) => (
+                          <pre className="bg-gray-900 text-gray-100 p-4 rounded-lg text-xs font-mono overflow-x-auto my-4">{children}</pre>
+                        ),
+                      }}
+                    >
+                      {reportData.report_markdown}
+                    </ReactMarkdown>
+                  </div>
+                </div>
+              </div>
             </div>
           )}
 
-          {/* Processing state */}
-          {!isLoading && clusterData?.status === 'processing' && (
-            <div className="flex flex-col items-center justify-center py-20">
-              <svg className="w-16 h-16 text-blue-500 animate-spin mb-4" fill="none" viewBox="0 0 24 24">
-                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-              </svg>
-              <h3 className="text-lg font-medium text-gray-700 mb-2">Generating Insights...</h3>
-              <p className="text-gray-500 text-center max-w-md">
-                Analyzing conversations and clustering participants.
-                <br />
-                <span className="text-sm text-gray-400 capitalize">
-                  Status: {clusterData.processing_status?.replace('_', ' ') || 'Processing'}
-                </span>
-              </p>
-            </div>
-          )}
+          {/* Clusters View */}
+          {viewMode === 'clusters' && (
+            <>
+              {/* Loading state */}
+              {isLoading && (
+                <div className="flex items-center justify-center py-20">
+                  <svg className="w-8 h-8 animate-spin text-blue-500" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
+                </div>
+              )}
 
-          {/* Insight Cards Grid - 2x2 normal, 1x4 vertical when conversation expanded */}
-          {!isLoading && clusterData?.status === 'completed' && insights.length > 0 && (
-            <div className={`grid gap-4 ${isConversationExpanded ? 'grid-cols-1 max-w-[400px]' : 'grid-cols-2 auto-rows-fr'}`}>
-              {insights.map((insight) => (
-                <InsightCardComponent
-                  key={insight.id}
-                  insight={insight}
-                  isSelected={selectedClusters.includes(insight.id)}
-                  onClick={() => toggleClusterSelection(insight.id)}
-                />
-              ))}
-            </div>
+              {/* No clusters state */}
+              {!isLoading && clusterData?.status === 'none' && (
+                <div className="flex flex-col items-center justify-center py-20">
+                  <svg className="w-16 h-16 text-gray-300 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z" />
+                  </svg>
+                  <h3 className="text-lg font-medium text-gray-700 mb-2">No Insights Generated Yet</h3>
+                  <p className="text-gray-500 mb-6 text-center max-w-md">
+                    Generate insight clusters from your conversation data to discover patterns and themes.
+                  </p>
+                  <button
+                    onClick={handleGenerateClusters}
+                    disabled={isGenerating}
+                    className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center gap-2"
+                  >
+                    {isGenerating ? (
+                      <>
+                        <svg className="w-5 h-5 animate-spin" fill="none" viewBox="0 0 24 24">
+                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        Starting...
+                      </>
+                    ) : (
+                      <>
+                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                        </svg>
+                        Generate Insights
+                      </>
+                    )}
+                  </button>
+                </div>
+              )}
+
+              {/* Processing state */}
+              {!isLoading && clusterData?.status === 'processing' && (
+                <div className="flex flex-col items-center justify-center py-20">
+                  <svg className="w-16 h-16 text-blue-500 animate-spin mb-4" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
+                  <h3 className="text-lg font-medium text-gray-700 mb-2">Generating Insights...</h3>
+                  <p className="text-gray-500 text-center max-w-md">
+                    Analyzing conversations and clustering participants.
+                    <br />
+                    <span className="text-sm text-gray-400 capitalize">
+                      Status: {clusterData.processing_status?.replace('_', ' ') || 'Processing'}
+                    </span>
+                  </p>
+                </div>
+              )}
+
+              {/* Insight Cards Grid - 2x2 normal, 1x4 vertical when conversation expanded */}
+              {!isLoading && clusterData?.status === 'completed' && insights.length > 0 && (
+                <div className={`grid gap-4 ${isConversationExpanded ? 'grid-cols-1 max-w-[400px]' : 'grid-cols-2 auto-rows-fr'}`}>
+                  {insights.map((insight) => (
+                    <InsightCardComponent
+                      key={insight.id}
+                      insight={insight}
+                      isSelected={selectedClusters.includes(insight.id)}
+                      onClick={() => toggleClusterSelection(insight.id)}
+                    />
+                  ))}
+                </div>
+              )}
+            </>
           )}
         </div>
       </div>
