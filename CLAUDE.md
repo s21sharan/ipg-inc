@@ -205,3 +205,62 @@ Fixed swarm timeout issues by decoupling consensus generation and adding Supabas
 
 ### #Background
 Swarm agents load 40+ memories from Qdrant at start but don't persist new conversation memories. PersistentMemoryStore has save methods but SwarmAgent doesn't call them. Next step: wire up memory persistence so agents "learn" from swarm discussions.
+
+## 2025-12-12 – Compact Session #Deprecated
+
+### #CurrentFocus
+Redesigned campaigns dashboard UI and create campaign page to match new Figma designs.
+
+### #SessionChanges
+- Removed 10-agent limit from swarm: `agent_ids.slice(0,10)` → `agent_ids` (all cluster members participate)
+- Added expand/collapse arrow to conversation panel in campaign-detail-view.tsx
+- Expanded mode: conversation panel grows to `calc(100%-450px)`, clusters stack vertically (grid-cols-1)
+- Added VIEW REPORT button to campaign title bar, fetches latest analysis report_markdown
+- Implemented report view with back button, markdown rendering, scrollable content
+- Report view hides VIEW REPORT button, shows "Back to Insights" navigation
+- Redesigned campaigns dashboard: title "Campaigns: {workspace}", search bar, filter chips
+- Campaign cards: gradient background, Date/Status tags, title at bottom, hover edit/delete buttons
+- Removed top header bar (workspace name + create campaign button) - now in content area
+- Changed card click → viewingCampaignInsights (clusters view), gear icon → viewingCampaign (management)
+- Redesigned create campaign page: "Tell us about your project" with TITLE, GOAL, TEMPLATES fields
+- Template cards: Churn Diagnosis, Onboarding Optimization, Improve Conversion, Feature Exploration
+- Added state: createCampaignTitle, createCampaignGoal, createCampaignTemplate
+- Generate Campaign button disabled until title filled, Create from scratch link opens manual form
+
+### #NextSteps
+- Wire Generate Campaign button to AI campaign generation with title/goal/template context
+- Add filter chip functionality (Name, Status, Date sorting/filtering)
+- Implement template-based campaign prefills based on selected template
+
+### #BugsAndTheories
+- Tags overflowing card ⇒ positioned from top instead of bottom (fixed: bottom-[100px])
+- Cards too small for content ⇒ adjusted card height and tag/title positioning
+
+### #Background
+Dashboard redesign follows new Figma specs. Campaigns view now has gray gradient background, larger cards with gradient fills, and fixed CREATE CAMPAIGN button at bottom-right. Create campaign flow asks for title (required), goal, and template selection before generating with AI or creating from scratch.
+
+## 2025-12-12 – Compact Session (Part 2)
+
+### #CurrentFocus
+Refined create campaign page UI to fit viewport without scrolling and improved form validation.
+
+### #SessionChanges
+- Shrunk create campaign page to fit one screen: reduced title 48→24px, labels 20→14px, inputs 76→44px
+- Template cards now use flex-1 width and 100px height (down from 204×170px fixed)
+- Content centered vertically/horizontally with flexbox, max-width 900px (down from 1170px)
+- Changed container from overflow-y-auto to overflow-hidden
+- Made GOAL field required: added blue asterisk, button disabled until both title AND goal filled
+- Template selection now toggles: clicking selected template deselects it (sets to null)
+- Close button reduced from 14×14 to 10×10 with smaller icon
+
+### #NextSteps
+- Wire Generate Campaign button to AI campaign generation with title/goal/template context
+- Add filter chip functionality (Name, Status, Date sorting/filtering)
+- Implement template-based campaign prefills based on selected template
+
+### #BugsAndTheories
+- Page required scrolling ⇒ elements too large for viewport (fixed: reduced all sizes)
+- Couldn't deselect template ⇒ onClick always set value (fixed: toggle with ternary)
+
+### #Background
+Create campaign page now fits entirely within viewport. Form requires both title and goal. Templates are optional and can be toggled on/off. UI follows Figma design with smaller, responsive sizing.
