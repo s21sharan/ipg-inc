@@ -283,7 +283,7 @@ Built AI-assisted campaign builder with two-column chat interface for audience s
 - Interview Questions section only shows after audience is filled
 - "Fantastic—" message only appears after focus categories are generated (not during loading)
 
-### #NextSteps
+### #NextSteps #Deprecated
 - Wire selected focus category to actual interview question generation
 - Implement "CONTINUE →" button to proceed to next step after focus selection
 - Add ability to type custom focus instead of selecting from options
@@ -294,3 +294,36 @@ Built AI-assisted campaign builder with two-column chat interface for audience s
 
 ### #Background
 Campaign builder guides users through: Title/Goal (from prev page) → Audience (chat compress) → Focus (AI categories). Uses gpt-5-nano for compression/generation. Focus categories include: Value Perception, Usage & Habits, Onboarding, Upgrade & Pricing, Churn, Feature Discovery, Motivation & Goals, Pain Points, Alternatives, Content Fit.
+
+## 2025-12-12 – Compact Session (Part 4)
+
+### #CurrentFocus
+Implemented AI interview guide generator with OpenAI streaming for live question rendering.
+
+### #SessionChanges
+- Created `/api/generate-interview-guide/route.ts` with SSE streaming using OpenAI SDK `stream: true`
+- Created `/api/edit-interview-guide/route.ts` for chat-based guide editing with targeted/full regen
+- Created `/lib/utils/edit-command-parser.ts` for parsing edit commands (add_followup, modify_question, etc.)
+- Created `interview-guide-preview.tsx` grouping topics by section prefix for visual sections
+- Created `interview-section-header.tsx` rendering "SECTION N SECTIONNAME" headers
+- Created `interview-question-card.tsx` with numbered icons and typewriter cursor during streaming
+- Created `interview-followups.tsx` rendering probeQuestions with blue bar styling
+- Created `interview-choices.tsx` parsing "Options:" from question text for multiple choice
+- Added CSS animations: `typewriter-cursor`, `fadeSlideIn`, `editPulse`, `skeleton` shimmer
+- Wired SSE handler in page.tsx: `text_delta` → typewriter, `topic` → add to state, `complete` → done
+- Topics use exact existing `Topic[]` structure for simulation engine compatibility
+- Section naming: "Introduction: Welcome" (first), "Closing: Thank You" (last)
+- Created `backend/tests/test_interview_guide_simulation.py` with 20 passing tests
+- Created `backend/scripts/test_interview_guide_e2e.py` for E2E validation
+
+### #NextSteps
+- Test streaming flow in browser to verify live question rendering
+- Add "DONE? PREVIEW STUDY" button to save generated topics to campaign
+- Wire edit chat input to `/api/edit-interview-guide` endpoint
+
+### #BugsAndTheories
+- Right panel replaced form fields ⇒ fixed by showing Title/Goal/Audience at top, questions below
+- Questions not streaming live ⇒ switched from gpt-5-nano to gpt-4o-mini with `stream: true`
+
+### #Background
+Interview guide generator uses OpenAI Responses API streaming. Topics stream incrementally as GPT generates JSON array. Incremental JSON parser extracts complete `{...}` objects from buffer using brace counting with string escape handling. Each topic triggers `fade-slide-in` animation, typewriter cursor shows during streaming.
