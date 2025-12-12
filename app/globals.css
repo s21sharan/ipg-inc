@@ -38,3 +38,55 @@ body {
 .wiggle {
   animation: wiggle 0.5s ease-in-out;
 }
+
+/* Interview Guide Builder Animations */
+
+/* Typewriter cursor effect for streaming text */
+@keyframes typewriter-cursor {
+  from, to { border-color: transparent; }
+  50% { border-color: #2c95ff; }
+}
+.typewriter-cursor {
+  border-right: 2px solid #2c95ff;
+  animation: typewriter-cursor 0.75s step-end infinite;
+}
+
+/* Fade-slide for new sections/questions appearing */
+@keyframes fadeSlideIn {
+  from { opacity: 0; transform: translateY(-8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.fade-slide-in {
+  animation: fadeSlideIn 0.3s ease-out forwards;
+}
+
+/* Edit highlight pulse when questions are modified */
+@keyframes editPulse {
+  0%, 100% { background-color: transparent; }
+  50% { background-color: rgba(44, 149, 255, 0.1); }
+}
+.edit-highlight {
+  animation: editPulse 0.6s ease-in-out;
+}
+
+/* Loading skeleton shimmer effect */
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+.skeleton {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+/* Smooth height transition for expanding/collapsing */
+.transition-height {
+  transition: max-height 0.3s ease-out, opacity 0.2s ease-out;
+}
+
+/* Staggered animation delay helpers */
+.stagger-1 { animation-delay: 0.1s; }
+.stagger-2 { animation-delay: 0.2s; }
+.stagger-3 { animation-delay: 0.3s; }
+.stagger-4 { animation-delay: 0.4s; }

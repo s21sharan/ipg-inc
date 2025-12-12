@@ -76,7 +76,7 @@ Interview (Supabase) → reflection_memory extraction → fine-grained Memory no
 
 ---
 
-## 2025-12-08 – Current Session
+## 2025-12-08 – Current Session #Deprecated
 
 ### #CurrentFocus
 Fixed LangGraph agent for gpt-5-nano reasoning model and explored existing Qdrant/Memgraph data for memory integration.
@@ -111,7 +111,7 @@ Fixed LangGraph agent for gpt-5-nano reasoning model and explored existing Qdran
 ### #Background
 gpt-5-nano is a reasoning model (like o1) that uses internal reasoning tokens before output. Existing Qdrant/Memgraph data contains rich agent profiles: 40 memories per agent (pain_points, goals, habits, traits), OCEAN personality scores as Trait nodes. This is "long-term memory" from original interviews. Runtime Memory Stream will add new conversation memories on top.
 
-## 2025-12-08 – Compact Session (Part 2)
+## 2025-12-08 – Compact Session (Part 2) #Deprecated
 
 ### #CurrentFocus
 Implemented persistent memory stream with Qdrant storage and Memgraph relationship tracking across agent sessions.
@@ -131,7 +131,7 @@ Implemented persistent memory stream with Qdrant storage and Memgraph relationsh
 - Added pytest markers `integration` and `evaluation` to conftest.py
 - Exported `PersistentMemoryStore`, `get_persistent_memory_store` from orchestration module
 
-### #NextSteps
+### #NextSteps #Deprecated
 - Run integration tests with `pytest tests/test_persistent_memory.py -v -s -m integration`
 - Test with `python scripts/test_persistent_memory.py --auto` for two-session memory continuity
 - Consider adding memory decay/consolidation for long-running agents
@@ -143,7 +143,7 @@ Implemented persistent memory stream with Qdrant storage and Memgraph relationsh
 ### #Background
 Persistent memory enables cross-session continuity: memories load from Qdrant at session start, new memories save after each turn, DERIVED_FROM tracks reflection sources in Memgraph. Test file uses OpenAI to evaluate whether agent responses reference prior session content. Interactive script provides --auto mode for automated two-session testing.
 
-## 2025-12-11 – Compact Session
+## 2025-12-11 – Compact Session #Deprecated
 
 ### #CurrentFocus
 Built multi-agent swarm system with consensus generation; wired to frontend cluster selector.
@@ -164,7 +164,7 @@ Built multi-agent swarm system with consensus generation; wired to frontend clus
 - Created `tests/test_swarm_integration.py` (10 tests) and `tests/test_swarm_router.py` (13 tests)
 - Created `scripts/test_swarm_e2e.py` for full pipeline testing with GPT evaluation
 
-### #NextSteps
+### #NextSteps #Deprecated
 - Test swarm flow from frontend with real cluster selection
 - Add WebSocket streaming for real-time message updates during swarm
 - Implement swarm history/replay in campaign view
@@ -178,7 +178,7 @@ Built multi-agent swarm system with consensus generation; wired to frontend clus
 ### #Background
 Swarm system enables multi-agent discussions on user questions. Agents from clusters discuss topic for N turns, CriticAgent evaluates quality, ConsensusBuilder extracts insights/agreements/conclusions. E2E test achieved 9/10 GPT evaluation score. Frontend wired via Next.js proxy to FastAPI backend.
 
-## 2025-12-11 – Compact Session (Part 2)
+## 2025-12-11 – Compact Session (Part 2) #Deprecated
 
 ### #CurrentFocus
 Fixed swarm timeout issues by decoupling consensus generation and adding Supabase Realtime for live updates.
@@ -192,7 +192,7 @@ Fixed swarm timeout issues by decoupling consensus generation and adding Supabas
 - Extended swarm timeout to 10 minutes, consensus timeout to 10 minutes
 - Updated `swarm_service.py` to not block on consensus generation
 
-### #NextSteps
+### #NextSteps #Deprecated
 - Run SQL to enable Realtime: `ALTER PUBLICATION supabase_realtime ADD TABLE consensus_summaries`
 - Implement memory persistence for swarm conversations (save to Qdrant/Memgraph)
 - Add memory creation after each agent response in swarm
@@ -227,7 +227,7 @@ Redesigned campaigns dashboard UI and create campaign page to match new Figma de
 - Added state: createCampaignTitle, createCampaignGoal, createCampaignTemplate
 - Generate Campaign button disabled until title filled, Create from scratch link opens manual form
 
-### #NextSteps
+### #NextSteps #Deprecated
 - Wire Generate Campaign button to AI campaign generation with title/goal/template context
 - Add filter chip functionality (Name, Status, Date sorting/filtering)
 - Implement template-based campaign prefills based on selected template
@@ -239,7 +239,7 @@ Redesigned campaigns dashboard UI and create campaign page to match new Figma de
 ### #Background
 Dashboard redesign follows new Figma specs. Campaigns view now has gray gradient background, larger cards with gradient fills, and fixed CREATE CAMPAIGN button at bottom-right. Create campaign flow asks for title (required), goal, and template selection before generating with AI or creating from scratch.
 
-## 2025-12-12 – Compact Session (Part 2)
+## 2025-12-12 – Compact Session (Part 2) #Deprecated
 
 ### #CurrentFocus
 Refined create campaign page UI to fit viewport without scrolling and improved form validation.
@@ -253,7 +253,7 @@ Refined create campaign page UI to fit viewport without scrolling and improved f
 - Template selection now toggles: clicking selected template deselects it (sets to null)
 - Close button reduced from 14×14 to 10×10 with smaller icon
 
-### #NextSteps
+### #NextSteps #Deprecated
 - Wire Generate Campaign button to AI campaign generation with title/goal/template context
 - Add filter chip functionality (Name, Status, Date sorting/filtering)
 - Implement template-based campaign prefills based on selected template
@@ -264,3 +264,33 @@ Refined create campaign page UI to fit viewport without scrolling and improved f
 
 ### #Background
 Create campaign page now fits entirely within viewport. Form requires both title and goal. Templates are optional and can be toggled on/off. UI follows Figma design with smaller, responsive sizing.
+
+## 2025-12-12 – Compact Session (Part 3)
+
+### #CurrentFocus
+Built AI-assisted campaign builder with two-column chat interface for audience selection and focus categories.
+
+### #SessionChanges
+- Created `/api/compress-audience/route.ts` to compress audience descriptions to 4-6 words via gpt-5-nano
+- Created `/api/generate-focus-categories/route.ts` to generate 4 interview focus categories with descriptions
+- Added campaign builder state: `showCampaignBuilder`, `builderStep`, `focusCategories`, `selectedFocusCategory`
+- Implemented two-column layout: left=chat panel (gradient bg), right=progress form (Title/Goal/Audience/Questions)
+- Chat flow: "What sort of users?" → compress audience → "Fantastic— let's shape interview" → 4 focus options
+- Focus categories use few-shot prompting with 10 examples (Value Perception, Usage & Habits, etc.)
+- Added RECOMMENDED header with sparkle icon above focus category cards
+- Category cards show name (blue bold) + description (gray) in 2x2 grid
+- Progress bar changed from 4 segments to continuous gradient line (50%→75%→100% based on completion)
+- Interview Questions section only shows after audience is filled
+- "Fantastic—" message only appears after focus categories are generated (not during loading)
+
+### #NextSteps
+- Wire selected focus category to actual interview question generation
+- Implement "CONTINUE →" button to proceed to next step after focus selection
+- Add ability to type custom focus instead of selecting from options
+
+### #BugsAndTheories
+- Progress bar looked choppy ⇒ was split into 4 divs (fixed: single gradient fill)
+- Message appeared before options ⇒ setState order issue (fixed: set categories before message)
+
+### #Background
+Campaign builder guides users through: Title/Goal (from prev page) → Audience (chat compress) → Focus (AI categories). Uses gpt-5-nano for compression/generation. Focus categories include: Value Perception, Usage & Habits, Onboarding, Upgrade & Pricing, Churn, Feature Discovery, Motivation & Goals, Pain Points, Alternatives, Content Fit.

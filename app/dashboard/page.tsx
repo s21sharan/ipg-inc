@@ -8,6 +8,21 @@ import CampaignDetailView from './components/campaign-detail-view';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import AnalysisReportView from './components/analysis-report-view';
+import { InterviewGuidePreview } from './components/interview-guide-preview';
+import { getEditDescription, parseEditCommand } from '@/lib/utils/edit-command-parser';
+
+interface Topic {
+  id: string;
+  name: string;
+  type: 'statement' | 'conversation' | 'question';
+  content?: string;
+  persona?: string;
+  goals?: string;
+  maxDuration?: string;
+  question?: string;
+  probeQuestions?: string;
+  probeDepth?: string;
+}
 
 interface Workspace {
   id: string;
@@ -85,6 +100,23 @@ function DashboardContent() {
   const [createCampaignTitle, setCreateCampaignTitle] = useState('');
   const [createCampaignGoal, setCreateCampaignGoal] = useState('');
   const [createCampaignTemplate, setCreateCampaignTemplate] = useState<'churn' | 'onboarding' | 'conversion' | 'feature' | null>(null);
+  const [showCampaignBuilder, setShowCampaignBuilder] = useState(false);
+  const [createCampaignAudience, setCreateCampaignAudience] = useState('');
+  const [builderChatInput, setBuilderChatInput] = useState('');
+  const [builderChatMessages, setBuilderChatMessages] = useState<{role: 'system' | 'user'; text: string}[]>([]);
+  const [isCompressingAudience, setIsCompressingAudience] = useState(false);
+  const [builderStep, setBuilderStep] = useState<'audience' | 'focus' | 'guide'>('audience');
+  const [focusCategories, setFocusCategories] = useState<{name: string; description: string}[]>([]);
+  const [selectedFocusCategory, setSelectedFocusCategory] = useState<string | null>(null);
+  const [isGeneratingFocus, setIsGeneratingFocus] = useState(false);
+  // Interview Guide Builder State
+  const [generatedTopics, setGeneratedTopics] = useState<Topic[]>([]);
+  const [isGeneratingGuide, setIsGeneratingGuide] = useState(false);
+  const [animatingIds, setAnimatingIds] = useState<Set<string>>(new Set());
+  const [editingIds, setEditingIds] = useState<Set<string>>(new Set());
+  const [typewriterText, setTypewriterText] = useState<Map<string, string>>(new Map());
+  const [contextFlags, setContextFlags] = useState<{ isNewFeature: boolean; featureName?: string } | null>(null);
+  const [isEditingGuide, setIsEditingGuide] = useState(false);
   const [isDraftingCampaign, setIsDraftingCampaign] = useState(false);
   const [draftedCampaign, setDraftedCampaign] = useState<Campaign | null>(null);
   const [campaigns, setCampaigns] = useState<Campaign[]>([]);
@@ -1225,6 +1257,529 @@ function DashboardContent() {
       );
     }
 
+    // Show campaign builder - two column layout
+    if (showCampaignBuilder) {
+      const handleBuilderChatSubmit = async () => {
+        if (!builderChatInput.trim() || isCompressingAudience || isGeneratingFocus) return;
+
+        const userMessage = builderChatInput.trim();
+        setBuilderChatMessages(prev => [...prev, { role: 'user', text: userMessage }]);
+        setBuilderChatInput('');
+
+        if (builderStep === 'audience') {
+          setIsCompressingAudience(true);
+
+          try {
+            const response = await fetch('/api/compress-audience', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ text: userMessage }),
+            });
+
+            if (!response.ok) throw new Error('Failed to compress audience');
+
+            const data = await response.json();
+            setCreateCampaignAudience(data.compressed);
+
+            // Move to focus step and generate categories
+            setBuilderStep('focus');
+            setIsGeneratingFocus(true);
+
+            // Generate focus categories first
+            const focusResponse = await fetch('/api/generate-focus-categories', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ title: createCampaignTitle, goal: createCampaignGoal }),
+            });
+
+            const focusData = await focusResponse.json();
+            const categories = focusData.categories || [
+              { name: 'Value Perception', description: 'Questions about what users value, don\'t value, or misunderstand about the product.' },
+              { name: 'Usage & Habits', description: 'Questions about how/when they use the product, and where usage or value drops off.' },
+              { name: 'Motivation & Goals', description: 'Questions about what they\'re trying to achieve with the product and whether it\'s helping them reach those goals.' },
+              { name: 'Pain Points & Frustrations', description: 'Questions about moments where the product feels slow, confusing, or annoying, and how that affects their behavior.' },
+            ];
+
+            // Set categories first, then add the message
+            setFocusCategories(categories);
+            setBuilderChatMessages(prev => [...prev, {
+              role: 'system',
+              text: "Fantastic— now let's shape your user interview. What would you like to understand from these users?"
+            }]);
+          } catch (error) {
+            console.error('Error:', error);
+            setCreateCampaignAudience(userMessage.split(' ').slice(0, 5).join(' '));
+            setBuilderStep('focus');
+            // Set categories first, then add the message
+            const fallbackCategories = [
+              { name: 'Value Perception', description: 'Questions about what users value, don\'t value, or misunderstand about the product.' },
+              { name: 'Usage & Habits', description: 'Questions about how/when they use the product, and where usage or value drops off.' },
+              { name: 'Motivation & Goals', description: 'Questions about what they\'re trying to achieve with the product and whether it\'s helping them reach those goals.' },
+              { name: 'Pain Points & Frustrations', description: 'Questions about moments where the product feels slow, confusing, or annoying, and how that affects their behavior.' },
+            ];
+            setFocusCategories(fallbackCategories);
+            setBuilderChatMessages(prev => [...prev, {
+              role: 'system',
+              text: "Fantastic— now let's shape your user interview. What would you like to understand from these users?"
+            }]);
+          } finally {
+            setIsCompressingAudience(false);
+            setIsGeneratingFocus(false);
+          }
+        } else if (builderStep === 'focus') {
+          // User typed custom focus instead of selecting an option
+          setSelectedFocusCategory(userMessage);
+        } else if (builderStep === 'guide') {
+          // Handle guide editing via chat
+          setIsEditingGuide(true);
+          const parsedCommand = parseEditCommand(userMessage);
+          const description = getEditDescription(parsedCommand);
+
+          setBuilderChatMessages(prev => [...prev, {
+            role: 'system',
+            text: description
+          }]);
+
+          try {
+            const response = await fetch('/api/edit-interview-guide', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                currentTopics: generatedTopics,
+                editCommand: userMessage,
+                context: {
+                  title: createCampaignTitle,
+                  goal: createCampaignGoal,
+                  audience: createCampaignAudience,
+                  focusCategory: selectedFocusCategory
+                }
+              })
+            });
+
+            if (!response.ok) throw new Error('Failed to edit guide');
+
+            const data = await response.json();
+
+            // Mark changed topics for animation
+            setEditingIds(new Set(data.changedIds));
+            setGeneratedTopics(data.updatedTopics);
+
+            // Remove editing animation after delay
+            setTimeout(() => {
+              setEditingIds(new Set());
+            }, 1200);
+
+            setBuilderChatMessages(prev => [...prev, {
+              role: 'system',
+              text: data.editType === 'full_regeneration'
+                ? "I've regenerated the interview guide based on your feedback."
+                : `Done! I've updated ${data.changedIds.length} question(s).`
+            }]);
+          } catch (error) {
+            setBuilderChatMessages(prev => [...prev, {
+              role: 'system',
+              text: "Sorry, I couldn't apply that edit. Please try rephrasing your request."
+            }]);
+          } finally {
+            setIsEditingGuide(false);
+          }
+        }
+      };
+
+      const handleFocusCategorySelect = async (category: {name: string; description: string}) => {
+        setSelectedFocusCategory(category.name);
+        setBuilderChatMessages(prev => [...prev, { role: 'user', text: category.name }]);
+
+        // Move to guide step and start generating
+        setBuilderStep('guide');
+        setIsGeneratingGuide(true);
+        setGeneratedTopics([]);
+        setAnimatingIds(new Set());
+        setTypewriterText(new Map());
+
+        // Add generating message
+        setBuilderChatMessages(prev => [...prev, {
+          role: 'system',
+          text: "Perfect! Generating your interview guide..."
+        }]);
+
+        try {
+          // Use SSE to stream topics
+          const params = new URLSearchParams({
+            title: createCampaignTitle,
+            goal: createCampaignGoal,
+            audience: createCampaignAudience,
+            focusCategory: category.name,
+            ...(createCampaignTemplate ? { template: createCampaignTemplate } : {})
+          });
+
+          const eventSource = new EventSource(`/api/generate-interview-guide?${params.toString()}`);
+
+          let currentStreamingTopicId: string | null = null;
+          let streamingBuffer = '';
+
+          eventSource.onmessage = (event) => {
+            const { type, data } = JSON.parse(event.data);
+
+            if (type === 'context') {
+              setContextFlags(data);
+              if (data.isNewFeature) {
+                setBuilderChatMessages(prev => [...prev, {
+                  role: 'system',
+                  text: `I noticed this is about a new feature${data.featureName ? ` (${data.featureName})` : ''}. I'll frame questions around expectations and anticipated value rather than past usage.`
+                }]);
+              }
+            } else if (type === 'text_delta') {
+              // Live streaming text - update the typewriter display
+              streamingBuffer = data.fullText;
+              // Update typewriter text for current streaming topic
+              if (currentStreamingTopicId) {
+                setTypewriterText(prev => new Map(prev).set(currentStreamingTopicId!, streamingBuffer));
+              }
+            } else if (type === 'topic') {
+              // A complete topic has been parsed
+              // Clear typewriter text for this topic since it's now complete
+              if (currentStreamingTopicId) {
+                setTypewriterText(prev => {
+                  const next = new Map(prev);
+                  next.delete(currentStreamingTopicId!);
+                  return next;
+                });
+              }
+
+              // Add the complete topic
+              setGeneratedTopics(prev => [...prev, data]);
+              setAnimatingIds(prev => new Set([...prev, data.id]));
+
+              // Set the next topic as the streaming target
+              const nextId = String(Number(data.id) + 1);
+              currentStreamingTopicId = nextId;
+              streamingBuffer = '';
+
+              // Remove animation after delay
+              setTimeout(() => {
+                setAnimatingIds(prev => {
+                  const next = new Set(prev);
+                  next.delete(data.id);
+                  return next;
+                });
+              }, 800);
+            } else if (type === 'complete') {
+              eventSource.close();
+              setIsGeneratingGuide(false);
+              setTypewriterText(new Map()); // Clear all typewriter text
+              currentStreamingTopicId = null;
+              setBuilderChatMessages(prev => [...prev, {
+                role: 'system',
+                text: `Your interview guide is ready with ${data.topicCount} sections. You can edit it using the chat or click "DONE? PREVIEW STUDY" when ready.`
+              }]);
+            } else if (type === 'error') {
+              eventSource.close();
+              setIsGeneratingGuide(false);
+              setTypewriterText(new Map());
+              currentStreamingTopicId = null;
+              setBuilderChatMessages(prev => [...prev, {
+                role: 'system',
+                text: `Something went wrong: ${data.message}. Please try again.`
+              }]);
+            }
+          };
+
+          eventSource.onerror = () => {
+            eventSource.close();
+            setIsGeneratingGuide(false);
+            setBuilderChatMessages(prev => [...prev, {
+              role: 'system',
+              text: "Connection lost. Please try again."
+            }]);
+          };
+        } catch (error) {
+          setIsGeneratingGuide(false);
+          setBuilderChatMessages(prev => [...prev, {
+            role: 'system',
+            text: "Failed to generate interview guide. Please try again."
+          }]);
+        }
+      };
+
+      return (
+        <div className="flex-1 flex bg-white overflow-hidden">
+          {/* Left Panel - Chat Area */}
+          <div
+            className="w-[500px] flex flex-col border-r border-[#e0e0e0] relative"
+            style={{
+              background: 'linear-gradient(180deg, #ffffff 75%, #e8f4ff 100%)',
+            }}
+          >
+            {/* Header with campaign info */}
+            <div className="px-5 pt-4 pb-3 flex items-center gap-2 border-b border-[#eee]">
+              {/* Close Button */}
+              <button
+                onClick={() => {
+                  setShowCampaignBuilder(false);
+                  setShowCreateModal(true);
+                  setBuilderChatMessages([]);
+                  setBuilderChatInput('');
+                  setCreateCampaignAudience('');
+                  setBuilderStep('audience');
+                  setFocusCategories([]);
+                  setSelectedFocusCategory(null);
+                  // Reset guide state
+                  setGeneratedTopics([]);
+                  setAnimatingIds(new Set());
+                  setEditingIds(new Set());
+                  setTypewriterText(new Map());
+                  setContextFlags(null);
+                  setIsGeneratingGuide(false);
+                  setIsEditingGuide(false);
+                }}
+                className="p-1 hover:bg-gray-100 rounded transition-colors"
+              >
+                <svg className="w-4 h-4 text-[#888]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" />
+                </svg>
+              </button>
+              <div className="flex flex-col">
+                <span className="text-[11px] font-semibold text-[#2c95ff] tracking-wide">CAMPAIGN</span>
+                <span className="text-[15px] text-black font-medium">{createCampaignTitle}</span>
+              </div>
+            </div>
+
+            {/* Chat Messages */}
+            <div className="flex-1 px-5 py-4 overflow-y-auto">
+              {/* Sparkle icon - smaller */}
+              <div className="flex items-center mb-3">
+                <svg className="w-4 h-4 text-[#2c95ff]" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M12 0L14.59 9.41L24 12L14.59 14.59L12 24L9.41 14.59L0 12L9.41 9.41L12 0Z" />
+                </svg>
+              </div>
+
+              {/* Messages */}
+              <div className="flex flex-col gap-3">
+                {builderChatMessages.map((msg, idx) => (
+                  <div key={idx} className={msg.role === 'system' ? '' : 'flex justify-end'}>
+                    <div className={`rounded-lg px-4 py-3 max-w-[340px] ${
+                      msg.role === 'system'
+                        ? 'bg-[#f5f5f3] border border-[#e8e8e6] text-[#333] text-[14px]'
+                        : 'bg-[#1a1a1a] text-white text-[13px]'
+                    }`}>
+                      {msg.text}
+                    </div>
+                  </div>
+                ))}
+                {(isCompressingAudience || isGeneratingFocus) && (
+                  <div className="flex items-center gap-2 text-[#2c95ff] text-[12px] font-semibold">
+                    <svg className="animate-spin h-3 w-3" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    Processing...
+                  </div>
+                )}
+
+                {/* Focus Category Options */}
+                {builderStep === 'focus' && focusCategories.length > 0 && !selectedFocusCategory && !isGeneratingFocus && (
+                  <div className="mt-4">
+                    {/* RECOMMENDED Header */}
+                    <div className="bg-white border border-[#2c95ff] rounded-lg px-3 py-2 flex items-center gap-2 mb-4">
+                      <svg className="w-4 h-4 text-[#2c95ff]" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M12 0L14.59 9.41L24 12L14.59 14.59L12 24L9.41 14.59L0 12L9.41 9.41L12 0Z" />
+                      </svg>
+                      <span className="text-[12px] font-bold text-[#2c95ff] tracking-wide">RECOMMENDED</span>
+                      <svg className="w-3 h-3 text-[#2c95ff] ml-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 15l7-7 7 7" />
+                      </svg>
+                    </div>
+
+                    {/* Category Cards - 2x2 Grid */}
+                    <div className="grid grid-cols-2 gap-2">
+                      {focusCategories.map((category, idx) => (
+                        <button
+                          key={idx}
+                          onClick={() => handleFocusCategorySelect(category)}
+                          className="bg-white border border-[#d3d3d3] rounded px-3 py-4 text-center hover:border-[#2c95ff] hover:bg-[#f8fbff] transition-all flex flex-col items-center justify-center gap-1 min-h-[90px]"
+                        >
+                          <span className="text-[12px] font-bold text-[#2c95ff]">{category.name}</span>
+                          <span className="text-[9px] text-[#5c5c5c] leading-tight">{category.description}</span>
+                        </button>
+                      ))}
+                    </div>
+
+                    <p className="text-[10px] text-[#999] mt-4 text-center">
+                      Have something else in mind? Type your research focus below
+                    </p>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Chat Input */}
+            <div className="px-5 pb-5">
+              <div className="bg-[#f0f0f0] rounded-full px-4 py-2.5 flex items-center gap-3">
+                <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                </svg>
+                <input
+                  type="text"
+                  value={builderChatInput}
+                  onChange={(e) => setBuilderChatInput(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' && !e.shiftKey) {
+                      e.preventDefault();
+                      handleBuilderChatSubmit();
+                    }
+                  }}
+                  placeholder={
+                    builderStep === 'guide'
+                      ? "Edit questions (e.g., 'add follow-up to question 2')..."
+                      : builderStep === 'focus'
+                      ? "Or type your own focus area..."
+                      : "Describe your target audience..."
+                  }
+                  className="flex-1 bg-transparent text-[14px] text-gray-700 placeholder-[#999] outline-none"
+                  disabled={isCompressingAudience || isGeneratingGuide || isEditingGuide}
+                />
+                <button
+                  onClick={handleBuilderChatSubmit}
+                  disabled={!builderChatInput.trim() || isCompressingAudience || isGeneratingGuide || isEditingGuide}
+                  className="p-1.5 bg-[#2c95ff] rounded-full text-white disabled:bg-gray-300 disabled:text-gray-500 transition-colors"
+                >
+                  <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M5 12h14M12 5l7 7-7 7" />
+                  </svg>
+                </button>
+              </div>
+
+              {/* Done Button */}
+              <div className="flex justify-center mt-4">
+                {builderStep === 'guide' && generatedTopics.length > 0 ? (
+                  <button
+                    onClick={() => {
+                      // Create campaign with generated topics
+                      setShowCampaignBuilder(false);
+                      setShowCreateForm(true);
+                      // Set drafted campaign with the generated topics
+                      setDraftedCampaign({
+                        id: '',
+                        name: createCampaignTitle,
+                        title: createCampaignTitle,
+                        caption: createCampaignGoal,
+                        time_estimate: '',
+                        topics: generatedTopics,
+                        completion_logic: null,
+                        created_at: new Date().toISOString(),
+                        updated_at: new Date().toISOString(),
+                        workspace: currentWorkspace?.name || '',
+                        workspace_id: currentWorkspace?.id || ''
+                      });
+                    }}
+                    disabled={isGeneratingGuide || isEditingGuide}
+                    className={`px-6 py-2.5 rounded-lg text-[11px] font-bold tracking-wide transition-all ${
+                      !isGeneratingGuide && !isEditingGuide
+                        ? 'bg-[#1a1a1a] text-white hover:bg-black shadow-sm'
+                        : 'bg-[#e5e5e5] text-[#999] cursor-not-allowed'
+                    }`}
+                  >
+                    DONE? PREVIEW STUDY →
+                  </button>
+                ) : (
+                  <button
+                    disabled={!createCampaignAudience || builderStep === 'guide'}
+                    className={`px-6 py-2.5 rounded-lg text-[11px] font-bold tracking-wide transition-all ${
+                      createCampaignAudience && builderStep !== 'guide'
+                        ? 'bg-[#1a1a1a] text-white hover:bg-black shadow-sm'
+                        : 'bg-[#e5e5e5] text-[#999] cursor-not-allowed'
+                    }`}
+                  >
+                    CONTINUE →
+                  </button>
+                )}
+              </div>
+            </div>
+          </div>
+
+          {/* Right Panel - Form Fields with Interview Questions below */}
+          <div className="flex-1 bg-white overflow-y-auto">
+            {/* ipg.inc logo */}
+            <div className="flex justify-end px-6 pt-4">
+              <span className="text-[24px] text-[#ddd]" style={{ fontFamily: 'Georgia, serif' }}>ipg.inc</span>
+            </div>
+
+            {/* Form Fields */}
+            <div className="px-12 py-6">
+              {/* Title */}
+              <div className="mb-4">
+                <span className="text-[13px] font-bold text-[#2c95ff] tracking-wide">TITLE</span>
+                <div className="bg-[#fafaf9] border border-[#eee] rounded-md px-4 py-3 mt-2">
+                  <span className="text-[14px] text-[#333]">{createCampaignTitle}</span>
+                </div>
+              </div>
+
+              {/* Goal */}
+              <div className="mb-4">
+                <span className="text-[13px] font-bold text-[#2c95ff] tracking-wide">GOAL</span>
+                <div className="bg-[#fafaf9] border border-[#eee] rounded-md px-4 py-3 mt-2">
+                  <span className="text-[14px] text-[#333]">{createCampaignGoal}</span>
+                </div>
+              </div>
+
+              {/* Audience */}
+              <div className="mb-4">
+                <span className={`text-[13px] font-bold tracking-wide transition-colors ${
+                  createCampaignAudience ? 'text-[#2c95ff]' : 'text-[#2c95ff]/40'
+                }`}>AUDIENCE</span>
+                <div className={`border rounded-md px-4 py-3 mt-2 min-h-[44px] transition-all ${
+                  createCampaignAudience
+                    ? 'bg-[#fafaf9] border-[#eee]'
+                    : 'bg-[#f8f8f8] border-dashed border-[#ddd]'
+                }`}>
+                  {createCampaignAudience ? (
+                    <span className="text-[14px] text-[#333]">{createCampaignAudience}</span>
+                  ) : (
+                    <span className="text-[13px] text-[#bbb] italic">Waiting for input...</span>
+                  )}
+                </div>
+              </div>
+
+              {/* Interview Questions Section */}
+              {createCampaignAudience && (
+                <div>
+                  <span className={`text-[13px] font-bold tracking-wide transition-colors ${
+                    selectedFocusCategory ? 'text-[#2c95ff]' : 'text-[#2c95ff]/40'
+                  }`}>INTERVIEW QUESTIONS</span>
+
+                  {/* Show generated questions when in guide step, otherwise show placeholder */}
+                  {builderStep === 'guide' ? (
+                    <div className="mt-4">
+                      <InterviewGuidePreview
+                        topics={generatedTopics}
+                        animatingIds={animatingIds}
+                        editingIds={editingIds}
+                        typewriterText={typewriterText}
+                        isGenerating={isGeneratingGuide}
+                      />
+                    </div>
+                  ) : (
+                    <div className={`border rounded-md px-4 py-3 mt-2 min-h-[44px] transition-all ${
+                      selectedFocusCategory
+                        ? 'bg-[#fafaf9] border-[#eee]'
+                        : 'bg-[#f8f8f8] border-dashed border-[#ddd]'
+                    }`}>
+                      {selectedFocusCategory ? (
+                        <span className="text-[14px] text-[#333]">Focus: {selectedFocusCategory}</span>
+                      ) : (
+                        <span className="text-[13px] text-[#bbb] italic">Select a focus area...</span>
+                      )}
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      );
+    }
+
     // Show prompt box for create from prompt
     if (showPromptBox) {
       return (
@@ -1417,9 +1972,15 @@ function DashboardContent() {
                 <div className="flex items-center gap-3 mt-3">
                   <button
                     onClick={() => {
-                      // TODO: Handle generate campaign with AI
                       setShowCreateModal(false);
-                      setShowPromptBox(true);
+                      setShowCampaignBuilder(true);
+                      setBuilderStep('audience');
+                      setFocusCategories([]);
+                      setSelectedFocusCategory(null);
+                      setCreateCampaignAudience('');
+                      setBuilderChatMessages([
+                        { role: 'system', text: 'What sort of users are you looking for?' }
+                      ]);
                     }}
                     disabled={!createCampaignTitle.trim() || !createCampaignGoal.trim()}
                     className={`px-5 py-2.5 rounded-md text-sm text-white transition-colors ${
