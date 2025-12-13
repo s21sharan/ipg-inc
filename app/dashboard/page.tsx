@@ -105,10 +105,23 @@ function DashboardContent() {
   const [builderChatInput, setBuilderChatInput] = useState('');
   const [builderChatMessages, setBuilderChatMessages] = useState<{role: 'system' | 'user'; text: string}[]>([]);
   const [isCompressingAudience, setIsCompressingAudience] = useState(false);
-  const [builderStep, setBuilderStep] = useState<'audience' | 'focus' | 'guide'>('audience');
+  const [builderStep, setBuilderStep] = useState<'discovery' | 'audience' | 'focus' | 'guide'>('discovery');
   const [focusCategories, setFocusCategories] = useState<{name: string; description: string}[]>([]);
   const [selectedFocusCategory, setSelectedFocusCategory] = useState<string | null>(null);
   const [isGeneratingFocus, setIsGeneratingFocus] = useState(false);
+  // Discovery Questions State
+  const [discoveryQuestions, setDiscoveryQuestions] = useState<{id: string; question: string; placeholder?: string}[]>([]);
+  const [discoveryAnswers, setDiscoveryAnswers] = useState<Map<string, string>>(new Map());
+  const [currentDiscoveryIndex, setCurrentDiscoveryIndex] = useState(0);
+  const [isGeneratingDiscovery, setIsGeneratingDiscovery] = useState(false);
+  const [discoveryContextSummary, setDiscoveryContextSummary] = useState<string[]>([]);
+  const [isSummarizingDiscovery, setIsSummarizingDiscovery] = useState(false);
+  // Outline animation states (sequential reveal)
+  const [outlineAnimations, setOutlineAnimations] = useState({
+    researchContext: false,
+    audience: false,
+    interviewQuestions: false
+  });
   // Interview Guide Builder State
   const [generatedTopics, setGeneratedTopics] = useState<Topic[]>([]);
   const [isGeneratingGuide, setIsGeneratingGuide] = useState(false);
@@ -117,6 +130,7 @@ function DashboardContent() {
   const [typewriterText, setTypewriterText] = useState<Map<string, string>>(new Map());
   const [contextFlags, setContextFlags] = useState<{ isNewFeature: boolean; featureName?: string } | null>(null);
   const [isEditingGuide, setIsEditingGuide] = useState(false);
+  const [isSavingCampaign, setIsSavingCampaign] = useState(false);
   const [isDraftingCampaign, setIsDraftingCampaign] = useState(false);
   const [draftedCampaign, setDraftedCampaign] = useState<Campaign | null>(null);
   const [campaigns, setCampaigns] = useState<Campaign[]>([]);
@@ -476,6 +490,27 @@ function DashboardContent() {
       }, 100);
     }
   }, [citationInterview, citationModal]);
+
+  // Sequential outline animations - trigger each after the previous one completes
+  useEffect(() => {
+    // When discovery summary is populated, start research context animation
+    if (discoveryContextSummary.length > 0 && !outlineAnimations.researchContext) {
+      setOutlineAnimations(prev => ({ ...prev, researchContext: true }));
+      // After research context animation (400ms), trigger audience animation
+      setTimeout(() => {
+        setOutlineAnimations(prev => ({ ...prev, audience: true }));
+      }, 400);
+    }
+  }, [discoveryContextSummary, outlineAnimations.researchContext]);
+
+  // Trigger interview questions animation when audience is filled
+  useEffect(() => {
+    if (createCampaignAudience && outlineAnimations.audience && !outlineAnimations.interviewQuestions) {
+      setTimeout(() => {
+        setOutlineAnimations(prev => ({ ...prev, interviewQuestions: true }));
+      }, 400);
+    }
+  }, [createCampaignAudience, outlineAnimations.audience, outlineAnimations.interviewQuestions]);
 
   // Parse text with citations and make them clickable
   const parseCitations = (children: any): any => {
@@ -1266,7 +1301,67 @@ function DashboardContent() {
         setBuilderChatMessages(prev => [...prev, { role: 'user', text: userMessage }]);
         setBuilderChatInput('');
 
-        if (builderStep === 'audience') {
+        if (builderStep === 'discovery') {
+          // Handle discovery question answers
+          const currentQuestion = discoveryQuestions[currentDiscoveryIndex];
+          if (currentQuestion) {
+            // Store the answer
+            setDiscoveryAnswers(prev => new Map(prev).set(currentQuestion.id, userMessage));
+
+            const nextIndex = currentDiscoveryIndex + 1;
+            if (nextIndex < discoveryQuestions.length) {
+              // More questions to ask
+              setCurrentDiscoveryIndex(nextIndex);
+              setTimeout(() => {
+                setBuilderChatMessages(prev => [...prev, {
+                  role: 'system',
+                  text: discoveryQuestions[nextIndex].question
+                }]);
+              }, 300);
+            } else {
+              // All discovery questions answered, summarize and move to audience step
+              setIsSummarizingDiscovery(true);
+
+              // Build the final answers map including the current answer
+              const finalAnswers = new Map(discoveryAnswers);
+              finalAnswers.set(currentQuestion.id, userMessage);
+
+              // Prepare Q&A pairs for summarization
+              const discoveryQAs = discoveryQuestions.map(q => ({
+                question: q.question,
+                answer: finalAnswers.get(q.id) || ''
+              }));
+
+              try {
+                const summaryResponse = await fetch('/api/summarize-discovery', {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({
+                    discoveryQAs,
+                    title: createCampaignTitle,
+                    goal: createCampaignGoal
+                  }),
+                });
+
+                if (summaryResponse.ok) {
+                  const summaryData = await summaryResponse.json();
+                  setDiscoveryContextSummary(summaryData.bullets || []);
+                }
+              } catch (error) {
+                console.error('Error summarizing discovery:', error);
+              }
+
+              setIsSummarizingDiscovery(false);
+              setBuilderStep('audience');
+              setTimeout(() => {
+                setBuilderChatMessages(prev => [...prev, {
+                  role: 'system',
+                  text: "Great, thanks for sharing! Now let's define your target audience. What sort of users are you looking for?"
+                }]);
+              }, 300);
+            }
+          }
+        } else if (builderStep === 'audience') {
           setIsCompressingAudience(true);
 
           try {
@@ -1404,19 +1499,42 @@ function DashboardContent() {
         }]);
 
         try {
+          // Use summarized discovery context (bullet points)
+          const discoveryContext = discoveryContextSummary.length > 0
+            ? discoveryContextSummary.map(bullet => `• ${bullet}`).join('\n')
+            : '';
+
           // Use SSE to stream topics
           const params = new URLSearchParams({
             title: createCampaignTitle,
             goal: createCampaignGoal,
             audience: createCampaignAudience,
             focusCategory: category.name,
-            ...(createCampaignTemplate ? { template: createCampaignTemplate } : {})
+            ...(createCampaignTemplate ? { template: createCampaignTemplate } : {}),
+            ...(discoveryContext ? { discoveryContext } : {})
           });
 
           const eventSource = new EventSource(`/api/generate-interview-guide?${params.toString()}`);
 
-          let currentStreamingTopicId: string | null = null;
-          let streamingBuffer = '';
+          // Typewriter animation function - reveals text character by character
+          const animateTypewriter = (topicId: string, fullText: string, charIndex: number = 0) => {
+            if (charIndex <= fullText.length) {
+              setTypewriterText(prev => new Map(prev).set(topicId, fullText.slice(0, charIndex)));
+              if (charIndex < fullText.length) {
+                // Speed: ~30ms per character for smooth typing effect
+                setTimeout(() => animateTypewriter(topicId, fullText, charIndex + 1), 25);
+              } else {
+                // Animation complete - clear typewriter state after a brief pause
+                setTimeout(() => {
+                  setTypewriterText(prev => {
+                    const next = new Map(prev);
+                    next.delete(topicId);
+                    return next;
+                  });
+                }, 100);
+              }
+            }
+          };
 
           eventSource.onmessage = (event) => {
             const { type, data } = JSON.parse(event.data);
@@ -1429,55 +1547,50 @@ function DashboardContent() {
                   text: `I noticed this is about a new feature${data.featureName ? ` (${data.featureName})` : ''}. I'll frame questions around expectations and anticipated value rather than past usage.`
                 }]);
               }
-            } else if (type === 'text_delta') {
-              // Live streaming text - update the typewriter display
-              streamingBuffer = data.fullText;
-              // Update typewriter text for current streaming topic
-              if (currentStreamingTopicId) {
-                setTypewriterText(prev => new Map(prev).set(currentStreamingTopicId!, streamingBuffer));
-              }
             } else if (type === 'topic') {
-              // A complete topic has been parsed
-              // Clear typewriter text for this topic since it's now complete
-              if (currentStreamingTopicId) {
-                setTypewriterText(prev => {
-                  const next = new Map(prev);
-                  next.delete(currentStreamingTopicId!);
-                  return next;
-                });
+              // A complete topic has been parsed - add it and start typewriter animation
+              const topic = data as Topic;
+
+              // Add the topic to the list
+              setGeneratedTopics(prev => [...prev, topic]);
+              setAnimatingIds(prev => new Set([...prev, topic.id]));
+
+              // Get the text to animate (question or content depending on type)
+              const textToAnimate = topic.type === 'statement'
+                ? (topic.content || '')
+                : (topic.question || '');
+
+              // Start typewriter animation for this topic
+              if (textToAnimate) {
+                // Initialize with empty string to show the card
+                setTypewriterText(prev => new Map(prev).set(topic.id, ''));
+                // Start the typewriter effect
+                setTimeout(() => animateTypewriter(topic.id, textToAnimate, 0), 50);
               }
 
-              // Add the complete topic
-              setGeneratedTopics(prev => [...prev, data]);
-              setAnimatingIds(prev => new Set([...prev, data.id]));
-
-              // Set the next topic as the streaming target
-              const nextId = String(Number(data.id) + 1);
-              currentStreamingTopicId = nextId;
-              streamingBuffer = '';
-
-              // Remove animation after delay
+              // Remove fade animation after it completes
               setTimeout(() => {
                 setAnimatingIds(prev => {
                   const next = new Set(prev);
-                  next.delete(data.id);
+                  next.delete(topic.id);
                   return next;
                 });
-              }, 800);
+              }, 400);
             } else if (type === 'complete') {
               eventSource.close();
               setIsGeneratingGuide(false);
-              setTypewriterText(new Map()); // Clear all typewriter text
-              currentStreamingTopicId = null;
+              // Don't clear typewriter immediately - let ongoing animations finish
+              setTimeout(() => {
+                setTypewriterText(new Map());
+              }, 1000);
               setBuilderChatMessages(prev => [...prev, {
                 role: 'system',
-                text: `Your interview guide is ready with ${data.topicCount} sections. You can edit it using the chat or click "DONE? PREVIEW STUDY" when ready.`
+                text: `Your interview guide is ready with ${data.topicCount} sections. You can edit it using the chat, or click the done button below when ready.`
               }]);
             } else if (type === 'error') {
               eventSource.close();
               setIsGeneratingGuide(false);
               setTypewriterText(new Map());
-              currentStreamingTopicId = null;
               setBuilderChatMessages(prev => [...prev, {
                 role: 'system',
                 text: `Something went wrong: ${data.message}. Please try again.`
@@ -1521,9 +1634,17 @@ function DashboardContent() {
                   setBuilderChatMessages([]);
                   setBuilderChatInput('');
                   setCreateCampaignAudience('');
-                  setBuilderStep('audience');
+                  setBuilderStep('discovery');
                   setFocusCategories([]);
                   setSelectedFocusCategory(null);
+                  // Reset discovery state
+                  setDiscoveryQuestions([]);
+                  setDiscoveryAnswers(new Map());
+                  setCurrentDiscoveryIndex(0);
+                  setIsGeneratingDiscovery(false);
+                  setDiscoveryContextSummary([]);
+                  setIsSummarizingDiscovery(false);
+                  setOutlineAnimations({ researchContext: false, audience: false, interviewQuestions: false });
                   // Reset guide state
                   setGeneratedTopics([]);
                   setAnimatingIds(new Set());
@@ -1634,10 +1755,12 @@ function DashboardContent() {
                       ? "Edit questions (e.g., 'add follow-up to question 2')..."
                       : builderStep === 'focus'
                       ? "Or type your own focus area..."
+                      : builderStep === 'discovery'
+                      ? discoveryQuestions[currentDiscoveryIndex]?.placeholder || "Type your answer..."
                       : "Describe your target audience..."
                   }
                   className="flex-1 bg-transparent text-[14px] text-gray-700 placeholder-[#999] outline-none"
-                  disabled={isCompressingAudience || isGeneratingGuide || isEditingGuide}
+                  disabled={isCompressingAudience || isGeneratingGuide || isEditingGuide || isGeneratingDiscovery}
                 />
                 <button
                   onClick={handleBuilderChatSubmit}
@@ -1654,33 +1777,65 @@ function DashboardContent() {
               <div className="flex justify-center mt-4">
                 {builderStep === 'guide' && generatedTopics.length > 0 ? (
                   <button
-                    onClick={() => {
-                      // Create campaign with generated topics
-                      setShowCampaignBuilder(false);
-                      setShowCreateForm(true);
-                      // Set drafted campaign with the generated topics
-                      setDraftedCampaign({
-                        id: '',
-                        name: createCampaignTitle,
-                        title: createCampaignTitle,
-                        caption: createCampaignGoal,
-                        time_estimate: '',
-                        topics: generatedTopics,
-                        completion_logic: null,
-                        created_at: new Date().toISOString(),
-                        updated_at: new Date().toISOString(),
-                        workspace: currentWorkspace?.name || '',
-                        workspace_id: currentWorkspace?.id || ''
-                      });
+                    onClick={async () => {
+                      if (!user || !currentWorkspace) return;
+
+                      setIsSavingCampaign(true);
+
+                      // Save campaign directly to database
+                      try {
+                        const campaignData = {
+                          user_id: user.id,
+                          name: createCampaignTitle,
+                          title: createCampaignTitle,
+                          caption: createCampaignGoal,
+                          time_estimate: '',
+                          topics: generatedTopics,
+                          completion_logic: null,
+                          workspace_id: currentWorkspace.id
+                        };
+
+                        const { error } = await supabase
+                          .from('campaigns')
+                          .insert(campaignData);
+
+                        if (error) throw error;
+
+                        // Reset all builder state
+                        setShowCampaignBuilder(false);
+                        setShowCreateModal(false);
+                        setBuilderChatMessages([]);
+                        setBuilderChatInput('');
+                        setCreateCampaignTitle('');
+                        setCreateCampaignGoal('');
+                        setCreateCampaignTemplate(null);
+                        setCreateCampaignAudience('');
+                        setBuilderStep('discovery');
+                        setFocusCategories([]);
+                        setSelectedFocusCategory(null);
+                        setDiscoveryQuestions([]);
+                        setDiscoveryAnswers(new Map());
+                        setCurrentDiscoveryIndex(0);
+                        setDiscoveryContextSummary([]);
+                        setGeneratedTopics([]);
+                        setOutlineAnimations({ researchContext: false, audience: false, interviewQuestions: false });
+
+                        // Refresh campaigns list
+                        fetchCampaigns(currentWorkspace.id);
+                      } catch (error) {
+                        console.error('Error saving campaign:', error);
+                      } finally {
+                        setIsSavingCampaign(false);
+                      }
                     }}
-                    disabled={isGeneratingGuide || isEditingGuide}
+                    disabled={isGeneratingGuide || isEditingGuide || isSavingCampaign}
                     className={`px-6 py-2.5 rounded-lg text-[11px] font-bold tracking-wide transition-all ${
-                      !isGeneratingGuide && !isEditingGuide
+                      !isGeneratingGuide && !isEditingGuide && !isSavingCampaign
                         ? 'bg-[#1a1a1a] text-white hover:bg-black shadow-sm'
                         : 'bg-[#e5e5e5] text-[#999] cursor-not-allowed'
                     }`}
                   >
-                    DONE? PREVIEW STUDY →
+                    {isSavingCampaign ? 'SAVING...' : 'DONE →'}
                   </button>
                 ) : (
                   <button
@@ -1723,27 +1878,46 @@ function DashboardContent() {
                 </div>
               </div>
 
-              {/* Audience */}
-              <div className="mb-4">
-                <span className={`text-[13px] font-bold tracking-wide transition-colors ${
-                  createCampaignAudience ? 'text-[#2c95ff]' : 'text-[#2c95ff]/40'
-                }`}>AUDIENCE</span>
-                <div className={`border rounded-md px-4 py-3 mt-2 min-h-[44px] transition-all ${
-                  createCampaignAudience
-                    ? 'bg-[#fafaf9] border-[#eee]'
-                    : 'bg-[#f8f8f8] border-dashed border-[#ddd]'
-                }`}>
-                  {createCampaignAudience ? (
-                    <span className="text-[14px] text-[#333]">{createCampaignAudience}</span>
-                  ) : (
-                    <span className="text-[13px] text-[#bbb] italic">Waiting for input...</span>
-                  )}
+              {/* Research Context - Discovery Summary */}
+              {builderStep !== 'discovery' && discoveryContextSummary.length > 0 && (
+                <div className={`mb-4 ${outlineAnimations.researchContext ? 'fade-slide-in' : 'opacity-0'}`}>
+                  <span className="text-[13px] font-bold tracking-wide text-[#2c95ff]">RESEARCH CONTEXT</span>
+                  <div className="bg-[#fafaf9] border border-[#eee] rounded-md px-4 py-3 mt-2">
+                    <ul className="space-y-1.5">
+                      {discoveryContextSummary.map((bullet, idx) => (
+                        <li key={idx} className="text-[13px] text-[#333] flex items-start gap-2">
+                          <span className="text-[#2c95ff] mt-0.5">•</span>
+                          <span>{bullet}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
                 </div>
-              </div>
+              )}
+
+              {/* Audience - only show after discovery step */}
+              {builderStep !== 'discovery' && (
+                <div className={`mb-4 ${outlineAnimations.audience ? 'fade-slide-in' : 'opacity-0'}`}>
+                  <span className={`text-[13px] font-bold tracking-wide transition-colors ${
+                    createCampaignAudience ? 'text-[#2c95ff]' : 'text-[#2c95ff]/40'
+                  }`}>AUDIENCE</span>
+                  <div className={`border rounded-md px-4 py-3 mt-2 min-h-[44px] transition-all ${
+                    createCampaignAudience
+                      ? 'bg-[#fafaf9] border-[#eee]'
+                      : 'bg-[#f8f8f8] border-dashed border-[#ddd]'
+                  }`}>
+                    {createCampaignAudience ? (
+                      <span className="text-[14px] text-[#333]">{createCampaignAudience}</span>
+                    ) : (
+                      <span className="text-[13px] text-[#bbb] italic">Waiting for input...</span>
+                    )}
+                  </div>
+                </div>
+              )}
 
               {/* Interview Questions Section */}
               {createCampaignAudience && (
-                <div>
+                <div className={outlineAnimations.interviewQuestions ? 'fade-slide-in' : 'opacity-0'}>
                   <span className={`text-[13px] font-bold tracking-wide transition-colors ${
                     selectedFocusCategory ? 'text-[#2c95ff]' : 'text-[#2c95ff]/40'
                   }`}>INTERVIEW QUESTIONS</span>
@@ -1971,16 +2145,60 @@ function DashboardContent() {
                 {/* Buttons */}
                 <div className="flex items-center gap-3 mt-3">
                   <button
-                    onClick={() => {
+                    onClick={async () => {
                       setShowCreateModal(false);
                       setShowCampaignBuilder(true);
-                      setBuilderStep('audience');
+                      setBuilderStep('discovery');
                       setFocusCategories([]);
                       setSelectedFocusCategory(null);
                       setCreateCampaignAudience('');
+                      setDiscoveryQuestions([]);
+                      setDiscoveryAnswers(new Map());
+                      setCurrentDiscoveryIndex(0);
                       setBuilderChatMessages([
-                        { role: 'system', text: 'What sort of users are you looking for?' }
+                        { role: 'system', text: "Let me ask a few questions to understand your research goals..." }
                       ]);
+
+                      // Generate discovery questions
+                      setIsGeneratingDiscovery(true);
+                      try {
+                        const response = await fetch('/api/generate-discovery-questions', {
+                          method: 'POST',
+                          headers: { 'Content-Type': 'application/json' },
+                          body: JSON.stringify({
+                            title: createCampaignTitle,
+                            goal: createCampaignGoal,
+                            template: createCampaignTemplate,
+                          }),
+                        });
+                        const data = await response.json();
+                        if (data.questions && data.questions.length > 0) {
+                          setDiscoveryQuestions(data.questions);
+                          // Show first question after a brief delay
+                          setTimeout(() => {
+                            setBuilderChatMessages(prev => [...prev, {
+                              role: 'system',
+                              text: data.questions[0].question
+                            }]);
+                            setIsGeneratingDiscovery(false);
+                          }, 500);
+                        } else {
+                          // Skip discovery if no questions generated
+                          setBuilderStep('audience');
+                          setBuilderChatMessages([
+                            { role: 'system', text: 'What sort of users are you looking for?' }
+                          ]);
+                          setIsGeneratingDiscovery(false);
+                        }
+                      } catch (error) {
+                        console.error('Error generating discovery questions:', error);
+                        // Skip discovery on error
+                        setBuilderStep('audience');
+                        setBuilderChatMessages([
+                          { role: 'system', text: 'What sort of users are you looking for?' }
+                        ]);
+                        setIsGeneratingDiscovery(false);
+                      }
                     }}
                     disabled={!createCampaignTitle.trim() || !createCampaignGoal.trim()}
                     className={`px-5 py-2.5 rounded-md text-sm text-white transition-colors ${

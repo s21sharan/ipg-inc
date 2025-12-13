@@ -1,5 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
+import OpenAI from 'openai';
 import { parseEditCommand, isTargetedEdit, type ParsedCommand } from '@/lib/utils/edit-command-parser';
+
+const openai = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY,
+});
 
 interface Topic {
   id: string;
@@ -32,11 +37,33 @@ interface EditResponse {
   description: string;
 }
 
+// Validate and fix topic structure
+function validateTopics(topics: any[]): Topic[] {
+  return topics.map((topic, index) => {
+    // Ensure required fields exist
+    const validated: Topic = {
+      id: topic.id || String(index + 1),
+      name: topic.name || `Topic ${index + 1}`,
+      type: topic.type || 'question',
+    };
+
+    // Add type-specific fields
+    if (validated.type === 'statement') {
+      validated.content = topic.content || '';
+    } else if (validated.type === 'question') {
+      validated.question = topic.question || '';
+      validated.probeQuestions = topic.probeQuestions || '';
+      validated.probeDepth = topic.probeDepth || '1-2';
+    }
+
+    return validated;
+  });
+}
+
 async function handleTargetedEdit(
   parsedCommand: ParsedCommand,
   currentTopics: Topic[],
-  context: EditRequest['context'],
-  apiKey: string
+  context: EditRequest['context']
 ): Promise<{ updatedTopics: Topic[]; changedIds: string[] }> {
   // Find question topics (excluding statements)
   const questionTopics = currentTopics.filter(t => t.type === 'question');
@@ -49,6 +76,14 @@ async function handleTargetedEdit(
   const targetTopic = targetIndex ? questionTopics[targetIndex - 1] : undefined;
 
   let prompt = '';
+  const topicStructure = `
+IMPORTANT: Each topic MUST have these exact fields:
+- id: string (e.g., "1", "2", "3")
+- name: string (e.g., "Introduction: Welcome" or "Kickoff")
+- type: "statement" | "question" | "conversation"
+- For statement type: content (string)
+- For question type: question (string), probeQuestions (string, newline-separated), probeDepth ("1-2" | "3-5" | "5-10")
+`;
   let editContext = `
 Campaign: "${context.title}"
 Goal: "${context.goal}"
@@ -59,7 +94,7 @@ Current interview guide topics:
 ${JSON.stringify(currentTopics, null, 2)}
 
 User's edit request: "${parsedCommand.instruction}"
-`;
+${topicStructure}`;
 
   switch (parsedCommand.type) {
     case 'add_followup':
@@ -153,28 +188,12 @@ Apply the user's edit request to the interview guide.
 Return ONLY the modified topics array as JSON.`;
   }
 
-  const response = await fetch('https://api.openai.com/v1/responses', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${apiKey}`,
-    },
-    body: JSON.stringify({
-      model: 'gpt-5-nano',
-      input: prompt,
-      reasoning: { effort: 'medium' },
-      text: { verbosity: 'low' },
-    }),
+  const response = await openai.responses.create({
+    model: 'gpt-4o-mini',
+    input: prompt,
   });
 
-  if (!response.ok) {
-    const error = await response.text();
-    throw new Error(`OpenAI API error: ${error}`);
-  }
-
-  const data = await response.json();
-  const messageItem = data.output?.find((item: any) => item.type === 'message');
-  const content = messageItem?.content?.[0]?.text ?? null;
+  const content = response.output_text;
 
   if (!content) {
     throw new Error('No content generated from OpenAI API');
@@ -192,7 +211,8 @@ Return ONLY the modified topics array as JSON.`;
   }
   jsonStr = jsonStr.trim();
 
-  const updatedTopics: Topic[] = JSON.parse(jsonStr);
+  const parsedTopics = JSON.parse(jsonStr);
+  const updatedTopics: Topic[] = validateTopics(parsedTopics);
 
   // Determine which topics changed
   const changedIds: string[] = [];
@@ -219,8 +239,7 @@ Return ONLY the modified topics array as JSON.`;
 
 async function handleFullRegeneration(
   command: string,
-  context: EditRequest['context'],
-  apiKey: string
+  context: EditRequest['context']
 ): Promise<{ updatedTopics: Topic[]; changedIds: string[] }> {
   const prompt = `Generate a new interview discussion guide based on these parameters and the user's feedback.
 
@@ -245,30 +264,25 @@ For each QUESTION topic, include:
 - 3-5 follow-up probe questions (newline-separated in probeQuestions)
 - probeDepth: one of "1-2", "3-5", or "5-10"
 
-Return ONLY a JSON array of Topic objects.`;
+IMPORTANT: Each topic object MUST have these exact fields:
+{
+  "id": "1",
+  "name": "SectionName: Topic Title",
+  "type": "statement" or "question",
+  "content": "..." (for statement type only),
+  "question": "..." (for question type),
+  "probeQuestions": "line1\\nline2\\nline3" (for question type),
+  "probeDepth": "1-2" or "3-5" or "5-10" (for question type)
+}
 
-  const response = await fetch('https://api.openai.com/v1/responses', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${apiKey}`,
-    },
-    body: JSON.stringify({
-      model: 'gpt-5-nano',
-      input: prompt,
-      reasoning: { effort: 'medium' },
-      text: { verbosity: 'medium' },
-    }),
+Return ONLY a valid JSON array of Topic objects. No markdown, no explanation.`;
+
+  const response = await openai.responses.create({
+    model: 'gpt-4o-mini',
+    input: prompt,
   });
 
-  if (!response.ok) {
-    const error = await response.text();
-    throw new Error(`OpenAI API error: ${error}`);
-  }
-
-  const data = await response.json();
-  const messageItem = data.output?.find((item: any) => item.type === 'message');
-  const content = messageItem?.content?.[0]?.text ?? null;
+  const content = response.output_text;
 
   if (!content) {
     throw new Error('No content generated from OpenAI API');
@@ -286,7 +300,8 @@ Return ONLY a JSON array of Topic objects.`;
   }
   jsonStr = jsonStr.trim();
 
-  const updatedTopics: Topic[] = JSON.parse(jsonStr);
+  const parsedTopics = JSON.parse(jsonStr);
+  const updatedTopics: Topic[] = validateTopics(parsedTopics);
 
   // All topics are "changed" in full regeneration
   const changedIds = updatedTopics.map(t => t.id);
@@ -306,8 +321,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const apiKey = process.env.OPENAI_API_KEY;
-    if (!apiKey) {
+    if (!process.env.OPENAI_API_KEY) {
       return NextResponse.json(
         { error: 'OpenAI API key not configured' },
         { status: 500 }
@@ -321,9 +335,9 @@ export async function POST(request: NextRequest) {
     let result: { updatedTopics: Topic[]; changedIds: string[] };
 
     if (isTargeted && currentTopics && currentTopics.length > 0) {
-      result = await handleTargetedEdit(parsedCommand, currentTopics, context, apiKey);
+      result = await handleTargetedEdit(parsedCommand, currentTopics, context);
     } else {
-      result = await handleFullRegeneration(editCommand, context, apiKey);
+      result = await handleFullRegeneration(editCommand, context);
     }
 
     const response: EditResponse = {

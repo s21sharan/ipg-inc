@@ -41,23 +41,34 @@ body {
 
 /* Interview Guide Builder Animations */
 
-/* Typewriter cursor effect for streaming text */
-@keyframes typewriter-cursor {
-  from, to { border-color: transparent; }
-  50% { border-color: #2c95ff; }
+/* Typewriter cursor effect - smooth blinking pipe */
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
 }
 .typewriter-cursor {
-  border-right: 2px solid #2c95ff;
-  animation: typewriter-cursor 0.75s step-end infinite;
+  color: #2c95ff;
+  font-weight: 400;
+  animation: blink 0.8s ease-in-out infinite;
+  margin-left: 1px;
 }
 
 /* Fade-slide for new sections/questions appearing */
 @keyframes fadeSlideIn {
-  from { opacity: 0; transform: translateY(-8px); }
+  from { opacity: 0; transform: translateY(-10px); }
   to { opacity: 1; transform: translateY(0); }
 }
 .fade-slide-in {
-  animation: fadeSlideIn 0.3s ease-out forwards;
+  animation: fadeSlideIn 0.35s ease-out forwards;
+}
+
+/* Fade-in animation for follow-ups and options appearing after typewriter */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.animate-fade-in {
+  animation: fadeIn 0.3s ease-out forwards;
 }
 
 /* Edit highlight pulse when questions are modified */

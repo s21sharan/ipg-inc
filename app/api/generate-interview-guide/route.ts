@@ -23,6 +23,7 @@ interface GenerateRequest {
   audience: string;
   focusCategory: string;
   template?: string;
+  discoveryContext?: string;
 }
 
 const openai = new OpenAI({
@@ -58,11 +59,16 @@ function buildPrompt(
   audience: string,
   focusCategory: string,
   isNewFeature: boolean,
-  featureName: string | undefined
+  featureName: string | undefined,
+  discoveryContext?: string
 ): string {
   const featureContext = isNewFeature
     ? `IMPORTANT: This is about a NEW/UNRELEASED feature called "${featureName || 'this feature'}". Users have NOT used or experienced this yet. Frame questions about EXPECTATIONS, FIRST IMPRESSIONS, and ANTICIPATED VALUE rather than actual usage or experience.`
     : `This is about an existing product/feature that users can already use. Frame questions about their ACTUAL EXPERIENCE, USAGE PATTERNS, and FEEDBACK.`;
+
+  const discoverySection = discoveryContext
+    ? `\nAdditional Research Context (use this to make questions more specific and targeted):\n${discoveryContext}\n`
+    : '';
 
   return `Generate an interview discussion guide for user research.
 
@@ -70,7 +76,7 @@ Campaign: "${title}"
 Goal: "${goal}"
 Target Audience: "${audience}"
 Focus Area: "${focusCategory}"
-
+${discoverySection}
 ${featureContext}
 
 Generate a structured interview guide as a JSON array with the following structure:
@@ -190,6 +196,7 @@ export async function GET(request: NextRequest) {
   const goal = searchParams.get('goal');
   const audience = searchParams.get('audience');
   const focusCategory = searchParams.get('focusCategory');
+  const discoveryContext = searchParams.get('discoveryContext');
 
   if (!title || !goal || !audience || !focusCategory) {
     return new Response(
@@ -225,7 +232,8 @@ export async function GET(request: NextRequest) {
           audience,
           focusCategory,
           featureContext.isNewFeature,
-          featureContext.featureName
+          featureContext.featureName,
+          discoveryContext || undefined
         );
 
         // Step 3: Stream the response from OpenAI
@@ -313,7 +321,7 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     const body: GenerateRequest = await request.json();
-    const { title, goal, audience, focusCategory } = body;
+    const { title, goal, audience, focusCategory, discoveryContext } = body;
 
     if (!title || !goal || !audience || !focusCategory) {
       return new Response(
@@ -339,7 +347,8 @@ export async function POST(request: NextRequest) {
       audience,
       focusCategory,
       featureContext.isNewFeature,
-      featureContext.featureName
+      featureContext.featureName,
+      discoveryContext
     );
 
     // Generate topics (non-streaming for POST)

@@ -38,6 +38,12 @@ function groupTopicsBySections(topics: Topic[]): Section[] {
   let currentSection: Section | null = null;
 
   for (const topic of topics) {
+    // Skip topics without required fields
+    if (!topic || !topic.name || !topic.id || !topic.type) {
+      console.warn('Skipping invalid topic:', topic);
+      continue;
+    }
+
     // Parse section from topic name (e.g., "Introduction: Welcome" → "Introduction")
     const colonIndex = topic.name.indexOf(':');
     const sectionName = colonIndex > 0 ? topic.name.slice(0, colonIndex).trim() : topic.name;
@@ -64,18 +70,19 @@ function StatementCard({
   isAnimating: boolean;
   typewriterText?: string;
 }) {
-  const displayText = typewriterText !== undefined ? typewriterText : topic.content || '';
-  const isStreaming = typewriterText !== undefined;
+  // When typewriterText is defined (even empty string), we're in typewriter mode
+  const isTypewriting = typewriterText !== undefined;
+  const displayText = isTypewriting ? typewriterText : topic.content || '';
 
   return (
     <div
-      className={`bg-[#fbfaf8] border border-[#e2e3e1] rounded-lg px-5 py-6 mb-4 ${
+      className={`bg-[#fbfaf8] border border-[#e2e3e1] rounded-lg px-5 py-6 mb-4 transition-all duration-300 ${
         isAnimating ? 'fade-slide-in' : ''
       }`}
     >
-      <p className="text-[16px] text-[#333] italic">
+      <p className="text-[16px] text-[#333] italic leading-relaxed min-h-[24px]">
         "{displayText}"
-        {isStreaming && <span className="typewriter-cursor">&nbsp;</span>}
+        {isTypewriting && <span className="typewriter-cursor">|</span>}
       </p>
     </div>
   );

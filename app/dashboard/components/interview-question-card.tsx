@@ -32,9 +32,20 @@ export function InterviewQuestionCard({
   isEditing = false,
   typewriterText,
 }: InterviewQuestionCardProps) {
-  const displayText = typewriterText !== undefined ? typewriterText : topic.question || '';
-  const { questionText, options } = parseOptionsFromQuestion(displayText);
-  const isStreaming = typewriterText !== undefined;
+  // When typewriterText is defined (even empty string), we're in typewriter mode
+  const isTypewriting = typewriterText !== undefined;
+  const displayText = isTypewriting ? typewriterText : topic.question || '';
+
+  // Only parse options from the full text when not typewriting
+  const fullQuestion = topic.question || '';
+  const { questionText: fullQuestionText, options: fullOptions } = parseOptionsFromQuestion(fullQuestion);
+
+  // For display during typewriting, just show the partial text without parsing
+  const questionText = isTypewriting ? displayText : fullQuestionText;
+  const options = isTypewriting ? [] : fullOptions;
+
+  // Show follow-ups and options only after typewriter animation completes
+  const showExtras = !isTypewriting;
 
   const icon = questionNumber <= 10 ? questionIcons[questionNumber - 1] : `(${questionNumber})`;
 
@@ -45,32 +56,38 @@ export function InterviewQuestionCard({
 
   return (
     <div
-      className={`bg-[#fbfaf8] border border-[#e2e3e1] rounded-lg px-5 py-6 mb-4 transition-all ${
+      className={`bg-[#fbfaf8] border border-[#e2e3e1] rounded-lg px-5 py-6 mb-4 transition-all duration-300 ${
         isAnimating ? 'fade-slide-in' : ''
       } ${isEditing ? 'edit-highlight' : ''}`}
     >
       <div className="flex gap-4 items-start">
         <span className="text-[18px] text-[#333] flex-shrink-0">{icon}</span>
-        <div className="flex-1">
+        <div className="flex-1 min-h-[24px]">
           {questionTitle && (
             <p className="text-[12px] font-bold text-[#333] mb-2 tracking-wide">
               {questionTitle}
             </p>
           )}
-          <p className="text-[16px] text-[#333]">
+          <p className="text-[16px] text-[#333] leading-relaxed">
             {questionText}
-            {isStreaming && <span className="typewriter-cursor">&nbsp;</span>}
+            {isTypewriting && <span className="typewriter-cursor">|</span>}
           </p>
 
-          {options.length > 0 && (
-            <InterviewChoices options={options} isAnimating={isAnimating} />
+          {/* Show options after typewriter completes */}
+          {showExtras && options.length > 0 && (
+            <div className="animate-fade-in">
+              <InterviewChoices options={options} isAnimating={false} />
+            </div>
           )}
 
-          {topic.probeQuestions && (
-            <InterviewFollowups
-              probeQuestions={topic.probeQuestions}
-              isAnimating={isAnimating}
-            />
+          {/* Show follow-ups after typewriter completes */}
+          {showExtras && topic.probeQuestions && (
+            <div className="animate-fade-in">
+              <InterviewFollowups
+                probeQuestions={topic.probeQuestions}
+                isAnimating={false}
+              />
+            </div>
           )}
         </div>
       </div>
